@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Mcma;
 using Mcma.Data.DocumentDatabase.Queries;
 
 namespace Mcma.Data
 {
     public interface IDocumentDatabaseTable
     {
-        Task<IEnumerable<T>> QueryAsync<T>(Query<T> query) where T : class;
+        Task<QueryResults<T>> QueryAsync<T>(Query<T> query) where T : class;
+
+        Task<QueryResults<TResource>> CustomQueryAsync<TResource, TParameters>(CustomQuery<TParameters> customQuery) where TResource : class;
 
         Task<T> GetAsync<T>(string id) where T : class;
 

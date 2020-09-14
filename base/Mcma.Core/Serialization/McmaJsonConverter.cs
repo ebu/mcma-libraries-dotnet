@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Mcma.Utility;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,30 +10,24 @@ namespace Mcma.Serialization
 {
     public abstract class McmaJsonConverter : JsonConverter
     {
-        protected virtual string TypeJsonPropertyName => "@type";
+        protected Type GetSerializedType(JObject jObj, Type objectType) => GetSerializedType(jObj.Property(McmaJson.TypePropertyName), objectType);
 
-        protected Type GetSerializedType(JObject jObj, Type objectType) => GetSerializedType(jObj.Property(TypeJsonPropertyName), objectType);
-
-        protected Type GetSerializedType(JProperty typeProperty, Type objectType)
+        protected static Type GetSerializedType(JProperty typeProperty, Type objectType)
         {
-            if (typeProperty != null)
-            {
-                var typeString = typeProperty.Value.Value<string>();
-
-                objectType = McmaTypes.FindType(typeString);
-                if (objectType == null)
-                    return typeof(McmaObject);
+            if (typeProperty == null)
+                return objectType ?? typeof(McmaExpandoObject);
             
-                typeProperty.Remove();
-                
-                return objectType;
-            }
+            var typeString = typeProperty.Value.Value<string>();
 
-            return objectType ?? throw new McmaException($"Unrecognized @type specified in JSON: {typeProperty?.Value?.Value<string>() ?? "<null>"}");
+            objectType = McmaTypes.FindType(typeString) ?? typeof(McmaObject);
+            
+            typeProperty.Remove();
+
+            return objectType;
         }
 
         protected bool IsMcmaObject(JObject jObj)
-            => jObj.Properties().Any(p => p.Name.Equals(TypeJsonPropertyName, StringComparison.OrdinalIgnoreCase));
+            => jObj.Properties().Any(p => p.Name.Equals(McmaJson.TypePropertyName, StringComparison.OrdinalIgnoreCase));
 
         protected object CreateMcmaObject(JObject jObj, JsonSerializer serializer)
             => jObj.ToObject(GetSerializedType(jObj, null), serializer);
@@ -71,12 +66,18 @@ namespace Mcma.Serialization
             }
         }
 
-        protected IDictionary<string, object> GetPropertyDictionary(object value)
+        protected static IDictionary<string, object> GetPropertyDictionary(object value)
             => value.GetType().GetProperties()
                     .Where(p => p.Name != nameof(McmaObject.Type) && p.CanRead && p.GetIndexParameters().Length == 0)
-                    .ToDictionary(p => p.Name, p => p.GetValue(value));
+                    .ToDictionary(GetJsonPropertyName, p => p.GetValue(value));
 
-        protected void WriteProperties(JsonWriter writer, JsonSerializer serializer, IDictionary<string, object> properties, bool preserveCasing)
+        protected static string GetJsonPropertyName(PropertyInfo propertyInfo)
+        {
+            var jsonPropertyAttribute = propertyInfo.GetCustomAttribute<JsonPropertyAttribute>();
+            return jsonPropertyAttribute != null ? jsonPropertyAttribute.PropertyName : propertyInfo.Name;
+        }
+
+        protected static void WriteProperties(JsonWriter writer, JsonSerializer serializer, IDictionary<string, object> properties, bool preserveCasing)
         {
             foreach (var keyValuePair in properties)
             {

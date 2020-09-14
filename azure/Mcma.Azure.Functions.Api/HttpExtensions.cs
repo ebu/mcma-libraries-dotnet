@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Mcma.Api;
 using Mcma.Context;
+using Mcma.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 
 namespace Mcma.Azure.Functions.Api
@@ -15,14 +17,18 @@ namespace Mcma.Azure.Functions.Api
     {
         public static async Task<McmaApiRequestContext> ToMcmaApiRequestContextAsync(
             this HttpRequest request,
-            IContextVariableProvider contextVariableProvider = null)
+            ExecutionContext executionContext,
+            IContextVariableProvider contextVariableProvider = null,
+            ILoggerProvider loggerProvider = null)
             => new McmaApiRequestContext(
-                await request.ToMcmaApiRequestAsync(),
-                (contextVariableProvider ?? new EnvironmentVariableProvider()).GetAllContextVariables().ToDictionary());
+                await request.ToMcmaApiRequestAsync(executionContext),
+                (contextVariableProvider ?? new EnvironmentVariableProvider()).GetAllContextVariables().ToDictionary(),
+                loggerProvider);
 
-        public static async Task<McmaApiRequest> ToMcmaApiRequestAsync(this HttpRequest request)
+        public static async Task<McmaApiRequest> ToMcmaApiRequestAsync(this HttpRequest request, ExecutionContext executionContext)
             => new McmaApiRequest
             {
+                Id = executionContext.InvocationId.ToString(),
                 Path = request.Path,
                 HttpMethod = new HttpMethod(request.Method),
                 Headers = request.Headers.Keys.ToDictionary(k => k, k => request.Headers[k].ToString()),

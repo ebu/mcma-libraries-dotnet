@@ -10,21 +10,25 @@ namespace Mcma.Azure.CosmosDb
 {
     public class CosmosDbTableProvider : IDocumentDatabaseTableProvider, IDisposable
     {
-        public CosmosDbTableProvider(CosmosDbTableProviderOptions options)
+        public CosmosDbTableProvider(CosmosDbTableProviderConfiguration providerConfiguration, CosmosDbTableOptions tableOptions = null)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (providerConfiguration == null) throw new ArgumentNullException(nameof(providerConfiguration));
+            
+            TableOptions = tableOptions ?? new CosmosDbTableOptions();
 
             CosmosClient =
-                new CosmosClient(options.Endpoint,
-                                 options.Key,
+                new CosmosClient(providerConfiguration.Endpoint,
+                                 providerConfiguration.Key,
                                  new CosmosClientOptions
                                  {
-                                     ApplicationRegion = options.Region,
+                                     ApplicationRegion = providerConfiguration.Region,
                                      Serializer = new CosmosJsonDotNetSerializer(McmaJson.DefaultSettings())
                                  });
 
-            Database = CosmosClient.GetDatabase(options.DatabaseId);
+            Database = CosmosClient.GetDatabase(providerConfiguration.DatabaseId);
         }
+
+        private CosmosDbTableOptions TableOptions { get; }
 
         private CosmosClient CosmosClient { get; }
         
@@ -56,7 +60,7 @@ namespace Mcma.Azure.CosmosDb
                 ContainerPropertiesSemaphore.Release();
             }
             
-            return new CosmosDbTable(container, containerProperties);
+            return new CosmosDbTable(TableOptions, container, containerProperties);
         }
 
         public void Dispose() => CosmosClient?.Dispose();

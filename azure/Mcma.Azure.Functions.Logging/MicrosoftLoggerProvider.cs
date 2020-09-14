@@ -18,7 +18,7 @@ namespace Mcma.Azure.Functions.Logging
         private IDictionary<string, IMicrosoftLogger> Loggers { get; } = new Dictionary<string, IMicrosoftLogger>();
 
         private static string GetLoggerKey(string source, string requestId, McmaTracker tracker)
-            => string.Join("-", new[] {source, requestId, tracker.Id?.Trim()}.Where(x => x != null));
+            => string.Join("-", new[] {source, requestId, tracker?.Id?.Trim()}.Where(x => x != null));
 
         protected override MicrosoftLoggerWrapper Get(string source, string requestId, McmaTracker tracker)
         {

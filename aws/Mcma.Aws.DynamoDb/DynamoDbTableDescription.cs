@@ -1,21 +1,27 @@
-﻿namespace Mcma.Aws.DynamoDb
+﻿using System;
+
+namespace Mcma.Aws.DynamoDb
 {
     public class DynamoDbTableDescription
     {
-        public DynamoDbTableDescription(string tableName, string partitionKeyName, string sortKeyName, string[] indexNames)
+        public DynamoDbTableDescription(string tableName,
+                                        string partitionKeyName,
+                                        string sortKeyName,
+                                        LocalSecondaryIndexDescription[] localSecondaryIndexes,
+                                        GlobalSecondaryIndexDescription[] globalSecondaryIndexes)
         {
-            TableName = tableName;
-            PartitionKeyName = partitionKeyName;
-            SortKeyName = sortKeyName;
-            IndexNames = indexNames ?? new string[0];
+            TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
+            KeyNames = new KeyNames(partitionKeyName, sortKeyName);
+            LocalSecondaryIndexes = localSecondaryIndexes ?? new LocalSecondaryIndexDescription[0];
+            GlobalSecondaryIndexes = globalSecondaryIndexes ?? new GlobalSecondaryIndexDescription[0];
         }
         
         public string TableName { get; }
         
-        public string PartitionKeyName { get; }
+        public KeyNames KeyNames { get; } 
         
-        public string SortKeyName { get; } 
+        public LocalSecondaryIndexDescription[] LocalSecondaryIndexes { get; }
         
-        public string[] IndexNames { get; }
+        public GlobalSecondaryIndexDescription[] GlobalSecondaryIndexes { get; }
     }
 }

@@ -42,25 +42,25 @@ namespace Mcma.Aws.S3
         public static async Task<GetObjectResponse> GetAsync(this AwsS3FileLocator s3Locator)
         {
             using (var client = await s3Locator.GetBucketClientAsync())
-                return await client.GetObjectAsync(s3Locator.AwsS3Bucket, s3Locator.AwsS3Key);
+                return await client.GetObjectAsync(s3Locator.AwsS3Bucket, s3Locator.Key);
         }
 
         public static async Task<GetObjectResponse> GetAsync(this AwsS3FileLocator s3Locator, string accessKey, string secretKey)
         {
             using (var client = await s3Locator.GetBucketClientAsync(accessKey, secretKey))
-                return await client.GetObjectAsync(s3Locator.AwsS3Bucket, s3Locator.AwsS3Key);
+                return await client.GetObjectAsync(s3Locator.AwsS3Bucket, s3Locator.Key);
         }
 
         public static async Task<Stream> GetStreamAsync(this AwsS3FileLocator s3Locator)
         {
             using (var client = await s3Locator.GetBucketClientAsync())
-                return await client.GetObjectStreamAsync(s3Locator.AwsS3Bucket, s3Locator.AwsS3Key, null);
+                return await client.GetObjectStreamAsync(s3Locator.AwsS3Bucket, s3Locator.Key, null);
         }
 
         public static async Task<Stream> GetStreamAsync(this AwsS3FileLocator s3Locator, string accessKey, string secretKey)
         {
             using (var client = await s3Locator.GetBucketClientAsync(accessKey, secretKey))
-                return await client.GetObjectStreamAsync(s3Locator.AwsS3Bucket, s3Locator.AwsS3Key, null);
+                return await client.GetObjectStreamAsync(s3Locator.AwsS3Bucket, s3Locator.Key, null);
         }
 
         public static async Task PutStreamAsync(this AwsS3FileLocator s3Locator, Stream inputStream, string contentType = null)
@@ -70,7 +70,7 @@ namespace Mcma.Aws.S3
                     new PutObjectRequest
                     {
                         BucketName = s3Locator.AwsS3Bucket,
-                        Key = s3Locator.AwsS3Key,
+                        Key = s3Locator.Key,
                         InputStream = inputStream,
                         AutoCloseStream = true,
                         ContentType = contentType
@@ -84,7 +84,7 @@ namespace Mcma.Aws.S3
                     new PutObjectRequest
                     {
                         BucketName = s3Locator.AwsS3Bucket,
-                        Key = s3Locator.AwsS3Key,
+                        Key = s3Locator.Key,
                         InputStream = inputStream,
                         AutoCloseStream = true,
                         ContentType = contentType

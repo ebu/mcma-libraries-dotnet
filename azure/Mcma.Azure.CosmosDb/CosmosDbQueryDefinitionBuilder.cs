@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Mcma.Data.DocumentDatabase.Queries;
+using Mcma.Utility;
 using Microsoft.Azure.Cosmos;
 
 namespace Mcma.Azure.CosmosDb
@@ -27,7 +28,7 @@ namespace Mcma.Azure.CosmosDb
 
             var partitionKeyClause =
                 query.Path != null
-                    ? $"root[\"{partitionKeyName}\"] = @p{sqlQuery.AddParameter(query.Path)}"
+                    ? $"root[\"{partitionKeyName}\"] = {sqlQuery.AddParameter(query.Path)}"
                     : null;
 
             var filterClause =
@@ -36,12 +37,12 @@ namespace Mcma.Azure.CosmosDb
                     : null;
 
             if (partitionKeyClause != null && filterClause != null)
-                sqlQuery.Text += $" WHERE ({partitionKeyClause}) && ({filterClause})";
+                sqlQuery.Text += $" WHERE ({partitionKeyClause}) and ({filterClause})";
             else if (partitionKeyClause != null || filterClause != null)
                 sqlQuery.Text += $" WHERE {partitionKeyClause ?? filterClause}";
 
             if (!string.IsNullOrWhiteSpace(query.SortBy))
-                sqlQuery.Text += $" ORDER BY root[\"resource\"][\"{query.SortBy}\"] {(query.SortAscending ? "asc" : "desc")}";
+                sqlQuery.Text += $" ORDER BY root[\"resource\"][\"{query.SortBy.PascalCaseToCamelCase()}\"] {(query.SortAscending ? "asc" : "desc")}";
 
             return sqlQuery.Parameters
                            .Select((p, i) => new {Name = $"@p{i}", Value = p})
@@ -61,12 +62,12 @@ namespace Mcma.Azure.CosmosDb
         private static string AddFilterCriteriaGroup<T>(SqlQuery sqlQuery, FilterCriteriaGroup<T> filterCriteriaGroup)
             =>
                 "(" +
-                string.Join($" {filterCriteriaGroup.LogicalOperator} ",
+                string.Join($" {(filterCriteriaGroup.LogicalOperator == LogicalOperator.And ? "and" : "or")} ",
                             filterCriteriaGroup.Children.Select(x => AddFilterExpression(sqlQuery, x))) +
                 ")";
 
         private static string AddFilterCriteria<T>(SqlQuery sqlQuery, FilterCriteria<T> filterCriteria)
             =>
-                $"root[\"resource\"][\"{filterCriteria.Property.Name}\"] {filterCriteria.Operator} {sqlQuery.AddParameter(filterCriteria.PropertyValue)}";
+                $"root[\"resource\"][\"{filterCriteria.Property.Name.PascalCaseToCamelCase()}\"] {filterCriteria.Operator} {sqlQuery.AddParameter(filterCriteria.PropertyValue)}";
     }
 }

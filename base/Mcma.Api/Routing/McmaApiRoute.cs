@@ -14,9 +14,9 @@ namespace Mcma.Api.Routes
 
         public McmaApiRoute(HttpMethod httpMethod, string path, Func<McmaApiRequestContext, Task> handler)
         {
-            HttpMethod = httpMethod;
-            Path = path;
-            Handler = handler;
+            HttpMethod = httpMethod ?? throw new ArgumentNullException(nameof(httpMethod));
+            Path = path ?? throw new ArgumentNullException(nameof(path));
+            Handler = handler ?? throw new ArgumentNullException(nameof(handler));
 
             Template = new TemplateMatcher(TemplateParser.Parse(path), null);
         }

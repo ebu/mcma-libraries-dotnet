@@ -6,13 +6,13 @@ namespace Mcma.Aws.DynamoDb
 {
     public class DynamoDbTableProvider : IDocumentDatabaseTableProvider
     {
-        public DynamoDbTableProvider(DynamoDbTableOptions options = null, IAmazonDynamoDB dynamoDb = null)
+        public DynamoDbTableProvider(DynamoDbTableProviderOptions providerOptions = null, IAmazonDynamoDB dynamoDb = null)
         {
-            Options = options ?? new DynamoDbTableOptions();
+            Options = providerOptions ?? new DynamoDbTableProviderOptions();
             DynamoDb = dynamoDb ?? new AmazonDynamoDBClient();
         }
         
-        private DynamoDbTableOptions Options { get; }
+        private DynamoDbTableProviderOptions Options { get; }
         
         private IAmazonDynamoDB DynamoDb { get; }
 

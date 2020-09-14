@@ -19,7 +19,7 @@ namespace Mcma.Api.Routes
             Routes = routes?.ToList() ?? new List<McmaApiRoute>();
         }
 
-        private List<McmaApiRoute> Routes { get; }
+        protected List<McmaApiRoute> Routes { get; }
 
         public McmaApiRouteCollection AddRoute(HttpMethod method, string path, Func<McmaApiRequestContext, Task> handler)
         {

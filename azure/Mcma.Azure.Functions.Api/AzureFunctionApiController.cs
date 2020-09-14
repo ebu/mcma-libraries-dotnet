@@ -24,9 +24,9 @@ namespace Mcma.Azure.Functions.Api
 
         public async Task<IActionResult> HandleRequestAsync(HttpRequest request, ExecutionContext executionContext, ILogger log, IContextVariableProvider contextVariableProvider = null)
         {
-            var requestContext = await request.ToMcmaApiRequestContextAsync(contextVariableProvider ?? new EnvironmentVariableProvider());
+            var requestContext = await request.ToMcmaApiRequestContextAsync(executionContext, contextVariableProvider, LoggerProvider);
 
-            var logger = LoggerProvider?.AddLogger(log, executionContext.InvocationId.ToString(), requestContext.GetTracker());
+            var logger = LoggerProvider?.AddLogger(log, requestContext.RequestId, requestContext.GetTracker());
 
             logger?.Debug($"Starting {request.Method} request to {request.Path}...");
 

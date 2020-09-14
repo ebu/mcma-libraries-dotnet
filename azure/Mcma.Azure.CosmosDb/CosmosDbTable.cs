@@ -12,20 +12,41 @@ using Newtonsoft.Json.Linq;
 
 namespace Mcma.Azure.CosmosDb
 {
+    public static class ResponseMessageExtensions
+    {
+        public static async Task<T> UnwrapResourceAsync<T>(this ResponseMessage responseMessage) where T : class
+            => (await responseMessage.ToObjectAsync<CosmosDbItem<T>>())?.Resource;
+        
+        public static async Task<T> ToObjectAsync<T>(this ResponseMessage responseMessage) where T : class
+        {
+            string bodyText;
+            using (var streamReader = new StreamReader(responseMessage.Content))
+                bodyText = await streamReader.ReadToEndAsync();
+
+            return JToken.Parse(bodyText).ToMcmaObject<T>();
+        }
+    }
+    
     public class CosmosDbTable : IDocumentDatabaseTable
     {
-        public CosmosDbTable(Container container, ContainerProperties containerProperties)
+        public CosmosDbTable(CosmosDbTableOptions options, Container container, ContainerProperties containerProperties)
         {
+            Options = options;
             Container = container;
-            ContainerProperties = containerProperties;
-            
-            if (containerProperties.PartitionKeyPath.Split('/').Length > 1)
-                throw new McmaException($"Container {containerProperties.Id} defines a partition key with multiple paths. MCMA only supports partition keys with a single path.");
-        }
-        
-        private Container Container { get; }
 
-        private ContainerProperties ContainerProperties { get; }
+            var partitionKeyParts = containerProperties.PartitionKeyPath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
+            if (partitionKeyParts.Length > 1)
+                throw new McmaException(
+                    $"Container {containerProperties.Id} defines a partition key with multiple paths ({containerProperties.PartitionKeyPath}). MCMA only supports partition keys with a single path.");
+            
+            PartitionKeyName = partitionKeyParts[0];
+        }
+
+        private CosmosDbTableOptions Options { get; }
+
+        private Container Container { get; }
+        
+        private string PartitionKeyName { get; }
 
         private static PartitionKey ParsePartitionKey(string id)
         {
@@ -33,43 +54,67 @@ namespace Mcma.Azure.CosmosDb
             return lastSlashIndex > 0 ? new PartitionKey(id.Substring(0, lastSlashIndex)) : PartitionKey.None;
         }
         
-        private async Task AddQueryResultsAsync<T>(QueryDefinition queryDefinition, List<T> results) where T : class
+        private async Task<QueryResults<T>> ExecuteQuery<T>(QueryDefinition queryDefinition,
+                                                            QueryRequestOptions queryRequestOptions,
+                                                            string pageStartToken)
+            where T : class
         {
-            var continuationToken = default(string);
+            queryRequestOptions.ConsistencyLevel ??= Options.ConsistentQuery.HasValue ? ConsistencyLevel.Strong : default;
+
+            var queryIterator = Container.GetItemQueryIterator<CosmosDbItem<T>>(queryDefinition, pageStartToken, queryRequestOptions);
+
+            var results = new List<CosmosDbItem<T>>();
+            
+            string continuationToken;
             do
             {
-                var queryIterator = Container.GetItemQueryIterator<CosmosDbItem<T>>(queryDefinition);
-                while (queryIterator.HasMoreResults)
-                {
-                    var resp = await queryIterator.ReadNextAsync();
-                    results.AddRange(resp.Resource.Select(r => r.Resource));
-                    continuationToken = resp.ContinuationToken;
-                }
+                var response = await queryIterator.ReadNextAsync();
+
+                results.AddRange(response);
+                continuationToken = response.ContinuationToken;
             }
-            while (continuationToken != null);
+            while (queryIterator.HasMoreResults);
+
+            return new QueryResults<T>
+            {
+                Results = results.Select(x => x.Resource).ToArray(),
+                NextPageStartToken = continuationToken
+            };
         }
 
-        public async Task<IEnumerable<T>> QueryAsync<T>(Query<T> query) where T : class
+        public async Task<QueryResults<T>> QueryAsync<T>(Query<T> query) where T : class
         {
-            var results = new List<T>();
-            
-            var queryDefinition = CosmosDbQueryDefinitionBuilder.Build(query, ContainerProperties.PartitionKeyPath);
+            var queryDefinition = CosmosDbQueryDefinitionBuilder.Build(query, PartitionKeyName);
 
-            await AddQueryResultsAsync(queryDefinition, results);
+            return await ExecuteQuery<T>(queryDefinition, new QueryRequestOptions { MaxItemCount = query.PageSize }, query.PageStartToken);
+        }
 
-            return results;
+        public async Task<QueryResults<TResource>> CustomQueryAsync<TResource, TParameters>(CustomQuery<TParameters> customQuery)
+            where TResource : class
+        {
+            var buildCustomQuery = Options.GetCustomQueryBuilder<TParameters>(customQuery.Name);
+
+            var (queryDefinition, queryRequestOptions) = buildCustomQuery(customQuery);
+
+            return await ExecuteQuery<TResource>(queryDefinition, queryRequestOptions, customQuery.PageStartToken);
         }
         
         public async Task<T> GetAsync<T>(string id) where T : class
         {
-            var resp = await Container.ReadItemStreamAsync(Uri.EscapeDataString(id), ParsePartitionKey(id));
+            var resp =
+                await Container.ReadItemStreamAsync(Uri.EscapeDataString(id),
+                                                    ParsePartitionKey(id),
+                                                    new ItemRequestOptions
+                                                    {
+                                                        ConsistencyLevel = Options.ConsistentGet.HasValue ? ConsistencyLevel.Strong : default
+                                                    });
 
             if (resp.StatusCode == HttpStatusCode.NotFound)
                 return default;
 
             resp.EnsureSuccessStatusCode();
-            
-            return await ToItemAsync<T>(resp.Content);
+
+            return await resp.UnwrapResourceAsync<T>();
         }
 
         public async Task<T> PutAsync<T>(string id, T resource) where T : class
@@ -88,15 +133,6 @@ namespace Mcma.Azure.CosmosDb
         }
 
         public IDocumentDatabaseMutex CreateMutex(string mutexName, string mutexHolder, TimeSpan? lockTimeout = null)
-            => new CosmosDbMutex(Container, ContainerProperties.PartitionKeyPath.Split('/').First(), mutexName, mutexHolder, lockTimeout);
-        
-        private static async Task<T> ToItemAsync<T>(Stream stream) where T : class
-        {
-            string bodyText;
-            using (var streamReader = new StreamReader(stream))
-                bodyText = await streamReader.ReadToEndAsync();
-
-            return JToken.Parse(bodyText).ToMcmaObject<CosmosDbItem<T>>()?.Resource;
-        }
+            => new CosmosDbMutex(Container, PartitionKeyName, mutexName, mutexHolder, lockTimeout);
     }
 }

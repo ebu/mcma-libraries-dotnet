@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -8,11 +9,12 @@ namespace Mcma.Data.DocumentDatabase.Queries
     {
         public FilterCriteria(string propertyName, BinaryOperator @operator, object propertyValue)
         {
-            Property = typeof(TDoc).GetProperty(propertyName) ?? throw new McmaException($"Property '{propertyName}' does not exist on type {typeof(TDoc).Name}.");
+            Property = typeof(TDoc).GetProperties().FirstOrDefault(p => p.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase)) ??
+                       throw new McmaException($"Property '{propertyName}' does not exist on type {typeof(TDoc).Name}.");
             Operator = @operator;
             PropertyValue = propertyValue;
             
-            if (!Property.PropertyType.IsAssignableFrom(propertyValue.GetType()))
+            if (!Property.PropertyType.IsInstanceOfType(propertyValue))
                 throw new McmaException($"Property {propertyName} on type {typeof(TDoc).Name} cannot be assigned a value of type {propertyValue?.GetType().Name ?? "(null)"}");
         }
         

@@ -8,6 +8,8 @@ namespace Mcma.Serialization
 {
     public static class McmaJson
     {
+        public const string TypePropertyName = "@type";
+        
         public static JsonSerializerSettings DefaultSettings() => DefaultSettings(false);
 
         private static JsonSerializerSettings DefaultSettings(bool preserveCasing)
@@ -29,9 +31,9 @@ namespace Mcma.Serialization
             return settings;
         }
 
-        public static JsonSerializer Serializer { get; private set; } = JsonSerializer.CreateDefault(DefaultSettings(false));
+        public static JsonSerializer Serializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(false));
 
-        private static JsonSerializer PreserveCasingSerializer { get; set; } = JsonSerializer.CreateDefault(DefaultSettings(true));
+        private static JsonSerializer PreserveCasingSerializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(true));
 
         public static T ToMcmaObject<T>(this JToken json) => json.ToObject<T>(Serializer);
 

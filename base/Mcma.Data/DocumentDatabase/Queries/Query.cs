@@ -2,13 +2,13 @@ namespace Mcma.Data.DocumentDatabase.Queries
 {
     public class Query<T>
     {
-        public int? PageNumber { get; set; }
-
-        public int? PageSize { get; set; }
-
         public string Path { get; set; }
         
         public IFilterExpression<T> FilterExpression { get; set; }
+
+        public int? PageSize { get; set; }
+        
+        public string PageStartToken { get; set; }
         
         public string SortBy { get; set; }
 

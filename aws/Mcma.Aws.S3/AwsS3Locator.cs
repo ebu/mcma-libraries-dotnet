@@ -1,6 +1,4 @@
-﻿using Mcma;
-
-namespace Mcma.Aws.S3
+﻿namespace Mcma.Aws.S3
 {
     public abstract class AwsS3Locator : Locator, IUrlLocator
     {

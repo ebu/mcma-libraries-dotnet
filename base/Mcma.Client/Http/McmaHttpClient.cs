@@ -56,10 +56,10 @@ namespace Mcma.Client
             {
                 if (string.IsNullOrWhiteSpace(url))
                     url = BaseUrl;
-                else if (url.IndexOf("http://") != 0 || url.IndexOf("https://") != 0)
+                else if (url.IndexOf("http://", StringComparison.OrdinalIgnoreCase) != 0 || url.IndexOf("https://", StringComparison.OrdinalIgnoreCase) != 0)
                     url = BaseUrl + url.Replace(BaseUrl, string.Empty, StringComparison.OrdinalIgnoreCase);
                 else if (!url.StartsWith(BaseUrl))
-                    throw new McmaException($"HttpClient: Making " + method + " request to URL '" + url + "' which does not match BaseUrl '" + BaseUrl + "'");
+                    throw new McmaException($"HttpClient: Making {method} request to URL '{url}' which does not match BaseUrl '{BaseUrl}'");
             }
 
             if (string.IsNullOrWhiteSpace(url))

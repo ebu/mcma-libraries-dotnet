@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
-using Mcma;
-using Mcma.Serialization;
-using Mcma.Logging;
+using System.Linq.Expressions;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Mcma.Logging;
+using Mcma.Serialization;
+using Mcma.Utility;
 
 namespace Mcma.Client
 {
@@ -20,11 +21,8 @@ namespace Mcma.Client
 
         public ResourceManager(HttpClient httpClient, ResourceManagerConfig options, IAuthProvider authProvider = null)
         {
-            if (httpClient == null) throw new ArgumentNullException(nameof(httpClient));
-            if (options == null) throw new ArgumentNullException(nameof(options));
-
-            HttpClient = httpClient;
-            Options = options;
+            HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            Options = options ?? throw new ArgumentNullException(nameof(options));
             AuthProvider = authProvider;
 
             McmaHttpClient = new McmaHttpClient(HttpClient);
@@ -73,15 +71,18 @@ namespace Mcma.Client
 
                 var servicesEndpoint = serviceRegistry.GetResourceEndpointClient<Service>();
 
-                var response = await servicesEndpoint.GetCollectionAsync<Service>(throwIfAnyFailToDeserialize: false);
+                var response = await servicesEndpoint.GetAsync<QueryResults<Service>>();
 
-                Services.AddRange(response.Select(GetServiceClient));
+                Services.AddRange(response.Results.Select(GetServiceClient));
             }
             catch (Exception error)
             {
                 throw new McmaException("ResourceManager: Failed to initialize", error);
             }
         }
+
+        public Task<IEnumerable<TResource>> QueryAsync<TResource>(params (Expression<Func<TResource, object>>, string)[] filter)
+            => QueryAsync<TResource>(null, filter.Select(x => (x.Item1.GetPropertyName(), x.Item2)).ToArray());
         
         public Task<IEnumerable<T>> QueryAsync<T>(params (string, string)[] filter) => QueryAsync<T>(null, filter);
 
@@ -105,7 +106,12 @@ namespace Mcma.Client
 
                 try
                 {
-                    results.AddRange(await resourceEndpoint.GetCollectionAsync<T>(filter: filter.ToDictionary(x => x.Item1, x => x.Item2), tracker: tracker));
+                    var queryResults =
+                        await resourceEndpoint.GetAsync<QueryResults<T>>(
+                            queryParams: filter.ToDictionary(x => x.Item1, x => x.Item2),
+                            tracker: tracker);
+                    
+                    results.AddRange(queryResults.Results);
                     
                     usedHttpEndpoints.Add(resourceEndpoint.HttpEndpoint);
                 }
@@ -130,6 +136,9 @@ namespace Mcma.Client
             if (!Services.Any())
                 await InitAsync();
 
+            var queryResultsType = typeof(QueryResults<>).MakeGenericType(resourceType);
+            var queryResultsProperty = queryResultsType.GetProperty(nameof(QueryResults<object>.Results));
+
             var results = new List<McmaResource>();
             var usedHttpEndpoints = new Dictionary<string, bool>();
 
@@ -139,8 +148,14 @@ namespace Mcma.Client
                 {
                     if (!usedHttpEndpoints.ContainsKey(resourceEndpoint.HttpEndpoint))
                     {
-                        var response = await resourceEndpoint.GetCollectionAsync(resourceType, filter: filter.ToDictionary(x => x.Item1, x => x.Item2), tracker: tracker);
-                        results.AddRange(response);
+                        var response =
+                            await resourceEndpoint.GetAsync(
+                                queryResultsType,
+                                queryParams: filter.ToDictionary(x => x.Item1, x => x.Item2),
+                                tracker: tracker);
+                        
+                        // ReSharper disable once PossibleNullReferenceException - property is fetched using nameof and should always be present
+                        results.AddRange(((object[])queryResultsProperty.GetValue(response)).OfType<McmaResource>());
                     }
 
                     usedHttpEndpoints[resourceEndpoint.HttpEndpoint] = true;
@@ -164,7 +179,7 @@ namespace Mcma.Client
                     .Select(s => s.GetResourceEndpointClient<T>())
                     .FirstOrDefault();
             if (resourceEndpoint != null)
-                return await resourceEndpoint.PostAsync<T>(resource, tracker: tracker);
+                return await resourceEndpoint.PostAsync(resource, tracker: tracker);
 
             if (string.IsNullOrWhiteSpace(resource.Id))
                 throw new McmaException($"There is no endpoint available for creating resources of type '{typeof(T).Name}', and the provided resource does not specify an endpoint in its 'id' property.");
@@ -207,7 +222,7 @@ namespace Mcma.Client
                     .Select(s => s.GetResourceEndpointClient<T>())
                     .FirstOrDefault(re => resource.Id.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
             if (resourceEndpoint != null)
-                return await resourceEndpoint.PutAsync<T>(resource, tracker: tracker);
+                return await resourceEndpoint.PutAsync(resource, tracker: tracker);
 
             var resp = await McmaHttpClient.PutAsJsonAsync(resource.Id, resource, tracker: tracker);
             await resp.ThrowIfFailedAsync();
@@ -282,7 +297,7 @@ namespace Mcma.Client
             var resourceEndpoint = await GetResourceEndpointAsync(url);
 
             return resourceEndpoint != null
-                ? await resourceEndpoint.GetAsync(resourceType, url, tracker: tracker)
+                ? (McmaResource) await resourceEndpoint.GetAsync(resourceType, url, tracker: tracker)
                 : (McmaResource) await McmaHttpClient.GetAndReadAsObjectFromJsonAsync(resourceType, url, tracker: tracker);
         }
 

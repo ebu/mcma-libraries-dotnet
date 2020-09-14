@@ -4,19 +4,19 @@ namespace Mcma.Data.DocumentDatabase.Queries
 {
     public class BinaryOperator
     {
-        public static readonly BinaryOperator EqualTo = new BinaryOperator("=");
-        public static readonly BinaryOperator NotEqualTo = new BinaryOperator("!=");
-        public static readonly BinaryOperator LessThan = new BinaryOperator("<");
-        public static readonly BinaryOperator LessThanOrEqualTo = new BinaryOperator("<=");
-        public static readonly BinaryOperator GreaterThan = new BinaryOperator(">");
-        public static readonly BinaryOperator GreaterThanOrEqualTo = new BinaryOperator(">=");
+        public static readonly BinaryOperator EqualTo = new BinaryOperator("=", false);
+        public static readonly BinaryOperator NotEqualTo = new BinaryOperator("!=", false);
+        public static readonly BinaryOperator LessThan = new BinaryOperator("<", false);
+        public static readonly BinaryOperator LessThanOrEqualTo = new BinaryOperator("<=", false);
+        public static readonly BinaryOperator GreaterThan = new BinaryOperator(">", false);
+        public static readonly BinaryOperator GreaterThanOrEqualTo = new BinaryOperator(">=", false);
         
         public static readonly string[] Operators = { EqualTo, NotEqualTo, LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo };
 
-        private BinaryOperator(string @operator)
+        private BinaryOperator(string @operator, bool validate = true)
         {
-            if (!Operators.Any(op => op == @operator))
-                throw new McmaException($"Invalid operatoer '{@operator}'");
+            if (validate && Operators.All(op => op != @operator))
+                throw new McmaException($"Invalid operator '{@operator}'");
 
             Operator = @operator;
         }

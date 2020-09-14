@@ -22,8 +22,8 @@ namespace Mcma.Azure.Functions.Api
                 throw new Exception($"Failed to parse app storage connection string '{appStorageConnectionString}'.");
 
             await appStorageAccount.CreateCloudQueueClient()
-                .GetQueueReference(workerFunctionId)
-                .AddMessageAsync(new CloudQueueMessage(request.ToMcmaJson().ToString()));
+                                   .GetQueueReference(workerFunctionId)
+                                   .AddMessageAsync(new CloudQueueMessage(request.ToMcmaJson().ToString()));
         }
     }
 }

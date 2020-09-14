@@ -117,7 +117,7 @@ namespace Mcma.Worker
                 if (jobAssignment != null)
                     break;
 
-                Logger?.Warn($"Failed to obtain job assignment from database table. Trying again in ${delay} seconds.");
+                Logger?.Warn($"Failed to obtain job assignment from database table. Trying again in {delay} seconds.");
                 await Task.Delay(delay * 1000);
                 jobAssignment = await DbTable.GetAsync<JobAssignment>(JobAssignmentId);
             }

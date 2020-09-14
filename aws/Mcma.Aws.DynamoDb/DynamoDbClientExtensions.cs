@@ -18,41 +18,51 @@ namespace Mcma.Aws.DynamoDb
         {
             await TableDescriptionsSemaphore.WaitAsync();
 
-            DynamoDbTableDescription tableDescription;
             try
             {
-                if (!TableDescriptions.ContainsKey(tableName))
+                if (TableDescriptions.ContainsKey(tableName))
+                    return TableDescriptions[tableName];
+                
+                var data = await dynamoDb.DescribeTableAsync(tableName);
+
+                string partitionKeyName = null;
+                string sortKeyName = null;
+                foreach (var key in data.Table.KeySchema)
                 {
-                    var data = await dynamoDb.DescribeTableAsync(tableName);
-
-                    string partitionKeyName = null;
-                    string sortKeyName = null;
-                    foreach (var key in data.Table.KeySchema)
-                    {
-                        if (key.KeyType == KeyType.HASH)
-                            partitionKeyName = key.AttributeName;
-                        else if (key.KeyType == KeyType.RANGE)
-                            sortKeyName = key.AttributeName;
-                    }
-
-                    var indexNames =
-                        data.Table.GlobalSecondaryIndexes
-                            .Select(gsi => gsi.IndexName)
-                            .Concat(data.Table.LocalSecondaryIndexes.Select(lsi => lsi.IndexName)).ToArray();
-                    
-                    tableDescription = new DynamoDbTableDescription(tableName, partitionKeyName, sortKeyName, indexNames);
-
-                    TableDescriptions[tableName] = tableDescription;
+                    if (key.KeyType == KeyType.HASH)
+                        partitionKeyName = key.AttributeName;
+                    else if (key.KeyType == KeyType.RANGE)
+                        sortKeyName = key.AttributeName;
                 }
-                else
-                    tableDescription = TableDescriptions[tableName];
+
+                var localSecondaryIndexes =
+                    data.Table.LocalSecondaryIndexes
+                        .Select(
+                            lsi =>
+                                new LocalSecondaryIndexDescription(
+                                    lsi.IndexName,
+                                    lsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.RANGE)?.AttributeName))
+                        .ToArray();
+
+                var globalSecondaryIndexes =
+                    data.Table.GlobalSecondaryIndexes
+                        .Select(
+                            gsi =>
+                                new GlobalSecondaryIndexDescription(
+                                    gsi.IndexName,
+                                    gsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.HASH)?.AttributeName,
+                                    gsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.RANGE)?.AttributeName))
+                        .ToArray();
+
+                TableDescriptions[tableName] =
+                    new DynamoDbTableDescription(tableName, partitionKeyName, sortKeyName, localSecondaryIndexes, globalSecondaryIndexes);
+
+                return TableDescriptions[tableName];
             }
             finally
             {
                 TableDescriptionsSemaphore.Release();
             }
-
-            return tableDescription;
         }
     }
 }

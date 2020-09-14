@@ -27,13 +27,13 @@ namespace Mcma.Aws.DynamoDb
         private Document GenerateTableKey()
         {
             var key = new Document();
-            if (TableDescription.SortKeyName != null)
+            if (TableDescription.KeyNames.Sort != null)
             {
-                key[TableDescription.PartitionKeyName] = "Mutex";
-                key[TableDescription.SortKeyName] = MutexName;
+                key[TableDescription.KeyNames.Partition] = "Mutex";
+                key[TableDescription.KeyNames.Sort] = MutexName;
             }
             else
-                key[TableDescription.PartitionKeyName] = $"Mutex-{MutexName}";
+                key[TableDescription.KeyNames.Partition] = $"Mutex-{MutexName}";
             return key;
         }
 
@@ -78,7 +78,7 @@ namespace Mcma.Aws.DynamoDb
                                                  ExpressionAttributeNames = new Dictionary<string, string>
                                                  {
                                                      ["#res_id"] = "resource_id",
-                                                     ["#p_key"] = TableDescription.PartitionKeyName
+                                                     ["#p_key"] = TableDescription.KeyNames.Partition
                                                  }
                                              }
                                      });

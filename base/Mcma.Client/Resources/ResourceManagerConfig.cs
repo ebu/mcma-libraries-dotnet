@@ -6,8 +6,7 @@ namespace Mcma.Client
     {
         public ResourceManagerConfig(string servicesUrl, string servicesAuthType = null, string servicesAuthContext = null)
         {
-            if (servicesUrl == null) throw new ArgumentNullException(nameof(servicesUrl));
-            ServicesUrl = servicesUrl;
+            ServicesUrl = servicesUrl ?? throw new ArgumentNullException(nameof(servicesUrl));
             ServicesAuthType = servicesAuthType;
             ServicesAuthContext = servicesAuthContext;
         }

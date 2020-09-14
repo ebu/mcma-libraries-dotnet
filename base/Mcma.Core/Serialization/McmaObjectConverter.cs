@@ -19,8 +19,11 @@ namespace Mcma.Serialization
 
                 var serializedType = GetSerializedType(jObj, objectType);
                 var dynamicObj = (IDictionary<string, object>)Activator.CreateInstance(serializedType);
+                
+                if (dynamicObj is McmaObject mcmaObj && serializedType == typeof(McmaObject))
+                    mcmaObj.Type = jObj[McmaJson.TypePropertyName]?.Value<string>();
 
-                foreach (var jsonProp in jObj.Properties().Where(p => !p.Name.Equals(TypeJsonPropertyName, StringComparison.OrdinalIgnoreCase)))
+                foreach (var jsonProp in jObj.Properties().Where(p => !p.Name.Equals(McmaJson.TypePropertyName, StringComparison.OrdinalIgnoreCase)))
                     if (!TryReadClrProperty(serializedType, dynamicObj, serializer, jsonProp))
                         dynamicObj[jsonProp.Name] = ConvertJsonToClr(jsonProp.Value, serializer);
 
@@ -32,20 +35,22 @@ namespace Mcma.Serialization
             }
         }
 
-        private bool TryReadClrProperty(Type objectType, object obj, JsonSerializer serializer, JProperty jsonProp)
+        private static bool TryReadClrProperty(Type objectType, object obj, JsonSerializer serializer, JProperty jsonProp)
         {
-            var clrProp = objectType.GetProperties().FirstOrDefault(p => p.CanWrite && p.Name.Equals(jsonProp.Name, StringComparison.OrdinalIgnoreCase));
-            if (clrProp != null)
+            var clrProp =
+                objectType.GetProperties()
+                          .FirstOrDefault(p => p.CanWrite && GetJsonPropertyName(p).Equals(jsonProp.Name, StringComparison.OrdinalIgnoreCase));
+            if (clrProp == null)
+                return false;
+            
+            try
             {
-                try
-                {
-                    clrProp.SetValue(obj, jsonProp.Value.Type != JTokenType.Null ? jsonProp.Value.ToObject(clrProp.PropertyType, serializer) : null);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Logger.System.Error($"Failed to set property {clrProp.Name} on type {objectType.Name} with JSON value {jsonProp.Value.ToString()}: {ex}");
-                }
+                clrProp.SetValue(obj, jsonProp.Value.Type != JTokenType.Null ? jsonProp.Value.ToObject(clrProp.PropertyType, serializer) : null);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.System.Error($"Failed to set property {clrProp.Name} on type {objectType.Name} with JSON value {jsonProp.Value}: {ex}");
             }
 
             return false;
@@ -55,7 +60,7 @@ namespace Mcma.Serialization
         {
             writer.WriteStartObject();
 
-            writer.WritePropertyName(TypeJsonPropertyName);
+            writer.WritePropertyName(McmaJson.TypePropertyName);
             writer.WriteValue(((McmaObject)value).Type);
 
             WriteProperties(writer, serializer, GetPropertyDictionary(value), false);

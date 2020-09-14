@@ -1,12 +1,12 @@
 namespace Mcma.Azure.CosmosDb
 {
-    public class CosmosDbTableProviderOptions
+    public class CosmosDbTableProviderConfiguration
     {
-        public CosmosDbTableProviderOptions()
+        public CosmosDbTableProviderConfiguration()
         {
         }
 
-        public CosmosDbTableProviderOptions(string endpoint, string key, string region, string databaseId)
+        public CosmosDbTableProviderConfiguration(string endpoint, string key, string region, string databaseId)
         {
             Endpoint = endpoint;
             Key = key;

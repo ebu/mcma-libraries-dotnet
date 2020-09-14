@@ -13,16 +13,16 @@ namespace Mcma.Aws.DynamoDb
 {
     public class DynamoDbTable : IDocumentDatabaseTable
     {
-        public DynamoDbTable(IAmazonDynamoDB dynamoDb, DynamoDbTableDescription tableDescription, DynamoDbTableOptions options = null)
+        public DynamoDbTable(IAmazonDynamoDB dynamoDb, DynamoDbTableDescription tableDescription, DynamoDbTableProviderOptions options = null)
         {
             TableDescription = tableDescription ?? throw new ArgumentNullException(nameof(tableDescription));
-            Options = options ?? new DynamoDbTableOptions();
+            Options = options ?? new DynamoDbTableProviderOptions();
             Table = dynamoDb != null ? Table.LoadTable(dynamoDb, tableDescription.TableName) : throw new ArgumentNullException(nameof(dynamoDb));
         }
 
         private DynamoDbTableDescription TableDescription { get; }
 
-        private DynamoDbTableOptions Options { get; }
+        private DynamoDbTableProviderOptions Options { get; }
 
         private Table Table { get; }
 
@@ -49,117 +49,75 @@ namespace Mcma.Aws.DynamoDb
             
             var item = new JObject
             {
-                [TableDescription.PartitionKeyName] = partitionKey,
-                [TableDescription.SortKeyName] = sortKey,
+                [TableDescription.KeyNames.Partition] = partitionKey,
+                [TableDescription.KeyNames.Sort] = sortKey,
                 [nameof(resource)] = resourceJson
             };
 
-            foreach (var kvp in Options.TopLevelAttributeMappings)
-                item[kvp.Key] = resourceJson.SelectToken(kvp.Value);
+            foreach (var kvp in Options.GetTopLevelAttributes(partitionKey, sortKey, resource))
+                item[kvp.Key] = kvp.Value != null ? JToken.FromObject(kvp.Value) : JValue.CreateNull();
 
             return Document.FromJson(item.ToString());
         }
 
-        private static async Task<IEnumerable<T>> ExecuteScanOrQueryAsync<T>(Func<Search> executeQueryOrScan, int? pageSize, int? pageNumber) where T : class
+        public async Task<QueryResults<T>> QueryAsync<T>(Query<T> query) where T : class
         {
-            var items = new List<T>();
-            var itemsReturned = 0;
-            
-            var search = executeQueryOrScan();
-            do
-            {
-                var data = await search.GetNextSetAsync();
-
-                var itemsToAdd = new List<Document>();
-                if (!pageSize.HasValue)
-                {
-                    itemsToAdd.AddRange(data);
-                }
-                else
-                {
-                    var startIndex = pageSize.Value * pageNumber.GetValueOrDefault();
-                    var endIndex = startIndex + pageSize.Value;
-
-                    for (var i = 0; i < data.Count; i++)
-                    {
-                        var currentOverallIndex = itemsReturned + i;
-                        if (currentOverallIndex < startIndex || currentOverallIndex >= endIndex)
-                            continue;
-                        
-                        itemsToAdd.Add(data[i]);
-
-                        if (items.Count + itemsToAdd.Count == pageSize.Value)
-                            break;
-                    }
-
-                    items.AddRange(itemsToAdd.Select(DocumentToResource<T>));
-
-                    itemsReturned += data.Count;
-                }
-            }
-            while (!search.IsDone && (!pageSize.HasValue || items.Count < pageSize));
-
-            return items;
-        }
-
-        private async Task<IEnumerable<T>> ExecuteQueryAsync<T>(Query<T> query) where T : class
-        {
-            var queryOpConfig = new QueryOperationConfig
-            {
-                KeyExpression = new Expression
+            var keyExpression =
+                new Expression
                 {
                     ExpressionStatement = "#partitionKey = :partitionKey",
-                    ExpressionAttributeNames = new Dictionary<string, string> {["#partitionKey"] = TableDescription.PartitionKeyName},
+                    ExpressionAttributeNames = new Dictionary<string, string> {["#partitionKey"] = TableDescription.KeyNames.Partition},
                     ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":partitionKey"] = query.Path}
-                },
-                FilterExpression = DynamoDbFilterExpressionBuilder.Build(query.FilterExpression),
-                ConsistentRead = Options.ConsistentQuery ?? false
+                };
+
+            var filterExpression = query.FilterExpression != null ? DynamoDbFilterExpressionBuilder.Build(query.FilterExpression) : null;
+
+            var indexName = default(string);
+            if (query.SortBy != null)
+            {
+                var matchingIndex =
+                    TableDescription.LocalSecondaryIndexes.FirstOrDefault(
+                        lsi => lsi.SortKeyName.Equals(query.SortBy, StringComparison.OrdinalIgnoreCase));
+                
+                indexName = matchingIndex.Name ?? throw new McmaException($"No matching local secondary index found for sorting by '{query.SortBy}'");
+            }
+            
+            var queryOpConfig = new QueryOperationConfig
+            {
+                KeyExpression = keyExpression,
+                FilterExpression = filterExpression,
+                IndexName = indexName,
+                BackwardSearch = !query.SortAscending,
+                ConsistentRead = Options.ConsistentQuery ?? false,
+                Limit = query.PageSize ?? int.MaxValue,
+                PaginationToken = query.PageStartToken
             };
 
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
-            {
-                queryOpConfig.IndexName = GetIndexName(query.SortBy);
-                queryOpConfig.BackwardSearch = !query.SortAscending;
-            }
+            var tableQuery = Table.Query(queryOpConfig);
+            var results = await tableQuery.GetRemainingAsync();
 
-            return await ExecuteScanOrQueryAsync<T>(() => Table.Query(queryOpConfig),
-                                                    query.PageSize,
-                                                    query.PageNumber);
-        }
-
-        private async Task<IEnumerable<T>> ExecuteScanAsync<T>(Query<T> query) where T : class
-        {
-            var scanOpConfig = new ScanOperationConfig
+            return new QueryResults<T>
             {
-                FilterExpression = DynamoDbFilterExpressionBuilder.Build(query.FilterExpression),
-                ConsistentRead = Options.ConsistentQuery ?? false
+                Results = results.Select(DocumentToResource<T>).ToArray(),
+                NextPageStartToken = tableQuery.PaginationToken
             };
+        }
 
-            if (!string.IsNullOrWhiteSpace(query.SortBy))
+        public async Task<QueryResults<TResource>> CustomQueryAsync<TResource, TParameters>(CustomQuery<TParameters> customQuery) where TResource : class
+        {
+            var buildCustomQuery = Options.GetCustomQueryBuilder<TParameters>(customQuery.Name);
+
+            var queryOpConfig = buildCustomQuery(customQuery);
+            queryOpConfig.PaginationToken = customQuery.PageStartToken;
+
+            var tableQuery = Table.Query(queryOpConfig);
+            var results = await tableQuery.GetRemainingAsync();
+
+            return new QueryResults<TResource>
             {
-                if (!query.SortAscending)
-                    throw new McmaException("Scan does not support descending sorts.");
-                scanOpConfig.IndexName = GetIndexName(query.SortBy);
-            }
-
-            return await ExecuteScanOrQueryAsync<T>(() => Table.Scan(scanOpConfig),
-                                                    query.PageSize,
-                                                    query.PageNumber);
-        }
-
-        private string GetIndexName(string sortBy)
-        {
-            var indexName = Options != null && Options.IndexNameMappings.ContainsKey(sortBy) ? Options.IndexNameMappings[sortBy] : sortBy;
-            
-            if (!TableDescription.IndexNames.Contains(indexName))
-                throw new McmaException($"Invalid sortBy '{sortBy}'. A matching index was not found for the table.");
-            
-            return indexName;
-        }
-
-        public async Task<IEnumerable<T>> QueryAsync<T>(Query<T> query) where T : class
-        {
-            return await ExecuteQueryAsync(query);
+                Results = results.Select(DocumentToResource<TResource>).ToArray(),
+                NextPageStartToken = tableQuery.PaginationToken
+            };
         }
 
         public async Task<T> GetAsync<T>(string id) where T : class

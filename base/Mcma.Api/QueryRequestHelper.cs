@@ -14,19 +14,18 @@ namespace Mcma.Api
                                     .ToFilterExpression<T>()
                     : null;
 
-            var pageNumber = 0;
-            if (requestContext.Request.QueryStringParameters.ContainsKey(nameof(pageNumber)) &&
-                int.TryParse(requestContext.Request.QueryStringParameters[nameof(pageNumber)], out var pageNumberTemp))
-                pageNumber = pageNumberTemp;
+            var pageStartToken = default(string);
+            if (requestContext.Request.QueryStringParameters.ContainsKey(nameof(pageStartToken)))
+                pageStartToken = requestContext.Request.QueryStringParameters[nameof(pageStartToken)];
 
-            var pageSize = 0;
+            var pageSize = default(int?);
             if (requestContext.Request.QueryStringParameters.ContainsKey(nameof(pageSize)) &&
                 int.TryParse(requestContext.Request.QueryStringParameters[nameof(pageSize)], out var pageSizeTemp))
                 pageSize = pageSizeTemp;
 
             return new Query<T>
             {
-                PageNumber = pageNumber,
+                PageStartToken = pageStartToken,
                 PageSize = pageSize,
                 Path = requestContext.Request.Path,
                 FilterExpression = filterExpression

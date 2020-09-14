@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Mcma.Data;
 using Mcma.Logging;
+using Mcma.Serialization;
 using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json.Linq;
 
@@ -27,15 +28,21 @@ namespace Mcma.Azure.CosmosDb
 
         protected override async Task PutLockDataAsync()
         {
-            var item = JObject.FromObject(new
+            var item = new
             {
                 Id = Uri.EscapeDataString($"Mutex-{MutexName}"),
                 MutexHolder,
                 Timestamp = DateTime.UtcNow
-            });
+            }.ToMcmaJson();
 
-            var partitionKey =
-                !string.IsNullOrWhiteSpace(PartitionKeyName) ? new PartitionKey("Mutex") : PartitionKey.None;
+            PartitionKey partitionKey;
+            if (!string.IsNullOrWhiteSpace(PartitionKeyName))
+            {
+                item[PartitionKeyName] = "Mutex";
+                partitionKey = new PartitionKey("Mutex");
+            }
+            else
+                partitionKey = PartitionKey.None;
             
             var response = await Container.CreateItemAsync(item, partitionKey);
         
@@ -47,23 +54,28 @@ namespace Mcma.Azure.CosmosDb
             var id = Uri.EscapeDataString($"Mutex-{MutexName}");
             var partitionKey = !string.IsNullOrWhiteSpace(PartitionKeyName) ? new PartitionKey("Mutex") : PartitionKey.None;
 
-            var itemResponse =
-                await Container.ReadItemAsync<LockData>(id, partitionKey, new ItemRequestOptions {ConsistencyLevel = ConsistencyLevel.Strong});
-            if (itemResponse.StatusCode == HttpStatusCode.NotFound || itemResponse.Resource == null)
+            var resp =
+                await Container.ReadItemStreamAsync(id, partitionKey, new ItemRequestOptions {ConsistencyLevel = ConsistencyLevel.Strong});
+            if (resp.StatusCode == HttpStatusCode.NotFound)
+                return null;
+
+            resp.EnsureSuccessStatusCode();
+
+            var resource = await resp.ToObjectAsync<LockData>();
+            if (resource == null)
                 return null;
 
             // sanity check which removes the record from CosmosDB in case it has incompatible structure. Only possible
             // if modified externally, but this could lead to a situation where the lock would never be acquired.
-            if (itemResponse.Resource != null &&
-                (itemResponse.Resource.MutexHolder == null || itemResponse.Resource.Timestamp == default))
+            if (resource.MutexHolder == null || resource.Timestamp == default)
             {
                 await Container.DeleteItemAsync<LockData>(id, partitionKey);
                 return null;
             }
 
-            itemResponse.Resource.VersionId = itemResponse.ETag;
+            resource.VersionId = resp.Headers.ETag;
         
-            return itemResponse.Resource;
+            return resource;
         }
 
         protected override async Task DeleteLockDataAsync(string versionId)

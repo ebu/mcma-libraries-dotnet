@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Mcma
 {
@@ -11,5 +12,7 @@ namespace Mcma
         public ICollection<JobParameter> OutputParameters { get; set; }
         
         public ICollection<JobParameter> OptionalInputParameters { get; set; }
+        
+        public JObject CustomProperties { get; set; }
     }
 }

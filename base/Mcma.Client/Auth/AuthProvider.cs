@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mcma.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace Mcma.Client
 {
@@ -26,7 +28,7 @@ namespace Mcma.Client
             {
                 try
                 {
-
+                    authContext = JObject.Parse(authContextStr).ToMcmaObject(AuthTypeRegistrations[authType].ContextType);
                 }
                 catch
                 {

@@ -137,6 +137,8 @@ namespace Mcma.Api
             }
             catch (Exception ex)
             {
+                logger.Error($"{request.HttpMethod} {request.Path} encountered an exception", ex.Message, ex.StackTrace);
+                
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 response.Headers = GetDefaultResponseHeaders();
                 response.JsonBody = new McmaApiError(response.StatusCode, ex.ToString(), request.Path).ToMcmaJson();

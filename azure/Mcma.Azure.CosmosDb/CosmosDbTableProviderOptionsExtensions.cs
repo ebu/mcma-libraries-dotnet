@@ -10,26 +10,26 @@ namespace Mcma.Azure.CosmosDb
     {
         private const string Prefix = "CosmosDb";
 
-        public static CosmosDbTableProviderOptions FromEnvironmentVariables(this CosmosDbTableProviderOptions options)
+        public static CosmosDbTableProviderConfiguration FromEnvironmentVariables(this CosmosDbTableProviderConfiguration configuration)
         {
-            foreach (var prop in typeof(CosmosDbTableProviderOptions).GetProperties().Where(p => p.CanWrite))
-                prop.SetValue(options, Environment.GetEnvironmentVariable(Prefix + prop.Name));
+            foreach (var prop in typeof(CosmosDbTableProviderConfiguration).GetProperties().Where(p => p.CanWrite))
+                prop.SetValue(configuration, Environment.GetEnvironmentVariable(Prefix + prop.Name));
 
-            return options;
+            return configuration;
         }
 
-        public static CosmosDbTableProviderOptions FromContextVariables(this CosmosDbTableProviderOptions options, IContextVariableProvider contextVariableProvider)
+        public static CosmosDbTableProviderConfiguration FromContextVariables(this CosmosDbTableProviderConfiguration configuration, IContextVariableProvider contextVariableProvider)
         {
-            foreach (var prop in typeof(CosmosDbTableProviderOptions).GetProperties().Where(p => p.CanWrite))
+            foreach (var prop in typeof(CosmosDbTableProviderConfiguration).GetProperties().Where(p => p.CanWrite))
             {
                 var contextVariableValue = contextVariableProvider.GetRequiredContextVariable(Prefix + prop.Name);
                 if (!contextVariableValue.TryParse(prop.PropertyType, out var propValue))
                     throw new Exception($"Context variable '{Prefix + prop.Name}' has invalid value '{contextVariableValue}' for Cosmos DB option '{prop.Name}'.");
 
-                prop.SetValue(options, propValue);
+                prop.SetValue(configuration, propValue);
             }
 
-            return options;
+            return configuration;
         }
     }
 }

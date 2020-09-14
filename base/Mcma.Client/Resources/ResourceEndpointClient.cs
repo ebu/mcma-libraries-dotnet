@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Mcma;
 
 namespace Mcma.Client
 {
@@ -48,7 +47,7 @@ namespace Mcma.Client
         private async Task<HttpResponseMessage> ExecuteAsync(Func<McmaHttpClient, Task<HttpResponseMessage>> execute)
             => await execute(await HttpClientTask.Value);
 
-        private async Task<T> ExecuteObjectAsync<T>(Func<McmaHttpClient, Task<HttpResponseMessage>> execute) where T : McmaResource
+        private async Task<T> ExecuteObjectAsync<T>(Func<McmaHttpClient, Task<HttpResponseMessage>> execute) where T : class
         {
             var response = await ExecuteAsync(execute);
             await response.ThrowIfFailedAsync();
@@ -85,7 +84,7 @@ namespace Mcma.Client
                                                         McmaTracker tracker = null)
             => await ExecuteAsync(async httpClient => await httpClient.GetAsync(url, queryParams, headers, tracker));
 
-        public async Task<McmaResource> GetAsync(Type resourceType,
+        public async Task<object> GetAsync(Type resourceType,
                                                  string url = null,
                                                  IDictionary<string, string> queryParams = null,
                                                  IDictionary<string, string> headers = null,
@@ -96,7 +95,7 @@ namespace Mcma.Client
                                          IDictionary<string, string> queryParams = null,
                                          IDictionary<string, string> headers = null,
                                          McmaTracker tracker = null)
-            where T : McmaResource
+            where T : class
             => await ExecuteObjectAsync<T>(async httpClient => await httpClient.GetAsync(url, queryParams, headers, tracker));
 
         public async Task<IEnumerable<T>> GetCollectionAsync<T>(string url = null,
