@@ -18,13 +18,13 @@ namespace Mcma.Worker
             DbTable = dbTable;
             ResourceManager = resourceManager;
             RequestContext = requestContext;
-            JobAssignmentId = requestContext.GetInputAs<ProcessJobAssignmentRequest>().JobAssignmentId;
+            JobAssignmentDatabaseId = requestContext.GetInputAs<ProcessJobAssignmentRequest>().JobAssignmentDatabaseId;
         }
 
         public IDocumentDatabaseTable DbTable { get; }
         public IResourceManager ResourceManager { get; }
         public WorkerRequestContext RequestContext { get; }
-        public string JobAssignmentId { get; }
+        public string JobAssignmentDatabaseId { get; }
 
         public ILogger Logger => RequestContext.Logger;
         public JobAssignment JobAssignment { get; private set; }
@@ -37,8 +37,8 @@ namespace Mcma.Worker
         {
             JobAssignment = await UpdateJobAssignmentStatusAsync(JobStatus.Running);
 
-            Job = await ResourceManager.ResolveResourceFromFullUrl<T>(JobAssignment.Job);
-            Profile = await ResourceManager.ResolveResourceFromFullUrl<JobProfile>(Job.JobProfile);
+            Job = await ResourceManager.ResolveResourceFromFullUrl<T>(JobAssignment.JobId);
+            Profile = await ResourceManager.ResolveResourceFromFullUrl<JobProfile>(Job.JobProfileId);
 
             Job.JobOutput = new JobParameterBag();
         }
@@ -58,6 +58,7 @@ namespace Mcma.Worker
                 ja =>
                 {
                     ja.Status = JobStatus.Completed;
+                    ja.Progress = 100;
                     ja.JobOutput = Job?.JobOutput;
                 },
                 true);
@@ -84,7 +85,7 @@ namespace Mcma.Worker
         public Task<JobAssignment> UpdateJobAssignmentOutputAsync()
             => UpdateJobAssignmentAsync(ja => ja.JobOutput = JobOutput);
 
-        public Task<JobAssignment> UpdateJobAssignmentStatusAsync(string status)
+        public Task<JobAssignment> UpdateJobAssignmentStatusAsync(JobStatus status)
             => UpdateJobAssignmentAsync(
                 ja => ja.Status = status,
                 true);
@@ -93,12 +94,12 @@ namespace Mcma.Worker
         {
             var jobAssignment = await GetJobAssignmentAsync();
             if (jobAssignment == null)
-                throw new McmaException("JobAssignment with id '" + JobAssignmentId + "' not found");
+                throw new McmaException("JobAssignment with id '" + JobAssignmentDatabaseId + "' not found");
 
             update(jobAssignment);
 
             jobAssignment.DateModified = DateTime.UtcNow;
-            await DbTable.PutAsync(JobAssignmentId, jobAssignment);
+            await DbTable.PutAsync(JobAssignmentDatabaseId, jobAssignment);
 
             JobAssignment = jobAssignment;
             
@@ -110,7 +111,7 @@ namespace Mcma.Worker
 
         private async Task<JobAssignment> GetJobAssignmentAsync()
         {
-            var jobAssignment = await DbTable.GetAsync<JobAssignment>(JobAssignmentId);
+            var jobAssignment = await DbTable.GetAsync<JobAssignment>(JobAssignmentDatabaseId);
 
             foreach (var delay in new[] {5, 10, 15})
             {
@@ -119,7 +120,7 @@ namespace Mcma.Worker
 
                 Logger?.Warn($"Failed to obtain job assignment from database table. Trying again in {delay} seconds.");
                 await Task.Delay(delay * 1000);
-                jobAssignment = await DbTable.GetAsync<JobAssignment>(JobAssignmentId);
+                jobAssignment = await DbTable.GetAsync<JobAssignment>(JobAssignmentDatabaseId);
             }
             
             return jobAssignment;

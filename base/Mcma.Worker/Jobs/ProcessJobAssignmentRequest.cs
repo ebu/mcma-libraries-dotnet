@@ -2,6 +2,6 @@ namespace Mcma.Worker
 {
     public class ProcessJobAssignmentRequest
     {
-        public string JobAssignmentId { get; set; }
+        public string JobAssignmentDatabaseId { get; set; }
     }
 }

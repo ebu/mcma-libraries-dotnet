@@ -15,7 +15,7 @@ namespace Mcma
 
         public string JobType { get; set; }
 
-        public string[] JobProfiles { get; set; }
+        public string[] JobProfileIds { get; set; }
 
         public ICollection<Locator> InputLocations { get; set; }
 

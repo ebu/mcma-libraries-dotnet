@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-
 namespace Mcma
 {
     public class JobBase : McmaResource
     {
-        public string Status { get; set; }
+        public JobStatus Status { get; set; }
  
         public ProblemDetail Error { get; set; }
 

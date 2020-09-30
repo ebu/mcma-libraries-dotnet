@@ -2,7 +2,7 @@ namespace Mcma
 {
     public class JobAssignment : JobBase
     {
-        public string Job { get; set; }
+        public string JobId { get; set; }
 
         public McmaTracker Tracker { get; set; }
 

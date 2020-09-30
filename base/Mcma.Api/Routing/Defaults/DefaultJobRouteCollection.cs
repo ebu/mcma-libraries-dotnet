@@ -39,7 +39,7 @@ namespace Mcma.Api.Routing.Defaults
                     requestContext.GetAllContextVariables().ToDictionary(),
                     new
                     {
-                        jobAssignmentId = jobAssignment.Id.Replace(requestContext.PublicUrl(), string.Empty)
+                        jobAssignmentDatabaseId = jobAssignment.Id.Replace(requestContext.PublicUrl(), string.Empty)
                     },
                     jobAssignment.Tracker
                 );

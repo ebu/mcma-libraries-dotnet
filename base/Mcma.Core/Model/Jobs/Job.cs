@@ -6,7 +6,7 @@ namespace Mcma
     {
         public string ParentId { get; set; }
 
-        public string JobProfile { get; set; }
+        public string JobProfileId { get; set; }
 
         public JobParameterBag JobInput { get; set; }
 

@@ -12,7 +12,5 @@ namespace Mcma
         public string Detail { get; set; }
 
         public string Instance { get; set; }
-        
-        public string StackTrace { get; set; }
     }
 }

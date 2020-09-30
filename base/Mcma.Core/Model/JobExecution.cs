@@ -4,7 +4,7 @@ namespace Mcma
 {
     public class JobExecution : JobBase
     {
-        public string JobAssignment { get; set; }
+        public string JobAssignmentId { get; set; }
         
         public DateTime? ActualStartDate { get; set; }
         
