@@ -5,9 +5,9 @@ using Mcma.Context;
 using Mcma.Serialization;
 using Mcma.WorkerInvoker;
 
-namespace Mcma.Azure.Functions.Api
+namespace Mcma.Azure.WorkerInvoker
 {
-    public class HttpWorkerInvoker : WorkerInvoker.WorkerInvoker
+    public class HttpWorkerInvoker : Mcma.WorkerInvoker.WorkerInvoker
     {
         
         private const string FunctionKeyHeader = "x-functions-key";

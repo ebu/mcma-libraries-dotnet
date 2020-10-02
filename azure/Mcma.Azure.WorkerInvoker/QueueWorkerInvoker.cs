@@ -1,29 +1,27 @@
 using System;
 using System.Threading.Tasks;
+using Azure.Storage.Queues;
 using Mcma.Context;
 using Mcma.Serialization;
+using Mcma.Utility;
 using Mcma.WorkerInvoker;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Queue;
 
-namespace Mcma.Azure.Functions.Api
+namespace Mcma.Azure.WorkerInvoker
 {
-    public class QueueWorkerInvoker : WorkerInvoker.WorkerInvoker
+    public class QueueWorkerInvoker : Mcma.WorkerInvoker.WorkerInvoker
     {
         public QueueWorkerInvoker(IContextVariableProvider contextVariableProvider)
             : base(contextVariableProvider)
         {
+            QueueServiceClient = new QueueServiceClient(Environment.GetEnvironmentVariable("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"));
         }
+        
+        private QueueServiceClient QueueServiceClient { get; }
 
         protected override async Task InvokeAsync(string workerFunctionId, WorkerRequest request)
         {
-            var appStorageConnectionString = ContextVariableProvider.GetRequiredContextVariable("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING");
-            if (!CloudStorageAccount.TryParse(appStorageConnectionString, out var appStorageAccount))
-                throw new Exception($"Failed to parse app storage connection string '{appStorageConnectionString}'.");
-
-            await appStorageAccount.CreateCloudQueueClient()
-                                   .GetQueueReference(workerFunctionId)
-                                   .AddMessageAsync(new CloudQueueMessage(request.ToMcmaJson().ToString()));
+            var queueClient = QueueServiceClient.GetQueueClient(workerFunctionId);
+            await queueClient.SendMessageAsync(request.ToMcmaJson().ToString().ToBase64());
         }
     }
 }

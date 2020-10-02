@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
+using Azure.Storage.Blobs;
 using Mcma.Context;
-using Microsoft.Azure.Storage;
-using Microsoft.Azure.Storage.Blob;
 
 namespace Mcma.Azure.BlobStorage.Proxies
 {
@@ -11,15 +10,7 @@ namespace Mcma.Azure.BlobStorage.Proxies
         private const string StorageAccountNameKeySuffix = "StorageAccountName";
         private const string StorageConnectionStringKeySuffix = "StorageConnectionString";
 
-        private static CloudBlobClient GetBlobClient(string connectionString)
-        {
-            if (!CloudStorageAccount.TryParse(connectionString, out var storageAccount))
-                throw new Exception("Invalid connection string.");
-
-            return storageAccount.CreateCloudBlobClient();
-        }
-
-        private static CloudBlobClient GetBlobClient(IContextVariableProvider contextVariableProvider, string storageAccountName)
+        private static string GetConnectionString(IContextVariableProvider contextVariableProvider, string storageAccountName)
         {
             var accountNameSetting =
                 contextVariableProvider.GetAllContextVariables()                        
@@ -29,21 +20,21 @@ namespace Mcma.Azure.BlobStorage.Proxies
             if (accountNameSetting.Key == null)
                 throw new Exception($"Storage account '{storageAccountName}' is not configured.");
             
-            return GetBlobClient(
+            return
                 contextVariableProvider.GetRequiredContextVariable(
-                    accountNameSetting.Key.Substring(0, accountNameSetting.Key.Length - StorageAccountNameKeySuffix.Length) + StorageConnectionStringKeySuffix));
+                    accountNameSetting.Key.Substring(0, accountNameSetting.Key.Length - StorageAccountNameKeySuffix.Length) + StorageConnectionStringKeySuffix);
         }
 
         public static BlobStorageFileProxy Proxy(this BlobStorageFileLocator locator, string connectionString)
-            => new BlobStorageFileProxy(locator, GetBlobClient(connectionString));
+            => new BlobStorageFileProxy(locator, connectionString);
 
         public static BlobStorageFileProxy Proxy(this BlobStorageFileLocator locator, IContextVariableProvider contextVariableProvider)
-            => new BlobStorageFileProxy(locator, GetBlobClient(contextVariableProvider, locator.StorageAccountName));
+            => new BlobStorageFileProxy(locator, GetConnectionString(contextVariableProvider, locator.StorageAccountName));
 
         public static BlobStorageFolderProxy Proxy(this BlobStorageFolderLocator locator, string connectionString)
-            => new BlobStorageFolderProxy(locator, GetBlobClient(connectionString));
+            => new BlobStorageFolderProxy(locator, connectionString);
 
         public static BlobStorageFolderProxy Proxy(this BlobStorageFolderLocator locator, IContextVariableProvider contextVariableProvider)
-            => new BlobStorageFolderProxy(locator, GetBlobClient(contextVariableProvider, locator.StorageAccountName));
+            => new BlobStorageFolderProxy(locator, GetConnectionString(contextVariableProvider, locator.StorageAccountName));
     }
 }

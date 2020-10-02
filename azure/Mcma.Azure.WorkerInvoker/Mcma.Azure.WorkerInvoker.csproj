@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <PackageVersion>0.13.11</PackageVersion>
+        <PackageVersion>0.13.12</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
     </PropertyGroup>
@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Azure.Storage.Common" Version="11.1.7" />
-      <PackageReference Include="Microsoft.Azure.Storage.Queue" Version="11.1.7" />
+      <PackageReference Include="Azure.Storage.Common" Version="12.5.2" />
+      <PackageReference Include="Azure.Storage.Queues" Version="12.4.2" />
     </ItemGroup>
 
 </Project>

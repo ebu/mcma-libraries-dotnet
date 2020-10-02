@@ -5,7 +5,6 @@ using Mcma.Data;
 using Mcma.Logging;
 using Mcma.Serialization;
 using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json.Linq;
 
 namespace Mcma.Azure.CosmosDb
 {
@@ -28,12 +27,13 @@ namespace Mcma.Azure.CosmosDb
 
         protected override async Task PutLockDataAsync()
         {
-            var item = new
+            var item = new LockData
             {
-                Id = Uri.EscapeDataString($"Mutex-{MutexName}"),
-                MutexHolder,
+                MutexHolder = MutexHolder,
                 Timestamp = DateTimeOffset.UtcNow
             }.ToMcmaJson();
+
+            item["id"] = Uri.EscapeDataString($"Mutex-{MutexName}");
 
             PartitionKey partitionKey;
             if (!string.IsNullOrWhiteSpace(PartitionKeyName))

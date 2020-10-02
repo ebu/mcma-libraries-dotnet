@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2.DocumentModel;
 using Mcma.Data;
 using Mcma.Logging;
-using Mcma.Serialization;
-using Newtonsoft.Json.Linq;
 
 namespace Mcma.Aws.DynamoDb
 {
@@ -63,7 +61,12 @@ namespace Mcma.Aws.DynamoDb
                 return null;
             }
 
-            return JObject.Parse(record.ToJson()).ToMcmaObject<LockData>();
+            return new LockData
+            {
+                MutexHolder = record[nameof(LockData.MutexHolder)],
+                Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(record[nameof(LockData.Timestamp)])),
+                VersionId = record[nameof(LockData.VersionId)]
+            };
         }
 
         protected override async Task PutLockDataAsync()

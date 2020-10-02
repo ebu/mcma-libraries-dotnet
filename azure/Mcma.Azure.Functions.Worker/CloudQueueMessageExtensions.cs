@@ -1,6 +1,6 @@
 using Mcma.Serialization;
 using Mcma.Worker;
-using Microsoft.WindowsAzure.Storage.Queue;
+using Microsoft.Azure.Storage.Queue;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Azure.Functions.Worker
