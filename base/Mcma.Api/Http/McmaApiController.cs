@@ -23,7 +23,7 @@ namespace Mcma.Api
         private static IDictionary<string, string> GetDefaultResponseHeaders()
             => new Dictionary<string, string>
             {
-                ["Date"] = DateTime.UtcNow.ToString("R"),
+                ["Date"] = DateTimeOffset.UtcNow.ToString("R"),
                 ["Content-Type"] = "application/json",
                 ["Access-Control-Allow-Origin"] = "*"
             };

@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using Amazon.Lambda;
 using Amazon.Lambda.Model;
-using Mcma.Api;
 using Mcma.Context;
 using Mcma.Serialization;
+using Mcma.WorkerInvoker;
 
 namespace Mcma.Aws.Lambda
 {
-    public class LambdaWorkerInvoker : WorkerInvoker
+    public class LambdaWorkerInvoker : WorkerInvoker.WorkerInvoker
     {
         public LambdaWorkerInvoker(IContextVariableProvider contextVariableProvider)
             : base(contextVariableProvider)

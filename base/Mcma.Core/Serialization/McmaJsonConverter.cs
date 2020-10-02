@@ -41,7 +41,7 @@ namespace Mcma.Serialization
                 case JTokenType.Bytes:
                     return token.Value<byte[]>();
                 case JTokenType.Date:
-                    return token.Value<DateTime>();
+                    return token.Value<DateTimeOffset>();
                 case JTokenType.Float:
                     return token.Value<decimal>();
                 case JTokenType.Guid:

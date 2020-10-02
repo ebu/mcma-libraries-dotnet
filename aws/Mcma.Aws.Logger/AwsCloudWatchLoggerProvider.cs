@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amazon.CloudWatchLogs;
 using Amazon.CloudWatchLogs.Model;
-using Mcma;
 using Mcma.Logging;
 using Mcma.Serialization;
 
@@ -37,19 +36,24 @@ namespace Mcma.Aws.CloudWatch
         
         private string SequenceToken { get; set; }
 
+        private List<InputLogEvent> GetLogEvents()
+        {
+            List<InputLogEvent> logEvents;
+            lock (LogEventsLock)
+            {
+                logEvents = LogEvents.ToList();
+                LogEvents.Clear();
+            }
+            return logEvents;
+        }
+
         private async Task ProcessBatchAsync()
         {
             try
             {
                 await EnsureLogGroupAndStreamCreatedAsync();
-                
-                List<InputLogEvent> logEvents;
-                lock (LogEventsLock)
-                {
-                    logEvents = LogEvents.ToList();
-                    LogEvents.Clear();
-                }
 
+                var logEvents = GetLogEvents();
                 while (logEvents.Count > 0)
                 {
                     var request = new PutLogEventsRequest
@@ -66,6 +70,8 @@ namespace Mcma.Aws.CloudWatch
 
                     if (data.RejectedLogEventsInfo != null)
                         Logger.System.Error("AwsCloudWatchLogger: Some log events rejected", data.RejectedLogEventsInfo);
+                    
+                    logEvents = GetLogEvents();
                 }
             }
             catch (Exception error)
@@ -85,44 +91,35 @@ namespace Mcma.Aws.CloudWatch
 
                 do
                 {
-                    var request = new DescribeLogGroupsRequest
+                    var data = await CloudWatchLogsClient.DescribeLogGroupsAsync(new DescribeLogGroupsRequest
                     {
                         LogGroupNamePrefix = LogGroupName,
                         NextToken = nextToken
-                    };
-
-                    var data = await CloudWatchLogsClient.DescribeLogGroupsAsync(request);
-
-                    foreach (var logGroup in data.LogGroups)
+                    });
+                    
+                    if (data.LogGroups.Any(logGroup => logGroup.LogGroupName == LogGroupName))
                     {
-                        if (logGroup.LogGroupName == LogGroupName)
-                        {
-                            LogGroupCreated = true;
-                            break;
-                        }
+                        LogGroupCreated = true;
+                        break;
                     }
 
                     nextToken = data.NextToken;
-                } while (!LogGroupCreated && !string.IsNullOrWhiteSpace(nextToken));
+                }
+                while (!LogGroupCreated && !string.IsNullOrWhiteSpace(nextToken));
 
                 if (!LogGroupCreated) {
-
-                    var request = new CreateLogGroupRequest { LogGroupName = LogGroupName };
-
-                    await CloudWatchLogsClient.CreateLogGroupAsync(request);
+                    await CloudWatchLogsClient.CreateLogGroupAsync(new CreateLogGroupRequest { LogGroupName = LogGroupName });
                     LogGroupCreated = true;
                 }
             }
             
             if (!LogStreamCreated)
             {
-                var request = new CreateLogStreamRequest
+                await CloudWatchLogsClient.CreateLogStreamAsync(new CreateLogStreamRequest
                 {
                     LogGroupName = LogGroupName,
                     LogStreamName = LogStreamName
-                };
-
-                await CloudWatchLogsClient.CreateLogStreamAsync(request);
+                });
 
                 LogStreamCreated = true;
             }
@@ -133,11 +130,10 @@ namespace Mcma.Aws.CloudWatch
             lock (LogEventsLock)
                 LogEvents.Add(new InputLogEvent { Message = logEvent.ToMcmaJson().ToString(), Timestamp = logEvent.Timestamp.DateTime });
 
-            if (ProcessingTask == null)
-            {
-                ProcessingTask = ProcessBatchAsync();
-                ProcessingTask.ContinueWith(t => ProcessingTask = null);
-            }
+            if (ProcessingTask != null) return;
+            
+            ProcessingTask = ProcessBatchAsync();
+            ProcessingTask.ContinueWith(t => ProcessingTask = null);
         }
 
         protected override AwsCloudWatchLogger Get(string source, string requestId, McmaTracker tracker) =>

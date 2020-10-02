@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>0.13.10-beta3</PackageVersion>
+    <PackageVersion>0.13.11</PackageVersion>
     <Title>MCMA API (.NET)</Title>
     <Description>Library containing base classes and interfaces for MCMA API implementations</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -13,6 +13,7 @@
     <ProjectReference Include="..\Mcma.Core\Mcma.Core.csproj" />
     <ProjectReference Include="..\Mcma.Client\Mcma.Client.csproj" />
     <ProjectReference Include="..\Mcma.Data\Mcma.Data.csproj" />
+    <ProjectReference Include="..\Mcma.WorkerInvoker\Mcma.WorkerInvoker.csproj" />
   </ItemGroup>
 
   <ItemGroup>

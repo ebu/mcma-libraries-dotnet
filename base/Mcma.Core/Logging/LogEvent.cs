@@ -11,7 +11,7 @@ namespace Mcma.Logging
             int level,
             string source,
             string requestId,
-            DateTime timestamp, 
+            DateTimeOffset timestamp, 
             string message,
             object[] args,
             McmaTracker tracker = null)

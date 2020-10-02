@@ -37,7 +37,7 @@ namespace Mcma.Azure.BlobStorage.Proxies
             var sasToken = Blob.GetSharedAccessSignature(new SharedAccessBlobPolicy
             {
                 Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessExpiryTime = DateTime.UtcNow.Add(validFor ?? TimeSpan.FromMinutes(15))
+                SharedAccessExpiryTime = DateTimeOffset.UtcNow.Add(validFor ?? TimeSpan.FromMinutes(15))
             });
 
             return Blob.Uri + sasToken;

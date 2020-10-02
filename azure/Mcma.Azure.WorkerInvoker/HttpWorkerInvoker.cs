@@ -1,15 +1,17 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Mcma.Api;
-using Mcma.Azure.Client;
 using Mcma.Context;
 using Mcma.Serialization;
+using Mcma.WorkerInvoker;
 
 namespace Mcma.Azure.Functions.Api
 {
-    public class HttpWorkerInvoker : WorkerInvoker
+    public class HttpWorkerInvoker : WorkerInvoker.WorkerInvoker
     {
+        
+        private const string FunctionKeyHeader = "x-functions-key";
+
         public HttpWorkerInvoker(IContextVariableProvider contextVariableProvider)
             : base(contextVariableProvider)
         {
@@ -28,7 +30,7 @@ namespace Mcma.Azure.Functions.Api
             // if we have a function key
             var functionKey = ContextVariableProvider.GetOptionalContextVariable("WorkerFunctionKey");
             if (functionKey != null)
-                httpRequest.Headers.Add(AzureConstants.FunctionKeyHeader, functionKey);
+                httpRequest.Headers.Add(FunctionKeyHeader, functionKey);
 
             // send the request
             var resp = await HttpClient.SendAsync(httpRequest);

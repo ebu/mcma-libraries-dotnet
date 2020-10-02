@@ -19,6 +19,6 @@ namespace Mcma.Aws.Client
 
         private AwsV4Signer Signer { get; }
 
-        public Task SignAsync(HttpRequestMessage request) => Signer.SignAsync(request, CancellationToken.None);
+        public Task SignAsync(HttpRequestMessage request) => Signer.SignAsync(request);
     }
 }

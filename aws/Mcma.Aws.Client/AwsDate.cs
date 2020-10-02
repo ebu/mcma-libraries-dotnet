@@ -5,7 +5,7 @@ namespace Mcma.Aws.Client
 {
     public class AwsDate
     {
-        private DateTime UtcNow { get; } = DateTime.UtcNow;
+        private DateTimeOffset UtcNow { get; } = DateTimeOffset.UtcNow;
 
         public string DateString => UtcNow.ToString("yyyyMMdd");
 

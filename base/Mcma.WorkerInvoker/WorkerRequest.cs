@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Mcma;
 
-namespace Mcma.Api
+namespace Mcma.WorkerInvoker
 {
     public class WorkerRequest
     {

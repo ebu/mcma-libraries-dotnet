@@ -1,8 +1,9 @@
 
 
+using System.Security.Cryptography;
+
 namespace Mcma.Aws.Client
 {
-
     public static class AwsConstants
     {
         public static class Regions
@@ -40,6 +41,8 @@ namespace Mcma.Aws.Client
             public static readonly string Date = PrefixedHeader(nameof(Date));
             
             public static readonly string SecurityToken = PrefixedHeader("Security-Token");
+            
+            public static string ContentHash(string algorithm = nameof(SHA256)) => PrefixedHeader($"content-{algorithm.ToLower()}");
         }
 
         public static class Signing

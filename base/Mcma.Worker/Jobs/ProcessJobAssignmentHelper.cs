@@ -33,9 +33,9 @@ namespace Mcma.Worker
         public JobParameterBag JobInput => Job.JobInput;
         public JobParameterBag JobOutput => Job.JobOutput;
 
-        public async Task InitializeAsync()
+        public async Task InitializeAsync(JobStatus initialJobStatus)
         {
-            JobAssignment = await UpdateJobAssignmentStatusAsync(JobStatus.Running);
+            JobAssignment = await UpdateJobAssignmentStatusAsync(initialJobStatus);
 
             Job = await ResourceManager.ResolveResourceFromFullUrl<T>(JobAssignment.JobId);
             Profile = await ResourceManager.ResolveResourceFromFullUrl<JobProfile>(Job.JobProfileId);
@@ -98,7 +98,7 @@ namespace Mcma.Worker
 
             update(jobAssignment);
 
-            jobAssignment.DateModified = DateTime.UtcNow;
+            jobAssignment.DateModified = DateTimeOffset.UtcNow;
             await DbTable.PutAsync(JobAssignmentDatabaseId, jobAssignment);
 
             JobAssignment = jobAssignment;

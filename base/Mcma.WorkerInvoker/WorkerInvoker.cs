@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mcma;
 using Mcma.Context;
 
-namespace Mcma.Api
+namespace Mcma.WorkerInvoker
 {
     public abstract class WorkerInvoker : IWorkerInvoker
     {

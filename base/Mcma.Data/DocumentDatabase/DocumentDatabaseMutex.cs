@@ -45,7 +45,7 @@ namespace Mcma.Data
                     var lockData = await GetLockDataAsync();
                     if (lockData != null)
                     {
-                        if (lockData.Timestamp < DateTime.UtcNow - LockTimeout)
+                        if (lockData.Timestamp < DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - LockTimeout.TotalMilliseconds)
                         {
                             Logger?.Warn("Deleting stale lock for mutex '" + MutexName + "' by '" + lockData.MutexHolder + "'");
                             try

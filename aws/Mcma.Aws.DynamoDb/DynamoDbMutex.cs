@@ -95,7 +95,7 @@ namespace Mcma.Aws.DynamoDb
                                                     ExpressionStatement = "#v_id = :v_id",
                                                     ExpressionAttributeNames =
                                                         new Dictionary<string, string> {["#v_id"] = nameof(LockData.VersionId)},
-                                                    ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":v"] = VersionId}
+                                                    ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":v_id"] = VersionId}
                                                 }
                                         });
         }

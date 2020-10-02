@@ -21,7 +21,7 @@ namespace Mcma.Client.AccessTokens
 
         public async Task SignAsync(HttpRequestMessage request)
         {
-            if (AccessToken != null && AccessToken.ExpiresOn.HasValue && AccessToken.ExpiresOn >= DateTime.UtcNow)
+            if (AccessToken != null && AccessToken.ExpiresOn.HasValue && AccessToken.ExpiresOn >= DateTimeOffset.UtcNow)
                 AccessToken = null;
 
             if (AccessToken == null)

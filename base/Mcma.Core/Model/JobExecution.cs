@@ -6,9 +6,9 @@ namespace Mcma
     {
         public string JobAssignmentId { get; set; }
         
-        public DateTime? ActualStartDate { get; set; }
+        public DateTimeOffset? ActualStartDate { get; set; }
         
-        public DateTime? ActualEndDate { get; set; }
+        public DateTimeOffset? ActualEndDate { get; set; }
         
         public long? ActualDuration { get; set; }
     }

@@ -20,7 +20,7 @@ namespace Mcma.Logging
         public static ILogger System { get; set; } = new ConsoleLogger(nameof(System));
 
         protected LogEvent BuildLogEvent(int level, string type, string message, object[] args)
-            => new LogEvent(type, level, Source, RequestId, DateTime.UtcNow, message, args, Tracker);
+            => new LogEvent(type, level, Source, RequestId, DateTimeOffset.UtcNow, message, args, Tracker);
 
         protected abstract void WriteLogEvent(LogEvent logEvent);
         

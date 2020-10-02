@@ -4,6 +4,7 @@ using System.Linq;
 using Amazon.DynamoDBv2.DocumentModel;
 using Mcma.Data.DocumentDatabase.Queries;
 using Mcma.Serialization;
+using Mcma.Utility;
 
 namespace Mcma.Aws.DynamoDb
 {
@@ -39,8 +40,8 @@ namespace Mcma.Aws.DynamoDb
             string attributeNameKey;
             if (!expression.ExpressionAttributeNames.ContainsKey(filterCriteria.Property.Name))
             {
-                attributeNameKey = $"#a{expression.ExpressionAttributeNames.Count}";
-                expression.ExpressionAttributeNames[attributeNameKey] = filterCriteria.Property.Name;
+                attributeNameKey = $"#a{expression.ExpressionAttributeNames.Count - 1}";
+                expression.ExpressionAttributeNames[attributeNameKey] = filterCriteria.Property.Name.PascalCaseToCamelCase();
             }
             else
                 attributeNameKey = expression.ExpressionAttributeNames[filterCriteria.Property.Name];

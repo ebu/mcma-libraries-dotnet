@@ -32,7 +32,7 @@ namespace Mcma.Azure.CosmosDb
             {
                 Id = Uri.EscapeDataString($"Mutex-{MutexName}"),
                 MutexHolder,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTimeOffset.UtcNow
             }.ToMcmaJson();
 
             PartitionKey partitionKey;

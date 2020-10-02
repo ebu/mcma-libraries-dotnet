@@ -1,14 +1,14 @@
 using System;
 using System.Threading.Tasks;
-using Mcma.Api;
 using Mcma.Context;
 using Mcma.Serialization;
+using Mcma.WorkerInvoker;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Queue;
 
 namespace Mcma.Azure.Functions.Api
 {
-    public class QueueWorkerInvoker : WorkerInvoker
+    public class QueueWorkerInvoker : WorkerInvoker.WorkerInvoker
     {
         public QueueWorkerInvoker(IContextVariableProvider contextVariableProvider)
             : base(contextVariableProvider)

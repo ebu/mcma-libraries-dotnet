@@ -12,7 +12,7 @@ namespace Mcma.Api
             Path = path;
         }
 
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
 
         public int Status { get; set; }
 

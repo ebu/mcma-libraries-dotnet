@@ -6,7 +6,7 @@ namespace Mcma.Data
     {
         public string MutexHolder { get; set; }
         
-        public DateTime Timestamp { get; set; }
+        public long Timestamp { get; set; }
         
         public string VersionId { get; set; }
     }

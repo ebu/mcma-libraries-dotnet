@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <PackageVersion>0.13.10-beta3</PackageVersion>
+    <PackageVersion>0.13.11</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
   </PropertyGroup>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.3.104.5" />
+    <PackageReference Include="AWSSDK.S3" Version="3.5.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 

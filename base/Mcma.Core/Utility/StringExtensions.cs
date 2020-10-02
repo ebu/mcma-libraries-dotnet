@@ -206,8 +206,14 @@ namespace Mcma.Utility
             }
             else if (type == typeof(DateTime))
             {
-                // try to parse to a datetim
+                // try to parse to a datetime
                 if (DateTime.TryParse(textValue, out var dateTimeValue))
+                    obj = dateTimeValue;
+            }
+            else if (type == typeof(DateTimeOffset))
+            {
+                // try to parse to a datetime offset
+                if (DateTimeOffset.TryParse(textValue, out var dateTimeValue))
                     obj = dateTimeValue;
             }
             else if (type == typeof(TimeSpan))

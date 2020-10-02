@@ -18,7 +18,15 @@ namespace Mcma.Worker
 
         internal List<IJobProfile<TJob>> Profiles { get; } = new List<IJobProfile<TJob>>();
 
+        private JobStatus InitialJobStatus { get; set; } = JobStatus.Running;
+
         public override string Name => "ProcessJobAssignment";
+
+        public ProcessJobAssignmentOperation<TJob> SetInitialJobStatus(JobStatus initialJobStatus)
+        {
+            InitialJobStatus = initialJobStatus;
+            return this;
+        }
 
         public ProcessJobAssignmentOperation<TJob> AddProfile<TProfile>() where TProfile : IJobProfile<TJob>, new()
             => AddProfile(new TProfile());
@@ -52,7 +60,7 @@ namespace Mcma.Worker
             {
                 requestContext.Logger?.Debug("Initializing job helper...");
 
-                await jobAssignmentHelper.InitializeAsync();
+                await jobAssignmentHelper.InitializeAsync(InitialJobStatus);
                 
                 requestContext.Logger?.Info("Validating job...");
 

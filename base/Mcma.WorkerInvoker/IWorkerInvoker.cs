@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Mcma;
 
-namespace Mcma.Api
+namespace Mcma.WorkerInvoker
 {
     public delegate Task InvokeWorker(string workerFunctionId, WorkerRequest request);
 

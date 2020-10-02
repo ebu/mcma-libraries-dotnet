@@ -1,6 +1,8 @@
 
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +12,10 @@ namespace Mcma.Aws.Client
 {
     public class AwsV4Signer
     {
+        private const string CngSuffix = "Cng";
+        private const string CryptoServiceProviderSuffix = "CryptoServiceProvider";
+        private const string ManagedSuffix = "Managed";
+        
         public AwsV4Signer(string accessKey, string secretKey, string region, string sessionToken = null, string service = AwsConstants.Services.ExecuteApi)
         {
             AccessKey = accessKey;
@@ -29,16 +35,29 @@ namespace Mcma.Aws.Client
 
         private string Service { get; }
 
-        public async Task<HttpRequestMessage> SignAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public async Task<HttpRequestMessage> SignAsync(HttpRequestMessage request, HashAlgorithm hashAlgorithm = null, CancellationToken cancellationToken = default)
         {
+            hashAlgorithm = hashAlgorithm ?? new SHA256Managed();
+
+            var algorithmName = hashAlgorithm.GetType().Name;
+            if (algorithmName.EndsWith(CngSuffix))
+                algorithmName = algorithmName.Substring(0, algorithmName.Length - CngSuffix.Length);
+            else if (algorithmName.EndsWith(CryptoServiceProviderSuffix))
+                algorithmName = algorithmName.Substring(0, algorithmName.Length - CryptoServiceProviderSuffix.Length);
+            else if (algorithmName.EndsWith(ManagedSuffix))
+                algorithmName = algorithmName.Substring(0, algorithmName.Length - ManagedSuffix.Length);
+            
             var awsDate = new AwsDate();
 
             // set the host and date headers
             request.Headers.Host = request.RequestUri.Host;
             request.Headers.Add(AwsConstants.Headers.Date, awsDate.DateTimeString);
 
+            var hashedBody = await request.HashBodyAsync(hashAlgorithm);
+            request.Headers.Add(AwsConstants.Headers.ContentHash(algorithmName), hashedBody);
+
             // build the string to sign from the canonical request
-            var stringToSign = StringToSign(awsDate, await request.ToHashedCanonicalRequestAsync());
+            var stringToSign = StringToSign(awsDate, request.ToHashedCanonicalRequest(hashedBody));
 
             // get the signing key using the date on the request
             var signingKey = SigningKey(awsDate);
