@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Mcma.Api;
 using Mcma.Context;
 using Mcma.Logging;
+using Mcma.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 
 namespace Mcma.Azure.Functions.Api
 {
@@ -34,7 +33,7 @@ namespace Mcma.Azure.Functions.Api
                 Headers = request.Headers.Keys.ToDictionary(k => k, k => request.Headers[k].ToString()),
                 PathVariables = new Dictionary<string, object>(),
                 QueryStringParameters = request.Query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString()),
-                Body = await request.ReadAsStringAsync()
+                Body = await request.Body.ReadAllBytesAsync()
             };
 
         public static IActionResult ToActionResult(this McmaApiRequestContext requestContext)
@@ -52,10 +51,7 @@ namespace Mcma.Azure.Functions.Api
                     httpResponse.Headers[header.Key] = header.Value;
 
             if (mcmaResponse.Body != null)
-            {
-                var body = Encoding.UTF8.GetBytes(mcmaResponse.Body);
-                await httpResponse.Body.WriteAsync(body, 0, body.Length);
-            }
+                await httpResponse.Body.WriteAsync(mcmaResponse.Body, 0, mcmaResponse.Body.Length);
         }
     }
 }

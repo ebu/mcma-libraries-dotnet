@@ -31,31 +31,30 @@ namespace Mcma.Api
 
         public string RequestId => Request?.Id;
 
-        public bool HasRequestBody() => !string.IsNullOrWhiteSpace(Request?.Body);
+        public bool HasRequestBody => (Request?.Body?.Length ?? 0) > 0;
 
-        public bool MethodSupportsRequestBody()
+        public bool MethodSupportsRequestBody
             => MethodsSupportingRequestBody.Any(x => x.Method.Equals(Request.HttpMethod.Method, StringComparison.OrdinalIgnoreCase));
 
-        public string GetRequestHeader(string header) => Request?.Headers != null && Request.Headers.ContainsKey(header) ? Request.Headers[header] : null;
+        public string GetRequestHeaderValue(string header)
+            => Request?.Headers?.FirstOrDefault(x => x.Key.Equals(header, StringComparison.OrdinalIgnoreCase)).Value;
 
-        public bool ValidateRequestBodyJson() => !MethodSupportsRequestBody() || string.IsNullOrWhiteSpace(Request?.Body) || GetRequestBodyJson() != null;
-
-        public JToken GetRequestBodyJson()
+        public bool TryLoadRequestJsonBody(out Exception exception)
         {
-            if (Request != null && Request.JsonBody == null && MethodSupportsRequestBody() && !string.IsNullOrWhiteSpace(Request.Body))
+            exception = null;
+            if (Request.JsonBody != null)
+                return true;
+            
+            try
             {
-                try
-                {
-                    Request.JsonBody = JToken.Parse(Request.Body);
-                }
-                catch (Exception ex)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    Response.JsonBody = new McmaApiError(Response.StatusCode, ex.ToString(), Request.Path).ToMcmaJson();
-                }
+                Request.JsonBody = JToken.Parse(Encoding.UTF8.GetString(Request.Body));
+                return true;
             }
-
-            return Request?.JsonBody;
+            catch (Exception e)
+            {
+                exception = e;
+                return false;
+            }
         }
 
         public T GetRequestBody<T>() where T : McmaObject => Request?.JsonBody?.ToMcmaObject<T>();
@@ -98,10 +97,11 @@ namespace Mcma.Api
             try
             {
                 // if we didn't find it in the header or query string, try the body
-                if (!(GetRequestBodyJson() is JObject jsonBody))
+                if (!TryLoadRequestJsonBody(out _) || !(Request.JsonBody is JObject jsonBody))
                     return null;
 
-                var trackerProp = jsonBody.Properties().FirstOrDefault(j => j.Name.Equals(nameof(Job.Tracker), StringComparison.OrdinalIgnoreCase));
+                var trackerProp =
+                    jsonBody.Properties().FirstOrDefault(j => j.Name.Equals(nameof(Job.Tracker), StringComparison.OrdinalIgnoreCase));
 
                 return trackerProp?.Value.ToMcmaObject<McmaTracker>();
             }

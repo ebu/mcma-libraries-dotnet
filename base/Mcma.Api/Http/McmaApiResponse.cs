@@ -11,7 +11,7 @@ namespace Mcma.Api
 
         public IDictionary<string, string> Headers { get; set; }
 
-        public string Body { get; set; }
+        public byte[] Body { get; set; }
 
         public JToken JsonBody { get; set; }
     }

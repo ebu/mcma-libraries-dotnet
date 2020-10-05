@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using Mcma;
 using Newtonsoft.Json.Linq;
@@ -19,7 +20,7 @@ namespace Mcma.Api
 
         public IDictionary<string, string> QueryStringParameters { get; set; }
 
-        public string Body { get; set; }
+        public byte[] Body { get; set; }
 
         public JToken JsonBody { get; set; }
     }

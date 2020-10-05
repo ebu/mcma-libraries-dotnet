@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
@@ -27,12 +29,12 @@ namespace Mcma.Aws.ApiGateway
                 new McmaApiRequest
                 {
                     Id = context.AwsRequestId,
-                    Path = request.RequestContext.Http.Path,
+                    Path = request.RequestContext.Http.Path.Substring(request.RequestContext.Stage.Length + 1),
                     HttpMethod = new HttpMethod(request.RequestContext.Http.Method),
                     Headers = request.Headers,
                     PathVariables = new Dictionary<string, object>(),
                     QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
-                    Body = request.Body
+                    Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
                 },
                 request.StageVariables,
                 LoggerProvider
@@ -40,11 +42,18 @@ namespace Mcma.Aws.ApiGateway
             
             await McmaApiController.HandleRequestAsync(requestContext);
 
+            var responseBodyString =
+                requestContext.Response.JsonBody?.ToString() ??
+                (requestContext.Response.Body != null ? Convert.ToBase64String(requestContext.Response.Body) : null);
+
+            var isBase64Encoded = responseBodyString != null && requestContext.Response.JsonBody == null;
+
             return new APIGatewayHttpApiV2ProxyResponse
             {
                 StatusCode = requestContext.Response.StatusCode,
                 Headers = requestContext.Response.Headers,
-                Body = requestContext.Response.Body
+                Body = responseBodyString,
+                IsBase64Encoded = isBase64Encoded
             };
         }
 
@@ -59,7 +68,7 @@ namespace Mcma.Aws.ApiGateway
                     Headers = request.Headers,
                     PathVariables = new Dictionary<string, object>(),
                     QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
-                    Body = request.Body
+                    Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
                 },
                 request.StageVariables,
                 LoggerProvider
@@ -67,11 +76,18 @@ namespace Mcma.Aws.ApiGateway
             
             await McmaApiController.HandleRequestAsync(requestContext);
 
+            var responseBodyString =
+                requestContext.Response.JsonBody?.ToString() ??
+                (requestContext.Response.Body != null ? Convert.ToBase64String(requestContext.Response.Body) : null);
+
+            var isBase64Encoded = responseBodyString != null && requestContext.Response.JsonBody == null;
+
             return new APIGatewayProxyResponse
             {
                 StatusCode = requestContext.Response.StatusCode,
                 Headers = requestContext.Response.Headers,
-                Body = requestContext.Response.Body
+                Body = responseBodyString,
+                IsBase64Encoded = isBase64Encoded
             };
         }
     }
