@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Mcma.Api;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Mcma.Azure.Functions.Api
+namespace Mcma.Azure.FunctionsApi
 {
     public class McmaApiActionResult : ActionResult
     {

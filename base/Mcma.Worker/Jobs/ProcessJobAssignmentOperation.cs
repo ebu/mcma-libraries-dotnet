@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mcma.Client;
-using Mcma;
-using Mcma.Context;
 using Mcma.Data;
 
 namespace Mcma.Worker
@@ -52,8 +50,8 @@ namespace Mcma.Worker
 
             var jobAssignmentHelper =
                 new ProcessJobAssignmentHelper<TJob>(
-                    await ProviderCollection.DbTableProvider.GetAsync(requestContext.TableName()),
-                    ProviderCollection.ResourceManagerProvider.Get(requestContext),
+                    await ProviderCollection.DbTableProvider.GetAsync(requestContext.EnvironmentVariables.TableName()),
+                    ProviderCollection.ResourceManagerProvider.Get(requestContext.EnvironmentVariables),
                     requestContext);
 
             try

@@ -13,15 +13,18 @@ namespace Mcma.Aws.ApiGateway
 {
     public class ApiGatewayApiController
     {
-        public ApiGatewayApiController(McmaApiRouteCollection routes, ILoggerProvider loggerProvider = null)
+        public ApiGatewayApiController(McmaApiRouteCollection routes, ILoggerProvider loggerProvider = null, IEnvironmentVariables environmentVariables = null)
         {
             McmaApiController = new McmaApiController(routes);
             LoggerProvider = loggerProvider;
+            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
         }
 
         private McmaApiController McmaApiController { get; }
 
         private ILoggerProvider LoggerProvider { get; }
+
+        private IEnvironmentVariables EnvironmentVariables { get; }
 
         public async Task<APIGatewayHttpApiV2ProxyResponse> HandleRequestAsync(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
         {
@@ -36,8 +39,8 @@ namespace Mcma.Aws.ApiGateway
                     QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
                     Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
                 },
-                request.StageVariables,
-                LoggerProvider
+                LoggerProvider,
+                EnvironmentVariables
             );
             
             await McmaApiController.HandleRequestAsync(requestContext);
@@ -70,8 +73,8 @@ namespace Mcma.Aws.ApiGateway
                     QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
                     Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
                 },
-                request.StageVariables,
-                LoggerProvider
+                LoggerProvider,
+                EnvironmentVariables
             );
             
             await McmaApiController.HandleRequestAsync(requestContext);

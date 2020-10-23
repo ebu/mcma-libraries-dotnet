@@ -35,13 +35,12 @@ namespace Mcma.Logging
         public object[] Args { get; }
         public McmaTracker Tracker { get; }
 
-        public override string ToString()
+        public JObject Flatten()
         {
-            var json = (JObject)McmaJson.ToMcmaJson(this);
+            var json = (JObject)this.ToMcmaJson();
 
             var trackerProperty = json.Property(nameof(Tracker), StringComparison.OrdinalIgnoreCase);
-            if (trackerProperty != null)
-                trackerProperty.Remove();
+            trackerProperty?.Remove();
 
             if (Tracker != null)
             {
@@ -61,7 +60,9 @@ namespace Mcma.Logging
                     }
             }
 
-            return json.ToString();
+            return json;
         }
+
+        public override string ToString() => Flatten().ToString();
     }
 }

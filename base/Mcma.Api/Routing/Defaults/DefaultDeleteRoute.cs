@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mcma.Api.Routes;
-using Mcma.Context;
 using Mcma.Data;
 
 namespace Mcma.Api.Routing.Defaults.Routes
@@ -37,7 +36,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
                     return;
 
             // get the table for the resource
-            var table = await DbTableProvider.GetAsync(requestContext.TableName());
+            var table = await DbTableProvider.GetAsync(requestContext.EnvironmentVariables.TableName());
 
             // build id from the root public url and the path
             var id = requestContext.Request.Path;

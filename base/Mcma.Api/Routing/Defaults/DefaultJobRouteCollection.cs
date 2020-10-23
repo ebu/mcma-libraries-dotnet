@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Mcma.Context;
 using Mcma.Data;
 using Mcma.WorkerInvoker;
 
@@ -32,12 +31,11 @@ namespace Mcma.Api.Routing.Defaults
         {
             await WorkerInvoker
                 .InvokeAsync(
-                    requestContext.WorkerFunctionId(),
+                    requestContext.EnvironmentVariables.WorkerFunctionId(),
                     "ProcessJobAssignment",
-                    requestContext.GetAllContextVariables().ToDictionary(),
                     new
                     {
-                        jobAssignmentDatabaseId = jobAssignment.Id.Replace(requestContext.PublicUrl(), string.Empty)
+                        jobAssignmentDatabaseId = jobAssignment.Id.Replace(requestContext.EnvironmentVariables.PublicUrl(), string.Empty)
                     },
                     jobAssignment.Tracker
                 );

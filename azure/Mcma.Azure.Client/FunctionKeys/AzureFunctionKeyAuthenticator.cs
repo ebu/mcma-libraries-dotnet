@@ -11,7 +11,7 @@ namespace Mcma.Azure.Client.FunctionKeys
         public AzureFunctionKeyAuthenticator(AzureFunctionKeyAuthContext authContext, string decryptionKey = null)
         {
             FunctionKey = new Lazy<string>(() => GetFunctionKey(authContext));
-            DecryptionKey = decryptionKey ?? Environment.GetEnvironmentVariable(AzureConstants.FunctionKeyEncryptionKeySetting);
+            DecryptionKey = decryptionKey ?? EnvironmentVariables.Instance.Get(AzureConstants.FunctionKeyEncryptionKeySetting);
         }
 
         private Lazy<string> FunctionKey { get; }

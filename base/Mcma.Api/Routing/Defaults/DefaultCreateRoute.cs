@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mcma.Api.Routes;
-using Mcma.Context;
 using Mcma.Data;
 
 namespace Mcma.Api.Routing.Defaults.Routes
@@ -53,7 +52,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
             resource.OnCreate(requestContext.PublicUrlForPath(resourcePath));
 
             // put the new object into the table
-            var table = await DbTableProvider.GetAsync(requestContext.TableName());
+            var table = await DbTableProvider.GetAsync(requestContext.EnvironmentVariables.TableName());
             await table.PutAsync(resourcePath, resource);
 
             // invoke the completion handler (if any) with the newly-created resource

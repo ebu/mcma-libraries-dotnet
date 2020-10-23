@@ -10,10 +10,9 @@ namespace Mcma.Azure.CosmosDb
 {
     public class CosmosDbTableProvider : IDocumentDatabaseTableProvider, IDisposable
     {
-        public CosmosDbTableProvider(CosmosDbTableProviderConfiguration providerConfiguration, CosmosDbTableOptions tableOptions = null)
+        public CosmosDbTableProvider(CosmosDbTableProviderConfiguration providerConfiguration = null, CosmosDbTableOptions tableOptions = null)
         {
-            if (providerConfiguration == null) throw new ArgumentNullException(nameof(providerConfiguration));
-            
+            providerConfiguration ??= new CosmosDbTableProviderConfiguration().FromEnvironmentVariables(EnvironmentVariables.Instance);
             TableOptions = tableOptions ?? new CosmosDbTableOptions();
 
             CosmosClient =

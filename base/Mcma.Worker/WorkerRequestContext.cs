@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using Mcma.Context;
 using Mcma.Logging;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Worker
 {
-    public class WorkerRequestContext : ContextVariableProvider
+    public class WorkerRequestContext
     {
-        public WorkerRequestContext(WorkerRequest request, string requestId, ILogger logger = null)
-            : base(new EnvironmentVariableProvider().Merge(request.ContextVariables).ToDictionary())
+        public WorkerRequestContext(WorkerRequest request, string requestId, ILogger logger = null, IEnvironmentVariables environmentVariables = null)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
             
@@ -23,6 +20,7 @@ namespace Mcma.Worker
             RequestId = requestId;
             
             Logger = logger;
+            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
         }
 
         public string OperationName { get; }
@@ -32,7 +30,9 @@ namespace Mcma.Worker
         public McmaTracker Tracker { get; }
 
         public ILogger Logger { get; }
-        
+
+        public IEnvironmentVariables EnvironmentVariables { get; }
+
         public string RequestId { get; }
 
         public object GetInputAs(Type type)

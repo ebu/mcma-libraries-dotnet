@@ -3,26 +3,25 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mcma.Api;
-using Mcma.Context;
 using Mcma.Logging;
 using Mcma.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 
-namespace Mcma.Azure.Functions.Api
+namespace Mcma.Azure.FunctionsApi
 {
     public static class HttpExtensions
     {
         public static async Task<McmaApiRequestContext> ToMcmaApiRequestContextAsync(
             this HttpRequest request,
             ExecutionContext executionContext,
-            IContextVariableProvider contextVariableProvider = null,
-            ILoggerProvider loggerProvider = null)
+            ILoggerProvider loggerProvider = null,
+            IEnvironmentVariables environmentVariables = null)
             => new McmaApiRequestContext(
                 await request.ToMcmaApiRequestAsync(executionContext),
-                (contextVariableProvider ?? new EnvironmentVariableProvider()).GetAllContextVariables().ToDictionary(),
-                loggerProvider);
+                loggerProvider,
+                environmentVariables ?? EnvironmentVariables.Instance);
 
         public static async Task<McmaApiRequest> ToMcmaApiRequestAsync(this HttpRequest request, ExecutionContext executionContext)
             => new McmaApiRequest

@@ -1,26 +1,23 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Mcma.Context;
 
 namespace Mcma.WorkerInvoker
 {
     public abstract class WorkerInvoker : IWorkerInvoker
     {
-        protected WorkerInvoker(IContextVariableProvider contextVariableProvider)
+        protected WorkerInvoker(IEnvironmentVariables environmentVariables = null)
         {
-            ContextVariableProvider = contextVariableProvider;
+            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
         }
 
-        protected IContextVariableProvider ContextVariableProvider { get; }
+        protected IEnvironmentVariables EnvironmentVariables { get; }
 
-        public Task InvokeAsync(string workerFunctionId, string operationName, IDictionary<string, string> contextVariables = null, object input = null, McmaTracker tracker = null)
+        public Task InvokeAsync(string workerFunctionId, string operationName, object input = null, McmaTracker tracker = null)
             =>
             InvokeAsync(
                 workerFunctionId,
                 new WorkerRequest
                 {
                     OperationName = operationName,
-                    ContextVariables = contextVariables ?? new Dictionary<string, string>(),
                     Input = input,
                     Tracker = tracker
                 }

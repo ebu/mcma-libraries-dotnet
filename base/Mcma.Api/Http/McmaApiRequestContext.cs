@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using Mcma.Context;
 using Mcma.Logging;
 using Mcma.Serialization;
 using Mcma.Client;
@@ -12,20 +10,22 @@ using Newtonsoft.Json.Linq;
 
 namespace Mcma.Api
 {
-    public class McmaApiRequestContext : ContextVariableProvider
+    public class McmaApiRequestContext
     {
         private static readonly HttpMethod[] MethodsSupportingRequestBody = {HttpMethod.Post, HttpMethod.Put, new HttpMethod("PATCH")};
 
-        public McmaApiRequestContext(McmaApiRequest request, IDictionary<string, string> contextVariables, ILoggerProvider loggerProvider = null)
-            : base(contextVariables)
+        public McmaApiRequestContext(McmaApiRequest request, ILoggerProvider loggerProvider = null, IEnvironmentVariables environmentVariables = null)
         {
             Request = request;
             LoggerProvider = loggerProvider;
+            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
         }
 
         public McmaApiRequest Request { get; }
 
-        public ILoggerProvider LoggerProvider { get; }
+        private ILoggerProvider LoggerProvider { get; }
+
+        public IEnvironmentVariables EnvironmentVariables { get; }
 
         public McmaApiResponse Response { get; } = new McmaApiResponse();
 

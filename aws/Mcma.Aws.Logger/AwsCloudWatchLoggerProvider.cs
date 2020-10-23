@@ -11,14 +11,15 @@ namespace Mcma.Aws.CloudWatch
 {
     public class AwsCloudWatchLoggerProvider : LoggerProvider<AwsCloudWatchLogger>
     {
-        public AwsCloudWatchLoggerProvider(string source, string logGroupName)
+        public AwsCloudWatchLoggerProvider(string source, string logGroupName = null, IAmazonCloudWatchLogs cloudWatchLogsClient = null)
             : base(source)
         {
-            LogGroupName = logGroupName;
+            LogGroupName = logGroupName ?? EnvironmentVariables.Instance.Get("LogGroupName");
             LogStreamName = source + "-" + Guid.NewGuid();
+            CloudWatchLogsClient = cloudWatchLogsClient ?? new AmazonCloudWatchLogsClient();
         }
 
-        private AmazonCloudWatchLogsClient CloudWatchLogsClient { get; } = new AmazonCloudWatchLogsClient();
+        private IAmazonCloudWatchLogs CloudWatchLogsClient { get; }
 
         private string LogGroupName { get; }
 

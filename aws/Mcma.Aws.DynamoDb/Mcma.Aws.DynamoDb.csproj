@@ -2,7 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>0.13.14</PackageVersion>
+    <LangVersion>latest</LangVersion>
+    <PackageVersion>0.13.16</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
     <LangVersion>latest</LangVersion>

@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mcma.Api.Routes;
-using Mcma.Context;
 using Mcma.Data;
 
 namespace Mcma.Api.Routing.Defaults.Routes
@@ -36,7 +35,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
                 if (!await OnStartedAsync(requestContext))
                     return;
 
-            var table = await DbTableProvider.GetAsync(requestContext.TableName());
+            var table = await DbTableProvider.GetAsync(requestContext.EnvironmentVariables.TableName());
 
             // get the resource from the database
             var resource = await table.GetAsync<TResource>(requestContext.Request.Path);

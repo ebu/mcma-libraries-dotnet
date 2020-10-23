@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Mcma.Api.Routes;
-using Mcma.Context;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;
 
@@ -52,7 +51,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
                 if (!await OnStartedAsync(requestContext))
                     return;
 
-            var table = await DbTableProvider.GetAsync(requestContext.TableName());
+            var table = await DbTableProvider.GetAsync(requestContext.EnvironmentVariables.TableName());
 
             // get all resources from the table, applying in-memory filtering using the query string (if any)
             var results = await ExecuteQueryAsync(requestContext, table);

@@ -11,7 +11,6 @@ namespace Mcma.WorkerInvoker
         Task InvokeAsync(
             string workerFunctionId,
             string operationName,
-            IDictionary<string, string> contextVariables = null,
             object input = null,
             McmaTracker tracker = null);
     }
