@@ -1,20 +1,24 @@
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.WorkerInvoker
 {
     public abstract class WorkerInvoker : IWorkerInvoker
     {
-        protected WorkerInvoker(IEnvironmentVariables environmentVariables = null)
+        protected WorkerInvoker(IOptions<WorkerInvokerOptions> options)
         {
-            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
+            if (string.IsNullOrWhiteSpace(options.Value?.WorkerFunctionId))
+                throw new McmaException($"Worker function not configured");
+
+            Options = options.Value;
         }
-
-        protected IEnvironmentVariables EnvironmentVariables { get; }
-
-        public Task InvokeAsync(string workerFunctionId, string operationName, object input = null, McmaTracker tracker = null)
+        
+        protected WorkerInvokerOptions Options { get; }
+        
+        public Task InvokeAsync(string operationName, object input = null, McmaTracker tracker = null)
             =>
             InvokeAsync(
-                workerFunctionId,
+                Options.WorkerFunctionId,
                 new WorkerRequest
                 {
                     OperationName = operationName,

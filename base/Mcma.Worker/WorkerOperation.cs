@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mcma.Logging;
 
 namespace Mcma.Worker
 {
     public abstract class WorkerOperation<T> : IWorkerOperation
-    {
-        protected WorkerOperation(ProviderCollection providerCollection)
-        {
-            ProviderCollection = providerCollection;
-        }
-
-        protected ProviderCollection ProviderCollection { get; }
-
+    {   
         public abstract string Name { get; }
 
         public Type InputType => typeof(T);
@@ -30,7 +24,7 @@ namespace Mcma.Worker
 
             var input = requestContext.GetInputAs<T>();
 
-            requestContext.Logger?.Debug("Got input of type '" + typeof(T).Name + "' from worker request.");
+            requestContext.Logger.Debug("Got input of type '" + typeof(T).Name + "' from worker request.");
             
             return ExecuteAsync(requestContext, input);
         }

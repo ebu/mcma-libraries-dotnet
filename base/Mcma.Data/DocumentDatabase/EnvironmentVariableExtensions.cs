@@ -1,8 +1,7 @@
 ﻿namespace Mcma.Data
 {
-    public static class EnvironmentVariableExtensions
+    public class DocumentDatabaseTableOptions
     {
-        public static string TableName(this IEnvironmentVariables environmentVariables)
-            => environmentVariables.Get(nameof(TableName));
+        public string TableName { get; set; }
     }
 }

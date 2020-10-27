@@ -1,0 +1,22 @@
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Mcma.Api.Routing.Defaults.Routes
+{
+    public static class DefaultRouteServiceCollectionExtensions
+    {
+        public static McmaApiBuilder AddDefaultRoutes<TResource>(this McmaApiBuilder apiBuilder,
+                                                                 string root,
+                                                                 Action<DefaultRouteCollectionBuilder<TResource>> configureRoutes = null)
+            where TResource : McmaResource
+        {
+            apiBuilder.Services.Configure<DefaultRouteCollectionOptions<TResource>>(opts => opts.Root = root);
+            
+            var defaultRouteCollectionBuilder = new DefaultRouteCollectionBuilder<TResource>(apiBuilder);
+            configureRoutes?.Invoke(defaultRouteCollectionBuilder);
+            defaultRouteCollectionBuilder.AddDefaults();
+
+            return apiBuilder;
+        }
+    }
+}

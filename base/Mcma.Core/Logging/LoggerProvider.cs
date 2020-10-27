@@ -1,10 +1,12 @@
+using Microsoft.Extensions.Options;
+
 namespace Mcma.Logging
 {
     public abstract class LoggerProvider<T> : ILoggerProvider where T : ILogger
     {
-        protected LoggerProvider(string source)
+        protected LoggerProvider(IOptions<LoggerProviderOptions> options)
         {
-            Source = source;
+            Source = options?.Value?.Source ?? throw new McmaException("Source not configured for logger provider.");
         }
 
         protected string Source { get; }

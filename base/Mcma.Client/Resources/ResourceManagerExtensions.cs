@@ -1,6 +1,5 @@
-using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Mcma;
 
 namespace Mcma.Client
 {
@@ -13,5 +12,27 @@ namespace Mcma.Client
 
             return resourceManager.GetAsync<T>(url);
         }
+
+        public static Task<T> CreateAsync<T>(this IResourceManager resourceManager, T resource, CancellationToken cancellationToken = default)
+            where T : McmaResource
+            => resourceManager.CreateAsync(resource.Id, resource, cancellationToken);
+
+        public static Task<T> UpdateAsync<T>(this IResourceManager resourceManager, T resource, CancellationToken cancellationToken = default)
+            where T : McmaResource
+            => resourceManager.UpdateAsync(resource.Id, resource, cancellationToken);
+
+        public static Task SendNotificationAsync<T>(this IResourceManager resourceManager,
+                                                    T resource,
+                                                    NotificationEndpoint notificationEndpoint,
+                                                    CancellationToken cancellationToken = default)
+            where T : McmaResource
+            => resourceManager.SendNotificationAsync(resource.Id, resource, notificationEndpoint, cancellationToken);
+
+        public static Task SendJobNotificationAsync<T>(this IResourceManager resourceManager,
+                                                       T resource,
+                                                       NotificationEndpoint notificationEndpoint,
+                                                       CancellationToken cancellationToken = default)
+            where T : McmaResource, INotifiable
+            => resourceManager.SendNotificationAsync(resource.Id, resource, resource.NotificationEndpoint, cancellationToken);
     }
 }

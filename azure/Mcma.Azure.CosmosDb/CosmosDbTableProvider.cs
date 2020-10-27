@@ -4,30 +4,32 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Serialization;
 using Mcma.Data;
+using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Azure.CosmosDb
 {
     public class CosmosDbTableProvider : IDocumentDatabaseTableProvider, IDisposable
     {
-        public CosmosDbTableProvider(CosmosDbTableProviderConfiguration providerConfiguration = null, CosmosDbTableOptions tableOptions = null)
+        public CosmosDbTableProvider(ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> customQueryBuilderRegistry,
+                                     IQueryDefinitionBuilder queryDefinitionBuilder,
+                                     IOptions<CosmosDbTableProviderOptions> options)
         {
-            providerConfiguration ??= new CosmosDbTableProviderConfiguration().FromEnvironmentVariables(EnvironmentVariables.Instance);
-            TableOptions = tableOptions ?? new CosmosDbTableOptions();
+            CustomQueryBuilderRegistry = customQueryBuilderRegistry ?? throw new ArgumentNullException(nameof(customQueryBuilderRegistry));
+            QueryDefinitionBuilder = queryDefinitionBuilder ?? throw new ArgumentNullException(nameof(queryDefinitionBuilder));
+            Options = options.Value ?? new CosmosDbTableProviderOptions();
+            Options.CosmosClient.Serializer = new CosmosJsonDotNetSerializer(McmaJson.DefaultSettings());
 
-            CosmosClient =
-                new CosmosClient(providerConfiguration.Endpoint,
-                                 providerConfiguration.Key,
-                                 new CosmosClientOptions
-                                 {
-                                     ApplicationRegion = providerConfiguration.Region,
-                                     Serializer = new CosmosJsonDotNetSerializer(McmaJson.DefaultSettings())
-                                 });
-
-            Database = CosmosClient.GetDatabase(providerConfiguration.DatabaseId);
+            CosmosClient = new CosmosClient(Options.Endpoint, Options.Key, Options.CosmosClient);
+            Database = CosmosClient.GetDatabase(Options.DatabaseId);
         }
 
-        private CosmosDbTableOptions TableOptions { get; }
+        private ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> CustomQueryBuilderRegistry { get; }
+
+        private IQueryDefinitionBuilder QueryDefinitionBuilder { get; }
+
+        private CosmosDbTableProviderOptions Options { get; }
 
         private CosmosClient CosmosClient { get; }
         
@@ -59,7 +61,7 @@ namespace Mcma.Azure.CosmosDb
                 ContainerPropertiesSemaphore.Release();
             }
             
-            return new CosmosDbTable(TableOptions, container, containerProperties);
+            return new CosmosDbTable(CustomQueryBuilderRegistry, QueryDefinitionBuilder, Options, container, containerProperties);
         }
 
         public void Dispose() => CosmosClient?.Dispose();

@@ -1,48 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Mcma.Serialization;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Azure.Cosmos;
-using Newtonsoft.Json.Linq;
 
 namespace Mcma.Azure.CosmosDb
 {
-    public static class ResponseMessageExtensions
-    {
-        public static async Task<T> UnwrapResourceAsync<T>(this ResponseMessage responseMessage) where T : class
-            => (await responseMessage.ToObjectAsync<CosmosDbItem<T>>())?.Resource;
-        
-        public static async Task<T> ToObjectAsync<T>(this ResponseMessage responseMessage) where T : class
-        {
-            string bodyText;
-            using (var streamReader = new StreamReader(responseMessage.Content))
-                bodyText = await streamReader.ReadToEndAsync();
-
-            return JToken.Parse(bodyText).ToMcmaObject<T>();
-        }
-    }
-    
     public class CosmosDbTable : IDocumentDatabaseTable
     {
-        public CosmosDbTable(CosmosDbTableOptions options, Container container, ContainerProperties containerProperties)
+        public CosmosDbTable(ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> customQueryBuilderRegistry,
+                             IQueryDefinitionBuilder queryDefinitionBuilder,
+                             CosmosDbTableProviderOptions options,
+                             Container container,
+                             ContainerProperties containerProperties)
         {
-            Options = options;
-            Container = container;
+            CustomQueryBuilderRegistry = customQueryBuilderRegistry ?? throw new ArgumentNullException(nameof(customQueryBuilderRegistry));
+            QueryDefinitionBuilder = queryDefinitionBuilder ?? throw new ArgumentNullException(nameof(queryDefinitionBuilder));
+            Container = container ?? throw new ArgumentNullException(nameof(container));
+            
+            if (containerProperties == null) throw new ArgumentNullException(nameof(containerProperties));
 
             var partitionKeyParts = containerProperties.PartitionKeyPath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
             if (partitionKeyParts.Length > 1)
                 throw new McmaException(
                     $"Container {containerProperties.Id} defines a partition key with multiple paths ({containerProperties.PartitionKeyPath}). MCMA only supports partition keys with a single path.");
-            
+
             PartitionKeyName = partitionKeyParts[0];
+            Options = options ?? new CosmosDbTableProviderOptions();
         }
 
-        private CosmosDbTableOptions Options { get; }
+        private ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> CustomQueryBuilderRegistry { get; }
+
+        private IQueryDefinitionBuilder QueryDefinitionBuilder { get; }
+
+        private CosmosDbTableProviderOptions Options { get; }
 
         private Container Container { get; }
         
@@ -84,7 +78,7 @@ namespace Mcma.Azure.CosmosDb
 
         public async Task<QueryResults<T>> QueryAsync<T>(Query<T> query) where T : class
         {
-            var queryDefinition = CosmosDbQueryDefinitionBuilder.Build(query, PartitionKeyName);
+            var queryDefinition = QueryDefinitionBuilder.Build(query, PartitionKeyName);
 
             return await ExecuteQuery<T>(queryDefinition, new QueryRequestOptions { MaxItemCount = query.PageSize }, query.PageStartToken);
         }
@@ -92,9 +86,9 @@ namespace Mcma.Azure.CosmosDb
         public async Task<QueryResults<TResource>> CustomQueryAsync<TResource, TParameters>(CustomQuery<TParameters> customQuery)
             where TResource : class
         {
-            var buildCustomQuery = Options.GetCustomQueryBuilder<TParameters>(customQuery.Name);
+            var customQueryBuilder = CustomQueryBuilderRegistry.Get<TParameters>(customQuery.Name);
 
-            var (queryDefinition, queryRequestOptions) = buildCustomQuery(customQuery);
+            var (queryDefinition, queryRequestOptions) = customQueryBuilder.Build(customQuery);
 
             return await ExecuteQuery<TResource>(queryDefinition, queryRequestOptions, customQuery.PageStartToken);
         }

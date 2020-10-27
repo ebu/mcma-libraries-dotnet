@@ -4,15 +4,16 @@ using Amazon.Lambda;
 using Amazon.Lambda.Model;
 using Mcma.Serialization;
 using Mcma.WorkerInvoker;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Aws.WorkerInvoker
 {
     public class LambdaWorkerInvoker : Mcma.WorkerInvoker.WorkerInvoker
     {
-        public LambdaWorkerInvoker(IAmazonLambda lambdaClient = null, IEnvironmentVariables environmentVariables = null)
-            : base(environmentVariables)
+        public LambdaWorkerInvoker(IOptions<LambdaWorkerInvokerOptions> options)
+            : base(options)
         {
-            LambdaClient = lambdaClient ?? new AmazonLambdaClient();
+            LambdaClient = new AmazonLambdaClient(options.Value?.Credentials, options.Value?.Config);
         }
         
         private IAmazonLambda LambdaClient { get; }

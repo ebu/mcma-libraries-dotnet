@@ -1,15 +1,16 @@
 using Mcma.Logging;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Azure.Logger
 {
     public class AppInsightsLoggerProvider : LoggerProvider<AppInsightsLogger>
     {
-        public AppInsightsLoggerProvider(string source, TelemetryClient telemetryClient = null)
-            : base(source)
+        public AppInsightsLoggerProvider(IOptions<AppInsightsLoggerProviderOptions> options)
+            : base(options)
         {
-            TelemetryClient = telemetryClient ?? new TelemetryClient(TelemetryConfiguration.CreateDefault());
+            TelemetryClient = new TelemetryClient(options.Value.TelemetryConfiguration ?? TelemetryConfiguration.CreateDefault());
         }
 
         private TelemetryClient TelemetryClient { get; }

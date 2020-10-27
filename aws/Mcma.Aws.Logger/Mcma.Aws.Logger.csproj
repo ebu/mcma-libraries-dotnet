@@ -6,6 +6,7 @@
     <PackageVersion>0.13.16</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
+    <RootNamespace>Mcma.Aws.Logger</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>

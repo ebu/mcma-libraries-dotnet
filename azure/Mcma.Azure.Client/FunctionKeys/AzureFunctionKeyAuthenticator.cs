@@ -1,31 +1,29 @@
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Client;
-using Mcma.Encryption;
+using Mcma.Utility;
 
 namespace Mcma.Azure.Client.FunctionKeys
 {
     public class AzureFunctionKeyAuthenticator : IAuthenticator
     {
-        public AzureFunctionKeyAuthenticator(AzureFunctionKeyAuthContext authContext, string decryptionKey = null)
+        public AzureFunctionKeyAuthenticator(AzureFunctionKeyAuthContext authContext, string decryptionKey)
         {
             FunctionKey = new Lazy<string>(() => GetFunctionKey(authContext));
-            DecryptionKey = decryptionKey ?? EnvironmentVariables.Instance.Get(AzureConstants.FunctionKeyEncryptionKeySetting);
+            DecryptionKey = decryptionKey;
         }
 
         private Lazy<string> FunctionKey { get; }
-
+        
         private string DecryptionKey { get; }
 
-        public Task SignAsync(HttpRequestMessage request)
+        public Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
         {
             request.Headers.Add(AzureConstants.FunctionKeyHeader, FunctionKey.Value);
-#if NET452
-            return Task.FromResult(true);
-#else
+            
             return Task.CompletedTask;
-#endif
         }
 
         private string GetFunctionKey(AzureFunctionKeyAuthContext authContext)
@@ -34,7 +32,7 @@ namespace Mcma.Azure.Client.FunctionKeys
                 return authContext.FunctionKey;
 
             if (string.IsNullOrWhiteSpace(DecryptionKey))
-                throw new Exception($"Function key is encrypted, but a key for decrypting it was not found in the environment variables for this application.");
+                throw new Exception("Function key is encrypted, but a key for decrypting it was not found in the environment variables for this application.");
 
             return EncryptionHelper.Decrypt(authContext.FunctionKey, DecryptionKey);
         }

@@ -1,6 +1,6 @@
 namespace Mcma
 {
-    public class JobAssignment : JobBase
+    public class JobAssignment : JobBase, INotifiable
     {
         public string JobId { get; set; }
 

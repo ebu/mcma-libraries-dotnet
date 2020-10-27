@@ -1,0 +1,26 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Mcma.Data;
+
+namespace Mcma.Api.Routing.Defaults.Routes
+{
+    internal class DefaultRouteQueryExecutor<TResource> : IDefaultRouteQueryExecutor<TResource> where TResource : McmaResource
+    {
+        public DefaultRouteQueryExecutor(IEnumerable<IMcmaApiCustomQuery<TResource>> customQueries)
+        {
+            CustomQueries = customQueries?.ToArray() ?? new IMcmaApiCustomQuery<TResource>[0];
+        }
+
+        private IMcmaApiCustomQuery<TResource>[] CustomQueries { get; }
+
+        public async Task<QueryResults<TResource>> ExecuteQueryAsync(McmaApiRequestContext requestContext, IDocumentDatabaseTable table)
+        {
+            var customQuery = CustomQueries.FirstOrDefault(x => x.IsMatch(requestContext));
+            if (customQuery != null)
+                return await customQuery.ExecuteAsync(requestContext, table);
+            
+            return await table.QueryAsync(requestContext.ToQuery<TResource>());
+        }
+    }
+}

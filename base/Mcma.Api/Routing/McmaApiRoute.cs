@@ -1,32 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
 
 namespace Mcma.Api.Routes
 {
-    public class McmaApiRoute
+    public abstract class McmaApiRoute : IMcmaApiRoute
     {
-        public McmaApiRoute(string httpMethod, string path, Func<McmaApiRequestContext, Task> handler)
-            : this(new HttpMethod(httpMethod), path, handler)
+        protected McmaApiRoute(HttpMethod httpMethod, string path)
         {
-        }
-
-        public McmaApiRoute(HttpMethod httpMethod, string path, Func<McmaApiRequestContext, Task> handler)
-        {
+            if (path == null) throw new ArgumentNullException(nameof(path));
+            
             HttpMethod = httpMethod ?? throw new ArgumentNullException(nameof(httpMethod));
-            Path = path ?? throw new ArgumentNullException(nameof(path));
-            Handler = handler ?? throw new ArgumentNullException(nameof(handler));
 
-            Template = new TemplateMatcher(TemplateParser.Parse(path), null);
+            TemplateMatcher = new TemplateMatcher(TemplateParser.Parse(path), null);
         }
 
         public HttpMethod HttpMethod { get; }
 
-        public string Path { get; }
+        private TemplateMatcher TemplateMatcher { get; }
 
-        public TemplateMatcher Template { get; }
-        
-        public Func<McmaApiRequestContext, Task> Handler { get; }
+        public bool IsMatch(string path, out IDictionary<string, object> pathVariables)
+        {
+            var routeValueDictionary = new RouteValueDictionary();
+            var isMatch = TemplateMatcher.TryMatch(path, routeValueDictionary);
+
+            pathVariables = routeValueDictionary;
+            return isMatch;
+        }
+
+        public abstract Task HandleAsync(McmaApiRequestContext requestContext);
     }
 }

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mcma.Logging;
 
 namespace Mcma.Worker
 {
     internal class DelegateWorkerOperation<T> : WorkerOperation<T>
     {
-        public DelegateWorkerOperation(ProviderCollection providerCollection,
-                                       string name,
+        public DelegateWorkerOperation(string name,
                                        Func<WorkerRequestContext, T, Task> executeAsync,
                                        Func<WorkerRequestContext, bool> accepts = null)
-            : base(providerCollection)
         {
             Name = name;
             ExecuteAsyncFunc = executeAsync;

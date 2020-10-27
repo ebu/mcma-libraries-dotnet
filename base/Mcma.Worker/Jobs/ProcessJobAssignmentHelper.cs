@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mcma.Client;
-using Mcma.Logging;
 using Mcma.Data;
 
 namespace Mcma.Worker
@@ -15,18 +14,19 @@ namespace Mcma.Worker
             IResourceManager resourceManager,
             WorkerRequestContext requestContext)
         {
-            DbTable = dbTable;
-            ResourceManager = resourceManager;
-            RequestContext = requestContext;
+            DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
+            ResourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
+            RequestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
+            
             JobAssignmentDatabaseId = requestContext.GetInputAs<ProcessJobAssignmentRequest>().JobAssignmentDatabaseId;
         }
 
         public IDocumentDatabaseTable DbTable { get; }
         public IResourceManager ResourceManager { get; }
+
         public WorkerRequestContext RequestContext { get; }
         public string JobAssignmentDatabaseId { get; }
-
-        public ILogger Logger => RequestContext.Logger;
+        
         public JobAssignment JobAssignment { get; private set; }
         public T Job { get; private set; }
         public JobProfile Profile { get; private set; }
@@ -118,7 +118,7 @@ namespace Mcma.Worker
                 if (jobAssignment != null)
                     break;
 
-                Logger?.Warn($"Failed to obtain job assignment from database table. Trying again in {delay} seconds.");
+                RequestContext.Logger.Warn($"Failed to obtain job assignment from database table. Trying again in {delay} seconds.");
                 await Task.Delay(delay * 1000);
                 jobAssignment = await DbTable.GetAsync<JobAssignment>(JobAssignmentDatabaseId);
             }

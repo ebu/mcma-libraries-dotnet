@@ -7,7 +7,7 @@ namespace Mcma.Worker
 {
     public class WorkerRequestContext
     {
-        public WorkerRequestContext(WorkerRequest request, string requestId, ILogger logger = null, IEnvironmentVariables environmentVariables = null)
+        public WorkerRequestContext(WorkerRequest request, string requestId)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
             
@@ -18,9 +18,6 @@ namespace Mcma.Worker
             Input = request.Input;
             Tracker = request.Tracker;
             RequestId = requestId;
-            
-            Logger = logger;
-            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
         }
 
         public string OperationName { get; }
@@ -29,11 +26,11 @@ namespace Mcma.Worker
         
         public McmaTracker Tracker { get; }
 
-        public ILogger Logger { get; }
-
-        public IEnvironmentVariables EnvironmentVariables { get; }
-
         public string RequestId { get; }
+        
+        public ILogger Logger { get; private set; }
+
+        internal void SetLogger(ILoggerProvider loggerProvider) => Logger = loggerProvider.Get(RequestId, Tracker);
 
         public object GetInputAs(Type type)
         {

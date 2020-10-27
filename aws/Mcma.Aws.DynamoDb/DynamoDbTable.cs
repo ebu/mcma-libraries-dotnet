@@ -13,12 +13,26 @@ namespace Mcma.Aws.DynamoDb
 {
     public class DynamoDbTable : IDocumentDatabaseTable
     {
-        public DynamoDbTable(IAmazonDynamoDB dynamoDb, DynamoDbTableDescription tableDescription, DynamoDbTableProviderOptions options = null)
+        public DynamoDbTable(ICustomQueryBuilderRegistry<QueryOperationConfig> customQueryBuilderRegistry,
+                             IAttributeMapper attributeMapper,
+                             IFilterExpressionBuilder filterExpressionBuilder,
+                             IAmazonDynamoDB dynamoDb,
+                             DynamoDbTableDescription tableDescription,
+                             DynamoDbTableProviderOptions options)
         {
+            CustomQueryBuilderRegistry = customQueryBuilderRegistry ?? throw new ArgumentNullException(nameof(customQueryBuilderRegistry));
+            AttributeMapper = attributeMapper ?? throw new ArgumentNullException(nameof(attributeMapper));
+            FilterExpressionBuilder = filterExpressionBuilder ?? throw new ArgumentNullException(nameof(filterExpressionBuilder));
             TableDescription = tableDescription ?? throw new ArgumentNullException(nameof(tableDescription));
             Options = options ?? new DynamoDbTableProviderOptions();
             Table = dynamoDb != null ? Table.LoadTable(dynamoDb, tableDescription.TableName) : throw new ArgumentNullException(nameof(dynamoDb));
         }
+
+        private ICustomQueryBuilderRegistry<QueryOperationConfig> CustomQueryBuilderRegistry { get; }
+
+        private IAttributeMapper AttributeMapper { get; }
+
+        private IFilterExpressionBuilder FilterExpressionBuilder { get; }
 
         private DynamoDbTableDescription TableDescription { get; }
 
@@ -54,7 +68,7 @@ namespace Mcma.Aws.DynamoDb
                 [nameof(resource)] = resourceJson
             };
 
-            foreach (var kvp in Options.GetTopLevelAttributes(partitionKey, sortKey, resource))
+            foreach (var kvp in AttributeMapper.GetMappedAttributes(partitionKey, sortKey, resource))
                 item[kvp.Key] = kvp.Value != null ? JToken.FromObject(kvp.Value) : JValue.CreateNull();
 
             return Document.FromJson(item.ToString());
@@ -70,7 +84,7 @@ namespace Mcma.Aws.DynamoDb
                     ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":partitionKey"] = query.Path}
                 };
 
-            var filterExpression = query.FilterExpression != null ? DynamoDbFilterExpressionBuilder.Build(query.FilterExpression) : null;
+            var filterExpression = query.FilterExpression != null ? FilterExpressionBuilder.Build(query.FilterExpression) : null;
 
             var indexName = default(string);
             if (query.SortBy != null)
@@ -105,9 +119,9 @@ namespace Mcma.Aws.DynamoDb
 
         public async Task<QueryResults<TResource>> CustomQueryAsync<TResource, TParameters>(CustomQuery<TParameters> customQuery) where TResource : class
         {
-            var buildCustomQuery = Options.GetCustomQueryBuilder<TParameters>(customQuery.Name);
+            var customQueryBuilder = CustomQueryBuilderRegistry.Get<TParameters>(customQuery.Name);
 
-            var queryOpConfig = buildCustomQuery(customQuery);
+            var queryOpConfig = customQueryBuilder.Build(customQuery);
             queryOpConfig.PaginationToken = customQuery.PageStartToken;
 
             var tableQuery = Table.Query(queryOpConfig);

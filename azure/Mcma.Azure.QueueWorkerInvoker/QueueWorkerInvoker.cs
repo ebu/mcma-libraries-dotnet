@@ -3,15 +3,16 @@ using Azure.Storage.Queues;
 using Mcma.Serialization;
 using Mcma.Utility;
 using Mcma.WorkerInvoker;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Azure.WorkerInvoker
 {
     public class QueueWorkerInvoker : Mcma.WorkerInvoker.WorkerInvoker
     {
-        public QueueWorkerInvoker(QueueServiceClient queueServiceClient = null, IEnvironmentVariables environmentVariables = null)
-            : base(environmentVariables)
+        public QueueWorkerInvoker(IOptions<QueueWorkerInvokerOptions> options)
+            : base(options)
         {
-            QueueServiceClient = queueServiceClient ?? new QueueServiceClient(EnvironmentVariables.Get("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"));
+            QueueServiceClient = new QueueServiceClient(options.Value.ConnectionString, options.Value.QueueClient);
         }
         
         private QueueServiceClient QueueServiceClient { get; }

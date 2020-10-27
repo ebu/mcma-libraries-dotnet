@@ -50,7 +50,7 @@ namespace Mcma.Azure.BlobStorage.Proxies
             
             sasBuilder.SetPermissions(BlobSasPermissions.Read);
 
-            return BlobClient.Uri + "?" + sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential(ServiceClient.AccountName, AccountKey)).ToString();
+            return BlobClient.Uri + "?" + sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential(ServiceClient.AccountName, AccountKey));
         }
     }
 }

@@ -2,47 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using Mcma;
 
 namespace Mcma.Client
 {
-    public class ServiceClient
+    internal class ServiceClient : IServiceClient
     {
-        internal ServiceClient(HttpClient httpClient, Service service, IAuthProvider authProvider = null)
+        internal ServiceClient(IAuthProvider authProvider, HttpClient httpClient, Service service, McmaTracker tracker)
         {
-            Data = service;
+            Tracker = tracker;
 
             ResourcesByType =
                 service.Resources != null
-                    ? service.Resources.ToDictionary(r => r.ResourceType, r => new ResourceEndpointClient(httpClient, authProvider, r, service.AuthType, service.AuthContext))
+                    ? service.Resources.ToDictionary(r => r.ResourceType,
+                                                     r =>
+                                                         new ResourceEndpointClient(authProvider,
+                                                                                    httpClient,
+                                                                                    r,
+                                                                                    service.AuthType,
+                                                                                    service.AuthContext,
+                                                                                    Tracker))
                     : new Dictionary<string, ResourceEndpointClient>();
         }
 
-        public Service Data { get; }
+        private McmaTracker Tracker { get; }
 
         private IDictionary<string, ResourceEndpointClient> ResourcesByType { get; }
 
-        public IEnumerable<ResourceEndpointClient> Resources => ResourcesByType.Values;
+        internal IEnumerable<ResourceEndpointClient> Resources => ResourcesByType.Values;
 
-        public bool HasResourceEndpointClient(string resourceType)
+        internal bool HasResourceEndpointClient(string resourceType)
             => ResourcesByType.ContainsKey(resourceType);
 
-        public bool HasResourceEndpointClient(Type resourceType)
-            => HasResourceEndpointClient(resourceType.Name);
+        internal IResourceEndpointClient GetResourceEndpointClient(string resourceType) =>
+            ResourcesByType.ContainsKey(resourceType) ? ResourcesByType[resourceType] : null;
 
-        public bool HasResourceEndpointClient<T>()
-            => HasResourceEndpointClient(typeof(T));
-
-        public ResourceEndpointClient GetResourceEndpointClient(string resourceType)
-            => ResourcesByType.ContainsKey(resourceType) ? ResourcesByType[resourceType] : null;
+        internal bool HasResourceEndpointClient(Type resourceType) => HasResourceEndpointClient(resourceType.Name);
             
-        public ResourceEndpointClient GetResourceEndpointClient(Type resourceType)
-            => GetResourceEndpointClient(resourceType.Name);
-            
-        public ResourceEndpointClient GetResourceEndpointClient<T>()
-            => GetResourceEndpointClient(typeof(T));
+        internal IResourceEndpointClient GetResourceEndpointClient(Type resourceType) => GetResourceEndpointClient(resourceType.Name);
 
-        public ResourceEndpointClient[] GetAllResourceEndpointClients()
-            => ResourcesByType.Values.ToArray();
+        public bool HasResourceEndpointClient<T>() => HasResourceEndpointClient(typeof(T));
+            
+        public IResourceEndpointClient GetResourceEndpointClient<T>() => GetResourceEndpointClient(typeof(T));
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -7,19 +8,25 @@ using System.Threading.Tasks;
 using Mcma.Api.Routes;
 using Mcma.Logging;
 using Mcma.Serialization;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Net.Http.Headers;
 
 namespace Mcma.Api
 {
-    public class McmaApiController
+    public class McmaApiController : IMcmaApiController
     {
         private const string JsonContentType = "application/json";
-        
-        public McmaApiController(McmaApiRouteCollection routes = null, ILoggerProvider loggerProvider = null)
+
+        public McmaApiController(ILoggerProvider loggerProvider,
+                                 IEnumerable<McmaApiRouteCollection> routeCollections,
+                                 IEnumerable<McmaApiRoute> routes)
         {
-            Routes = routes ?? new McmaApiRouteCollection();
-            LoggerProvider = loggerProvider;
+            LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+
+            Routes =
+                new McmaApiRouteCollection(
+                    (routeCollections ?? new McmaApiRouteCollection[0])
+                    .SelectMany(rc => rc)
+                    .Concat(routes?.OfType<IMcmaApiRoute>() ?? new IMcmaApiRoute[0]));
         }
 
         private ILoggerProvider LoggerProvider { get; }
@@ -64,8 +71,7 @@ namespace Mcma.Api
 
                 foreach (var route in Routes)
                 {
-                    var pathVariables = new RouteValueDictionary();
-                    if (route.Template.TryMatch(request.Path, pathVariables))
+                    if (route.IsMatch(request.Path, out var pathVariables))
                     {
                         pathMatched = true;
 
@@ -79,7 +85,7 @@ namespace Mcma.Api
 
                             request.PathVariables = pathVariables;
                             
-                            await route.Handler(requestContext);
+                            await route.HandleAsync(requestContext);
                             break;
                         }
                     }

@@ -15,13 +15,9 @@ namespace Mcma.Azure.FunctionsApi
     {
         public static async Task<McmaApiRequestContext> ToMcmaApiRequestContextAsync(
             this HttpRequest request,
-            ExecutionContext executionContext,
-            ILoggerProvider loggerProvider = null,
-            IEnvironmentVariables environmentVariables = null)
-            => new McmaApiRequestContext(
-                await request.ToMcmaApiRequestAsync(executionContext),
-                loggerProvider,
-                environmentVariables ?? EnvironmentVariables.Instance);
+            ILoggerProvider loggerProvider,
+            ExecutionContext executionContext)
+            => new McmaApiRequestContext(loggerProvider, await request.ToMcmaApiRequestAsync(executionContext));
 
         public static async Task<McmaApiRequest> ToMcmaApiRequestAsync(this HttpRequest request, ExecutionContext executionContext)
             => new McmaApiRequest

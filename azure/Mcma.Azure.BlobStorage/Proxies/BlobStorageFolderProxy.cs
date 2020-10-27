@@ -1,7 +1,6 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
 namespace Mcma.Azure.BlobStorage.Proxies

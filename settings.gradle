@@ -18,6 +18,5 @@ include "aws",
         "base:Mcma.Client",
         "base:Mcma.Core",
         "base:Mcma.Data",
-        "base:Mcma.Encryption",
         "base:Mcma.Worker",
         "base:Mcma.WorkerInvoker"

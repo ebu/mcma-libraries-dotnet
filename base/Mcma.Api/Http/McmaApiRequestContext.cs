@@ -14,18 +14,15 @@ namespace Mcma.Api
     {
         private static readonly HttpMethod[] MethodsSupportingRequestBody = {HttpMethod.Post, HttpMethod.Put, new HttpMethod("PATCH")};
 
-        public McmaApiRequestContext(McmaApiRequest request, ILoggerProvider loggerProvider = null, IEnvironmentVariables environmentVariables = null)
+        public McmaApiRequestContext(ILoggerProvider loggerProvider, McmaApiRequest request)
         {
-            Request = request;
-            LoggerProvider = loggerProvider;
-            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
+            LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
         }
 
         public McmaApiRequest Request { get; }
 
         private ILoggerProvider LoggerProvider { get; }
-
-        public IEnvironmentVariables EnvironmentVariables { get; }
 
         public McmaApiResponse Response { get; } = new McmaApiResponse();
 

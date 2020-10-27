@@ -6,44 +6,38 @@ using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
 using Mcma.Api;
-using Mcma.Api.Routes;
 using Mcma.Logging;
 
 namespace Mcma.Aws.ApiGateway
 {
-    public class ApiGatewayApiController
+    public class ApiGatewayApiController : IApiGatewayApiController
     {
-        public ApiGatewayApiController(McmaApiRouteCollection routes, ILoggerProvider loggerProvider = null, IEnvironmentVariables environmentVariables = null)
+        public ApiGatewayApiController(ILoggerProvider loggerProvider, IMcmaApiController controller)
         {
-            McmaApiController = new McmaApiController(routes);
-            LoggerProvider = loggerProvider;
-            EnvironmentVariables = environmentVariables ?? Mcma.EnvironmentVariables.Instance;
+            LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+            Controller = controller ?? throw new ArgumentNullException(nameof(controller));
         }
-
-        private McmaApiController McmaApiController { get; }
 
         private ILoggerProvider LoggerProvider { get; }
 
-        private IEnvironmentVariables EnvironmentVariables { get; }
+        private IMcmaApiController Controller { get; }
 
         public async Task<APIGatewayHttpApiV2ProxyResponse> HandleRequestAsync(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
         {
-            var requestContext = new McmaApiRequestContext(
-                new McmaApiRequest
-                {
-                    Id = context.AwsRequestId,
-                    Path = request.RequestContext.Http.Path.Substring(request.RequestContext.Stage.Length + 1),
-                    HttpMethod = new HttpMethod(request.RequestContext.Http.Method),
-                    Headers = request.Headers,
-                    PathVariables = new Dictionary<string, object>(),
-                    QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
-                    Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
-                },
-                LoggerProvider,
-                EnvironmentVariables
-            );
+            var requestContext =
+                new McmaApiRequestContext(LoggerProvider,
+                                          new McmaApiRequest
+                                          {
+                                              Id = context.AwsRequestId,
+                                              Path = request.RequestContext.Http.Path.Substring(request.RequestContext.Stage.Length + 1),
+                                              HttpMethod = new HttpMethod(request.RequestContext.Http.Method),
+                                              Headers = request.Headers,
+                                              PathVariables = new Dictionary<string, object>(),
+                                              QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
+                                              Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
+                                          });
             
-            await McmaApiController.HandleRequestAsync(requestContext);
+            await Controller.HandleRequestAsync(requestContext);
 
             var responseBodyString =
                 requestContext.Response.JsonBody?.ToString() ??
@@ -62,22 +56,20 @@ namespace Mcma.Aws.ApiGateway
 
         public async Task<APIGatewayProxyResponse> HandleRequestAsync(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            var requestContext = new McmaApiRequestContext(
-                new McmaApiRequest
-                {
-                    Id = context.AwsRequestId,
-                    Path = request.Path,
-                    HttpMethod = new HttpMethod(request.HttpMethod),
-                    Headers = request.Headers,
-                    PathVariables = new Dictionary<string, object>(),
-                    QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
-                    Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
-                },
-                LoggerProvider,
-                EnvironmentVariables
-            );
+            var requestContext =
+                new McmaApiRequestContext(LoggerProvider,
+                                          new McmaApiRequest
+                                          {
+                                              Id = context.AwsRequestId,
+                                              Path = request.Path,
+                                              HttpMethod = new HttpMethod(request.HttpMethod),
+                                              Headers = request.Headers,
+                                              PathVariables = new Dictionary<string, object>(),
+                                              QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
+                                              Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
+                                          });
             
-            await McmaApiController.HandleRequestAsync(requestContext);
+            await Controller.HandleRequestAsync(requestContext);
 
             var responseBodyString =
                 requestContext.Response.JsonBody?.ToString() ??

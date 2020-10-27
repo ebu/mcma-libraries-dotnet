@@ -8,6 +8,6 @@ namespace Mcma.Worker
     {
         string Name { get; }
 
-        Task ExecuteAsync(ProviderCollection providerCollection, ProcessJobAssignmentHelper<TJob> workerJobHelper, WorkerRequestContext requestContext);
+        Task ExecuteAsync(ProcessJobAssignmentHelper<TJob> workerJobHelper, WorkerRequestContext requestContext);
     }
 }

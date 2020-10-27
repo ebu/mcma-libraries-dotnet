@@ -2,7 +2,7 @@ using System;
 
 namespace Mcma
 {
-    public class Job : JobBase
+    public class Job : JobBase, INotifiable
     {
         public string ParentId { get; set; }
 
