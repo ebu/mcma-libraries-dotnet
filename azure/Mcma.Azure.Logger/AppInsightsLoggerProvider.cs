@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Mcma.Logging;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -18,6 +19,10 @@ namespace Mcma.Azure.Logger
         protected override AppInsightsLogger Get(string source, string requestId, McmaTracker tracker)
             => new AppInsightsLogger(TelemetryClient, source, requestId, tracker);
 
-        public void Flush() => TelemetryClient.Flush();
+        public override Task FlushAsync()
+        {
+            TelemetryClient.Flush();
+            return Task.CompletedTask;
+        }
     }
 }

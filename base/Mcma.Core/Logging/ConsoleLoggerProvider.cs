@@ -1,15 +1,15 @@
+using Microsoft.Extensions.Options;
+
 namespace Mcma.Logging
 {
-    public class ConsoleLoggerProvider : ILoggerProvider
+    public class ConsoleLoggerProvider : LoggerProvider<ConsoleLogger>
     {
-        public ConsoleLoggerProvider(string source)
+        public ConsoleLoggerProvider(IOptions<LoggerProviderOptions> options)
+            : base(options)
         {
-            Source = source;
         }
 
-        private string Source { get; }
-
-        public ILogger Get(string requestId = null, McmaTracker tracker = null)
+        protected override ConsoleLogger Get(string source, string requestId, McmaTracker tracker)
             => new ConsoleLogger(Source, requestId, tracker);
     }
 }

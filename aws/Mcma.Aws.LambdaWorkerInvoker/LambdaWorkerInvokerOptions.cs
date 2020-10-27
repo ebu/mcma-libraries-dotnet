@@ -6,8 +6,8 @@ namespace Mcma.Aws.WorkerInvoker
 {
     public class LambdaWorkerInvokerOptions : WorkerInvokerOptions
     {
-        public AWSCredentials Credentials { get; set; }
+        public AWSCredentials Credentials { get; set; } = FallbackCredentialsFactory.GetCredentials();
         
-        public AmazonLambdaConfig Config { get; set; }
+        public AmazonLambdaConfig Config { get; set; } = new AmazonLambdaConfig();
     }
 }

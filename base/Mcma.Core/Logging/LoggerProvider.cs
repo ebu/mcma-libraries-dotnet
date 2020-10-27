@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 
 namespace Mcma.Logging
@@ -14,5 +15,7 @@ namespace Mcma.Logging
         public ILogger Get(string requestId = null, McmaTracker tracker = null) => Get(Source, requestId, tracker);
 
         protected abstract T Get(string source, string requestId, McmaTracker tracker);
+
+        public virtual Task FlushAsync() => Task.CompletedTask;
     }
 }

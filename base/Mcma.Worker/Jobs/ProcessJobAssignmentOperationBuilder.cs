@@ -11,7 +11,7 @@ namespace Mcma.Worker
             Services = services ?? throw new ArgumentNullException(nameof(services));
         }
         
-        private IServiceCollection Services { get; }
+        public IServiceCollection Services { get; }
 
         public ProcessJobAssignmentOperationBuilder<TJob> AddProfile<TProfile>()
             where TProfile : class, IJobProfile<TJob>

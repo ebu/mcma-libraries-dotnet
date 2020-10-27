@@ -6,7 +6,7 @@ namespace Mcma.Aws.ApiGateway
 {
     public static class ApiGatewayServiceCollectionExtensions
     {
-        public static IServiceCollection AddApiGatewayApi(this IServiceCollection services, Action<McmaApiBuilder> build)
+        public static IServiceCollection AddMcmaApiGatewayApi(this IServiceCollection services, Action<McmaApiBuilder> build)
             => services.AddMcmaApi(build)
                        .AddSingleton<IApiGatewayApiController, ApiGatewayApiController>();
     }

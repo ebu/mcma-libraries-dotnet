@@ -141,7 +141,7 @@ namespace Mcma.Aws.CloudWatch
         protected override CloudWatchLogger Get(string source, string requestId, McmaTracker tracker) =>
             new CloudWatchLogger(source, requestId, tracker, AddLogEvent);
 
-        public async Task FlushAsync()
+        public override async Task FlushAsync()
         {
             if (ProcessingTask != null)
                 await ProcessingTask;
