@@ -11,5 +11,12 @@ namespace Mcma.Aws.CloudWatch
             services.Configure(configureOptions);
             return services.AddSingleton<ILoggerProvider, CloudWatchLoggerProvider>();
         }
+
+        public static IServiceCollection AddMcmaCloudWatchLogging(this IServiceCollection services, string source, string logGroupName)
+            => services.AddMcmaCloudWatchLogging(opts =>
+            {
+                opts.Source = source;
+                opts.LogGroupName = logGroupName;
+            });
     }
 }

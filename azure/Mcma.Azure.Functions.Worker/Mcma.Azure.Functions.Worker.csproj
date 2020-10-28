@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\base\Mcma.Worker\Mcma.Worker.csproj" />
+        <ProjectReference Include="..\Mcma.Azure.CosmosDb\Mcma.Azure.CosmosDb.csproj" />
+        <ProjectReference Include="..\Mcma.Azure.Logger\Mcma.Azure.Logger.csproj" />
+    </ItemGroup>
+
+</Project>

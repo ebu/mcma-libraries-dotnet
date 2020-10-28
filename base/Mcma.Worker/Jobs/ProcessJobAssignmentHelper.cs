@@ -12,7 +12,7 @@ namespace Mcma.Worker
         public ProcessJobAssignmentHelper(
             IDocumentDatabaseTable dbTable,
             IResourceManager resourceManager,
-            WorkerRequestContext requestContext)
+            McmaWorkerRequestContext requestContext)
         {
             DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
             ResourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
@@ -24,7 +24,7 @@ namespace Mcma.Worker
         public IDocumentDatabaseTable DbTable { get; }
         public IResourceManager ResourceManager { get; }
 
-        public WorkerRequestContext RequestContext { get; }
+        public McmaWorkerRequestContext RequestContext { get; }
         public string JobAssignmentDatabaseId { get; }
         
         public JobAssignment JobAssignment { get; private set; }

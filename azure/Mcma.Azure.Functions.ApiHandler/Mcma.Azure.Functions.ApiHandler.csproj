@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Mcma.Azure.CosmosDb\Mcma.Azure.CosmosDb.csproj" />
+        <ProjectReference Include="..\Mcma.Azure.FunctionsApi\Mcma.Azure.FunctionsApi.csproj" />
+        <ProjectReference Include="..\Mcma.Azure.Logger\Mcma.Azure.Logger.csproj" />
+        <ProjectReference Include="..\Mcma.Azure.QueueWorkerInvoker\Mcma.Azure.QueueWorkerInvoker.csproj" />
+    </ItemGroup>
+
+</Project>

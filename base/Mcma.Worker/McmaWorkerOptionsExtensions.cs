@@ -2,9 +2,9 @@
 
 namespace Mcma.Worker
 {
-    public static class WorkerOptionsExtensions
+    public static class McmaWorkerOptionsExtensions
     {
-        public static WorkerOptions ValidateAndGet(this IOptions<WorkerOptions> options)
+        public static McmaWorkerOptions ValidateAndGet(this IOptions<McmaWorkerOptions> options)
         {
             if (options.Value == null)
                 throw new McmaException("Worker not configured");

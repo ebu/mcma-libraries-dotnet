@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Azure.FunctionsApi
 {
-    public static class ApiGatewayServiceCollectionExtensions
+    public static class AzureFunctionsApiServiceCollectionExtensions
     {
-        public static IServiceCollection AddAzureFunctionApi(this IServiceCollection services, Action<McmaApiBuilder> build)
+        public static IServiceCollection AddMcmaAzureFunctionApi(this IServiceCollection services, Action<McmaApiBuilder> build)
             => services.AddMcmaApi(build)
                        .AddSingleton<IAzureFunctionApiController, AzureFunctionApiController>();
     }

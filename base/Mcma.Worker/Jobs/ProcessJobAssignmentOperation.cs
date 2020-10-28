@@ -9,22 +9,22 @@ using Microsoft.Extensions.Options;
 
 namespace Mcma.Worker
 {
-    public class ProcessJobAssignmentOperation<TJob> : WorkerOperation<ProcessJobAssignmentRequest> where TJob : Job
+    public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJobAssignmentRequest> where TJob : Job
     {
         internal ProcessJobAssignmentOperation(IDocumentDatabaseTableProvider dbTableProvider,
                                                IResourceManagerProvider resourceManagerProvider,
-                                               IOptions<WorkerOptions> options)
+                                               IOptions<McmaWorkerOptions> options)
         {
             DbTableProvider = dbTableProvider ?? throw new ArgumentNullException(nameof(dbTableProvider));
             ResourceManagerProvider = resourceManagerProvider ?? throw new ArgumentNullException(nameof(resourceManagerProvider));
-            WorkerOptions = options.ValidateAndGet();
+            McmaWorkerOptions = options.ValidateAndGet();
         }
 
         private IDocumentDatabaseTableProvider DbTableProvider { get; }
 
         private IResourceManagerProvider ResourceManagerProvider { get; }
 
-        private WorkerOptions WorkerOptions { get; }
+        private McmaWorkerOptions McmaWorkerOptions { get; }
 
         internal List<IJobProfile<TJob>> Profiles { get; } = new List<IJobProfile<TJob>>();
 
@@ -38,7 +38,7 @@ namespace Mcma.Worker
             return this;
         }
 
-        protected override async Task ExecuteAsync(WorkerRequestContext requestContext, ProcessJobAssignmentRequest requestInput)
+        protected override async Task ExecuteAsync(McmaWorkerRequestContext requestContext, ProcessJobAssignmentRequest requestInput)
         {
             if (requestContext == null) throw new ArgumentNullException(nameof(requestContext));
             if (requestInput == null) throw new ArgumentNullException(nameof(requestInput));
@@ -47,8 +47,8 @@ namespace Mcma.Worker
 
             var jobAssignmentHelper =
                 new ProcessJobAssignmentHelper<TJob>(
-                    await DbTableProvider.GetAsync(WorkerOptions.TableName),
-                    ResourceManagerProvider.Get(WorkerOptions.ResourceManager),
+                    await DbTableProvider.GetAsync(McmaWorkerOptions.TableName),
+                    ResourceManagerProvider.Get(McmaWorkerOptions.ResourceManager),
                     requestContext);
 
             try

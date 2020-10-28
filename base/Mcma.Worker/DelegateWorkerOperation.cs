@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace Mcma.Worker
 {
-    internal class DelegateWorkerOperation<T> : WorkerOperation<T>
+    internal class DelegateMcmaWorkerOperation<T> : McmaWorkerOperation<T>
     {
-        public DelegateWorkerOperation(string name,
-                                       Func<WorkerRequestContext, T, Task> executeAsync,
-                                       Func<WorkerRequestContext, bool> accepts = null)
+        public DelegateMcmaWorkerOperation(string name,
+                                       Func<McmaWorkerRequestContext, T, Task> executeAsync,
+                                       Func<McmaWorkerRequestContext, bool> accepts = null)
         {
             Name = name;
             ExecuteAsyncFunc = executeAsync;
@@ -16,12 +16,12 @@ namespace Mcma.Worker
 
         public override string Name { get; }
 
-        private Func<WorkerRequestContext, T, Task> ExecuteAsyncFunc { get; }
+        private Func<McmaWorkerRequestContext, T, Task> ExecuteAsyncFunc { get; }
 
-        private Func<WorkerRequestContext, bool> AcceptsFunc { get; }
+        private Func<McmaWorkerRequestContext, bool> AcceptsFunc { get; }
 
-        protected override bool Accepts(WorkerRequestContext reqCtx) => AcceptsFunc(reqCtx);
+        protected override bool Accepts(McmaWorkerRequestContext reqCtx) => AcceptsFunc(reqCtx);
 
-        protected override Task ExecuteAsync(WorkerRequestContext requestContext, T requestInput) => ExecuteAsyncFunc(requestContext, requestInput);
+        protected override Task ExecuteAsync(McmaWorkerRequestContext requestContext, T requestInput) => ExecuteAsyncFunc(requestContext, requestInput);
     }
 }

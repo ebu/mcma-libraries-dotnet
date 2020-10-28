@@ -5,9 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Mcma.Worker
 {
-    public class WorkerRequestContext
+    public class McmaWorkerRequestContext
     {
-        public WorkerRequestContext(WorkerRequest request, string requestId)
+        public McmaWorkerRequestContext(McmaWorkerRequest request, string requestId)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
             

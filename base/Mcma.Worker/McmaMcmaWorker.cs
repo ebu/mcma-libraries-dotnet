@@ -6,9 +6,9 @@ using Mcma.Logging;
 
 namespace Mcma.Worker
 {
-    public class Worker : IWorker
+    public class McmaMcmaWorker : IMcmaWorker
     {
-        public Worker(ILoggerProvider loggerProvider, IEnumerable<IWorkerOperation> operations)
+        public McmaMcmaWorker(ILoggerProvider loggerProvider, IEnumerable<IMcmaWorkerOperation> operations)
         {
             LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
             Operations = operations?.ToArray() ?? throw new McmaException("No operations registered for worker.");
@@ -16,9 +16,9 @@ namespace Mcma.Worker
         
         private ILoggerProvider LoggerProvider { get; }
 
-        private IWorkerOperation[] Operations { get; }
+        private IMcmaWorkerOperation[] Operations { get; }
 
-        public async Task DoWorkAsync(WorkerRequestContext requestContext)
+        public async Task DoWorkAsync(McmaWorkerRequestContext requestContext)
         {
             if (requestContext == null)
                 throw new ArgumentNullException(nameof(requestContext));

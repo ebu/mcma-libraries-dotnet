@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Mcma.Worker
 {
-    public class WorkerRequest
+    public class McmaWorkerRequest
     {
         public string OperationName { get; set; }
         

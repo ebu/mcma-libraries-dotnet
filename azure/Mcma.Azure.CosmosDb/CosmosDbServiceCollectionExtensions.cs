@@ -21,5 +21,14 @@ namespace Mcma.Azure.CosmosDb
             
             return services.AddSingleton<IDocumentDatabaseTableProvider, CosmosDbTableProvider>();
         }
+
+        public static IServiceCollection AddMcmaCosmosDb(this IServiceCollection services, string endpoint, string key, string databaseId, string region)
+            => services.AddMcmaCosmosDb(opts =>
+            {
+                opts.Endpoint = endpoint;
+                opts.Key = key;
+                opts.DatabaseId = databaseId;
+                opts.CosmosClient.ApplicationRegion = region;
+            });
     }
 }

@@ -4,20 +4,20 @@ using Mcma.Logging;
 
 namespace Mcma.Worker
 {
-    public abstract class WorkerOperation<T> : IWorkerOperation
+    public abstract class McmaWorkerOperation<T> : IMcmaWorkerOperation
     {   
         public abstract string Name { get; }
 
         public Type InputType => typeof(T);
 
-        private bool IsValidRequest(WorkerRequestContext reqCtx)
+        private bool IsValidRequest(McmaWorkerRequestContext reqCtx)
             => Name.Equals(reqCtx.OperationName, StringComparison.OrdinalIgnoreCase) && reqCtx.TryGetInputAs<T>(out _);
 
-        bool IWorkerOperation.Accepts(WorkerRequestContext reqCtx) => IsValidRequest(reqCtx) && Accepts(reqCtx);
+        bool IMcmaWorkerOperation.Accepts(McmaWorkerRequestContext reqCtx) => IsValidRequest(reqCtx) && Accepts(reqCtx);
 
-        protected virtual bool Accepts(WorkerRequestContext reqCtx) => true;
+        protected virtual bool Accepts(McmaWorkerRequestContext reqCtx) => true;
 
-        Task IWorkerOperation.ExecuteAsync(WorkerRequestContext requestContext)
+        Task IMcmaWorkerOperation.ExecuteAsync(McmaWorkerRequestContext requestContext)
         {
             if (requestContext == null)
                 throw new ArgumentNullException(nameof(requestContext));
@@ -29,6 +29,6 @@ namespace Mcma.Worker
             return ExecuteAsync(requestContext, input);
         }
 
-        protected abstract Task ExecuteAsync(WorkerRequestContext requestContext, T requestInput);
+        protected abstract Task ExecuteAsync(McmaWorkerRequestContext requestContext, T requestInput);
     }
 }

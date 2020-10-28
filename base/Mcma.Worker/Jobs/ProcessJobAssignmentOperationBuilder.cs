@@ -21,7 +21,7 @@ namespace Mcma.Worker
         }
 
         public ProcessJobAssignmentOperationBuilder<TJob> AddProfile(string profileName,
-                                                                     Func<ProcessJobAssignmentHelper<TJob>, WorkerRequestContext, Task> profileHandler)
+                                                                     Func<ProcessJobAssignmentHelper<TJob>, McmaWorkerRequestContext, Task> profileHandler)
         {
             Services.AddSingleton<IJobProfile<TJob>>(new DelegateJobProfile<TJob>(profileName, profileHandler));
             return this;

@@ -2,7 +2,7 @@
 
 namespace Mcma.Worker
 {
-    public class WorkerOptions
+    public class McmaWorkerOptions
     {
         public string TableName { get; set; }
         

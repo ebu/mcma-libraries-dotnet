@@ -4,6 +4,6 @@ namespace Mcma.Azure.Client.FunctionKeys
 {
     public class AzureFunctionKeyAuthenticatorOptions
     {
-        public string DecryptionKey { get; set; } = Environment.GetEnvironmentVariable(AzureConstants.FunctionKeyEncryptionKeySetting);
+        public string DecryptionKey { get; set; }
     }
 }

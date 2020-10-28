@@ -4,16 +4,16 @@ namespace Mcma.Worker
 {
     public static class ProcessJobAssigmentOperationServiceCollectionExtensions
     {
-        public static WorkerBuilder AddProcessJobAssignmentOperation<TJob>(this WorkerBuilder workerBuilder,
+        public static McmaWorkerBuilder AddProcessJobAssignmentOperation<TJob>(this McmaWorkerBuilder mcmaWorkerBuilder,
                                                                            Action<ProcessJobAssignmentOperationBuilder<TJob>> addProfiles)
             where TJob : Job
         {
-            workerBuilder.AddOperation<ProcessJobAssignmentOperation<TJob>>();
+            mcmaWorkerBuilder.AddOperation<ProcessJobAssignmentOperation<TJob>>();
             
-            var builder = new ProcessJobAssignmentOperationBuilder<TJob>(workerBuilder.Services);
+            var builder = new ProcessJobAssignmentOperationBuilder<TJob>(mcmaWorkerBuilder.Services);
             addProfiles(builder);
 
-            return workerBuilder;
+            return mcmaWorkerBuilder;
         }
     }
 }

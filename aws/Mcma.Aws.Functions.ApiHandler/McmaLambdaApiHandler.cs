@@ -6,9 +6,9 @@ using Mcma.Logging;
 
 namespace Mcma.Aws.Functions.ApiHandler
 {  
-    public class ApiFunctionHandler : IMcmaLambdaFunctionHandler<APIGatewayProxyRequest, APIGatewayProxyResponse>
+    public class McmaLambdaApiHandler : IMcmaLambdaFunctionHandler<APIGatewayProxyRequest, APIGatewayProxyResponse>
     {
-        public ApiFunctionHandler(ILoggerProvider loggerProvider, IApiGatewayApiController apiGatewayApiController)
+        public McmaLambdaApiHandler(ILoggerProvider loggerProvider, IApiGatewayApiController apiGatewayApiController)
         {
             LoggerProvider = loggerProvider;
             ApiController = apiGatewayApiController;

@@ -5,12 +5,12 @@ namespace Mcma.Worker
 {
     public static class WorkerServiceCollectionExtensions
     {
-        public static IServiceCollection AddMcmaWorker(this IServiceCollection services, Action<WorkerBuilder> buildWorker)
+        public static IServiceCollection AddMcmaWorker(this IServiceCollection services, Action<McmaWorkerBuilder> buildWorker)
         {
-            var builder = new WorkerBuilder(services);
+            var builder = new McmaWorkerBuilder(services);
             buildWorker(builder);
             
-            return services.AddSingleton<IWorker, Worker>();
+            return services.AddSingleton<IMcmaWorker, McmaMcmaWorker>();
         }
     }
 }
