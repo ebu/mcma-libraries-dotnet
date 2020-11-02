@@ -14,16 +14,20 @@ namespace Mcma.Aws.Functions.ApiHandler
     {
         public static IServiceCollection McmaAzureFunctionApiHandler(this IServiceCollection services,
                                                                      string applicationName,
-                                                                     Action<McmaApiBuilder> buildApi)
+                                                                     Action<McmaApiBuilder> buildApi,
+                                                                     Action<CosmosDbTableOptions> configureCosmosDb = null)
             =>
                 services.AddMcmaAppInsightsLogging(applicationName)
-                        .AddMcmaCosmosDb(CosmosDbTableProviderOptions.SetFromEnvironmentVariables)
+                        .AddMcmaCosmosDb()
                         .AddMcmaAzureFunctionApi(buildApi);
 
-        public static IServiceCollection McmaAzureFunctionJobAssignmentApiHandler(this IServiceCollection services, string applicationName)
+        public static IServiceCollection McmaAzureFunctionJobAssignmentApiHandler(this IServiceCollection services,
+                                                                                  string applicationName,
+                                                                                  string workerQueueName = null,
+                                                                                  Action<CosmosDbTableOptions> configureCosmosDb = null)
             => services.AddMcmaAppInsightsLogging(applicationName)
-                       .AddMcmaCosmosDb(CosmosDbTableProviderOptions.SetFromEnvironmentVariables)
-                       .AddMcmaQueueWorkerInvoker(McmaEnvironmentVariables.Get("WORKER_QUEUE_NAME"))
+                       .AddMcmaCosmosDb(configureCosmosDb)
+                       .AddMcmaQueueWorkerInvoker(workerQueueName ?? McmaQueueWorkerInvokerEnvironmentVariables.WorkerQueueName)
                        .AddMcmaAzureFunctionApi(apiBuilder => apiBuilder.AddDefaultJobAssignmentRoutes());
     }
 }

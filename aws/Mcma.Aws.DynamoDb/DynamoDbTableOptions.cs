@@ -1,9 +1,10 @@
 ﻿using Amazon.DynamoDBv2;
 using Amazon.Runtime;
+using Mcma.Data;
 
 namespace Mcma.Aws.DynamoDb
 {
-    public class DynamoDbTableProviderOptions
+    public class DynamoDbTableOptions : DocumentDatabaseTableOptions
     {
         public bool? ConsistentGet { get; set; }
         

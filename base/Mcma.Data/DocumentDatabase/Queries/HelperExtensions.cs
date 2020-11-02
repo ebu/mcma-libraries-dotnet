@@ -14,5 +14,15 @@ namespace Mcma.Data.DocumentDatabase.Queries
                 LogicalOperator = LogicalOperator.And
             };
         }
+        
+        public static IFilterExpression<T> ToFilterExpression<T>(this IEnumerable<KeyValuePair<string, string>> keyValuePairs)
+        {
+            return new FilterCriteriaGroup<T>
+            {
+                Children = keyValuePairs.Select(kvp => new FilterCriteria<T>(kvp.Key, BinaryOperator.EqualTo, kvp.Value))
+                                        .ToArray<IFilterExpression<T>>(),
+                LogicalOperator = LogicalOperator.And
+            };
+        }
     }
 }

@@ -4,16 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Azure.CosmosDb
 {
-    public class CosmosDbTableProviderBuilder
+    public class CosmosDbTableBuilder
     {
-        public CosmosDbTableProviderBuilder(IServiceCollection services)
+        public CosmosDbTableBuilder(IServiceCollection services)
         {
             Services = services;
         }
         
         private IServiceCollection Services { get; }
 
-        public CosmosDbTableProviderBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
+        public CosmosDbTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
             where TCustomQueryBuilder : class, ICustomQueryBuilder<TParameters, (QueryDefinition, QueryRequestOptions)>
         {
             Services.AddSingleton<ICustomQueryBuilder<TParameters, (QueryDefinition, QueryRequestOptions)>, TCustomQueryBuilder>();

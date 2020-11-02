@@ -4,8 +4,11 @@ namespace Mcma.Azure.CosmosDb
 {
     public static class McmaCosmosDbEnvironmentVariables
     {
-        public const string EnvironmentVariablePrefix = "COSMOSDB_";
+        private const string EnvironmentVariablePrefix = "COSMOSDB_";
 
-        public static string Get(string key) => McmaEnvironmentVariables.Get(EnvironmentVariablePrefix + key);
+        public static string Endpoint => McmaEnvironmentVariables.Get(EnvironmentVariablePrefix + "ENDPOINT", false);
+        public static string Key => McmaEnvironmentVariables.Get(EnvironmentVariablePrefix + "KEY", false);
+        public static string DatabaseId => McmaEnvironmentVariables.Get(EnvironmentVariablePrefix + "DATABASE_ID", false);
+        public static string Region => McmaEnvironmentVariables.Get(EnvironmentVariablePrefix + "REGION", false);
     }
 }

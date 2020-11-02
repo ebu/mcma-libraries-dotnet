@@ -9,19 +9,26 @@ namespace Mcma.Aws.DynamoDb
 {
     public static class DynamoDbServiceCollectionExtensions
     {
-        public static IServiceCollection AddMcmaDynamoDb(this IServiceCollection services, Action<DynamoDbTableProviderOptions> configureOptions = null, Action<DynamoDbTableProviderBuilder> build = null)
+        public static IServiceCollection AddMcmaDynamoDb(this IServiceCollection services,
+                                                         Action<DynamoDbTableOptions> configureOptions = null,
+                                                         Action<DynamoDbTableBuilder> build = null)
         {
             if (configureOptions != null)
                 services.Configure(configureOptions);
 
-            build?.Invoke(new DynamoDbTableProviderBuilder(services));
+            build?.Invoke(new DynamoDbTableBuilder(services));
 
             services.TryAddSingleton<IFilterExpressionBuilder, FilterExpressionBuilder>();
             services.TryAddSingleton<IAttributeMapper, AttributeMapper>();
-            services.TryAddSingleton<ICustomQueryBuilderRegistry<QueryOperationConfig>, CustomQueryBuilderRegistry>();
+            services.TryAddSingleton<ICustomQueryBuilderRegistry<QueryOperationConfig>, DynamoDbCustomQueryBuilderRegistry>();
             services.TryAddSingleton<ITableDescriptionProvider, TableDescriptionProvider>();
-            
-            return services.AddSingleton<IDocumentDatabaseTableProvider, DynamoDbTableProvider>();
+
+            return services.AddSingleton<IDocumentDatabaseTable, DynamoDbTable>();
         }
+
+        public static IServiceCollection AddMcmaDynamoDb(this IServiceCollection services,
+                                                         string tableName,
+                                                         Action<DynamoDbTableBuilder> build = null)
+            => services.AddMcmaDynamoDb(opts => opts.TableName = tableName, build);
     }
 }

@@ -3,6 +3,6 @@ namespace Mcma.Client
 {
     public interface IResourceManagerProvider
     {
-        IResourceManager Get(ResourceManagerOptions options = null, McmaTracker tracker = null);
+        IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null);
     }
 } 

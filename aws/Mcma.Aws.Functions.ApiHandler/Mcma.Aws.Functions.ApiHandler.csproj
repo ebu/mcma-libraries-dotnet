@@ -2,16 +2,20 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
-        <RootNamespace>Mcma.Aws.ApiHandler</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <PackageVersion>0.14.0-alpha32</PackageVersion>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageOutputPath>bin/packages</PackageOutputPath>
+        <RootNamespace>Mcma.Aws.Functions.ApiHandler</RootNamespace>
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="../Mcma.Aws.ApiGateway/Mcma.Aws.ApiGateway.csproj" />
-        <ProjectReference Include="../Mcma.Aws.DynamoDb/Mcma.Aws.DynamoDb.csproj" />
-        <ProjectReference Include="../Mcma.Aws.LambdaWorkerInvoker/Mcma.Aws.LambdaWorkerInvoker.csproj" />
-        <ProjectReference Include="../Mcma.Aws.Logger/Mcma.Aws.Logger.csproj" />
-        <ProjectReference Include="../Mcma.Aws.S3/Mcma.Aws.S3.csproj" />
-        <ProjectReference Include="../Mcma.Aws.Serialization/Mcma.Aws.Serialization.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.ApiGateway/Mcma.Aws.ApiGateway.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.DynamoDb/Mcma.Aws.DynamoDb.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.LambdaWorkerInvoker/Mcma.Aws.LambdaWorkerInvoker.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.Logger\Mcma.Aws.Logger.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.S3\Mcma.Aws.S3.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.Serialization\Mcma.Aws.Serialization.csproj" />
         <ProjectReference Include="..\Mcma.Aws.Functions\Mcma.Aws.Functions.csproj" />
     </ItemGroup>
     

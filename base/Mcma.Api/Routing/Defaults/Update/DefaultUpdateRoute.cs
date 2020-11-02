@@ -9,20 +9,20 @@ namespace Mcma.Api.Routing.Defaults.Routes
 {
     public class DefaultUpdateRoute<TResource> : McmaApiRoute, IDefaultUpdateRoute<TResource> where TResource : McmaResource
     {
-        public DefaultUpdateRoute(IDocumentDatabaseTableProvider dbTableProvider,
+        public DefaultUpdateRoute(IDocumentDatabaseTable dbTable,
                                   IDefaultUpdateRouteStartedHandler<TResource> startedHandler,
                                   IDefaultUpdateRouteCompletedHandler<TResource> completedHandler,
                                   IOptions<DefaultRouteCollectionOptions<TResource>> defaultRouteOptions,
                                   IOptions<McmaApiOptions> apiOptions)
             : base(HttpMethod.Put, (defaultRouteOptions?.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root + "/{id}")
         {
-            DbTableProvider = dbTableProvider ?? throw new ArgumentNullException(nameof(dbTableProvider));
+            DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
             StartedHandler = startedHandler ?? throw new ArgumentNullException(nameof(startedHandler));
             CompletedHandler = completedHandler ?? throw new ArgumentNullException(nameof(completedHandler));
-            ApiOptions = apiOptions.ValidateAndGet();
+            ApiOptions = apiOptions.Value ?? new McmaApiOptions();
         }
         
-        private IDocumentDatabaseTableProvider DbTableProvider { get; }
+        private IDocumentDatabaseTable DbTable { get; }
 
         private IDefaultUpdateRouteStartedHandler<TResource> StartedHandler { get; }
 
@@ -44,8 +44,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
 
             resource.OnUpsert(ApiOptions.CurrentRequestPublicUrl(requestContext));
 
-            var table = await DbTableProvider.GetAsync(ApiOptions.TableName);
-            await table.PutAsync(requestContext.Request.Path, resource);
+            await DbTable.PutAsync(requestContext.Request.Path, resource);
 
             await CompletedHandler.OnCompletedAsync(requestContext, resource);
 

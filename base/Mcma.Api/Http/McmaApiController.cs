@@ -17,16 +17,16 @@ namespace Mcma.Api
         private const string JsonContentType = "application/json";
 
         public McmaApiController(ILoggerProvider loggerProvider,
-                                 IEnumerable<McmaApiRouteCollection> routeCollections,
-                                 IEnumerable<McmaApiRoute> routes)
+                                 IEnumerable<IMcmaApiRouteCollection> routeCollections,
+                                 IEnumerable<IMcmaApiRoute> routes)
         {
             LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
 
             Routes =
                 new McmaApiRouteCollection(
-                    (routeCollections ?? new McmaApiRouteCollection[0])
+                    (routeCollections ?? new IMcmaApiRouteCollection[0])
                     .SelectMany(rc => rc)
-                    .Concat(routes?.OfType<IMcmaApiRoute>() ?? new IMcmaApiRoute[0]));
+                    .Concat(routes ?? new IMcmaApiRoute[0]));
         }
 
         private ILoggerProvider LoggerProvider { get; }

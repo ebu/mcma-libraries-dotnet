@@ -9,22 +9,22 @@ namespace Mcma.Api.Routing.Defaults.Routes
 {
     public class DefaultCreateRoute<TResource> : McmaApiRoute, IDefaultCreateRoute<TResource> where TResource : McmaResource
     {
-        public DefaultCreateRoute(IDocumentDatabaseTableProvider dbTableProvider,
+        public DefaultCreateRoute(IDocumentDatabaseTable dbTable,
                                   IDefaultCreateRouteCompletedHandler<TResource> completedHandler,
                                   IDefaultCreateRouteStartedHandler<TResource> startedHandler,
                                   IOptions<DefaultRouteCollectionOptions<TResource>> options,
                                   IOptions<McmaApiOptions> apiOptions)
             : base(HttpMethod.Post, (options.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root)
         {
-            DbTableProvider = dbTableProvider ?? throw new ArgumentNullException(nameof(dbTableProvider));
+            DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
             CompletedHandler = completedHandler;
             StartedHandler = startedHandler;
 
             Root = (options.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root;
-            ApiOptions = apiOptions.ValidateAndGet();
+            ApiOptions = apiOptions.Value ?? new McmaApiOptions();
         }
         
-        private IDocumentDatabaseTableProvider DbTableProvider { get; }
+        private IDocumentDatabaseTable DbTable { get; }
 
         public IDefaultCreateRouteStartedHandler<TResource> StartedHandler { get; }
 
@@ -50,8 +50,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
 
             resource.OnCreate(ApiOptions.PublicUrlForPath(resourcePath));
 
-            var table = await DbTableProvider.GetAsync(ApiOptions.TableName);
-            await table.PutAsync(resourcePath, resource);
+            await DbTable.PutAsync(resourcePath, resource);
 
             if (CompletedHandler != null)
                 await CompletedHandler.OnCompletedAsync(requestContext, resource);

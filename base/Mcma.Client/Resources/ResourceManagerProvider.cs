@@ -4,45 +4,32 @@ using Microsoft.Extensions.Options;
 
 namespace Mcma.Client
 {
-    public class ResourceManagerProvider : IResourceManagerProvider, IDisposable
+    public class ResourceManagerProvider : IResourceManagerProvider
     {
-        public ResourceManagerProvider(HttpClient httpClient, IAuthProvider authProvider, IOptionsMonitor<ResourceManagerOptions> defaultOptionsMonitor)
+        public ResourceManagerProvider(HttpClient httpClient, IAuthProvider authProvider, IOptions<ResourceManagerProviderOptions> options)
         {
             HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
 
-            DefaultOptionsSubscription = defaultOptionsMonitor.OnChange(SetDefaultOptions);
-            SetDefaultOptions(defaultOptionsMonitor.CurrentValue);
-        }
+            if (options.Value?.DefaultOptions != null &&
+                (string.IsNullOrWhiteSpace(options.Value.DefaultOptions.ServicesUrl) ||
+                 !Uri.IsWellFormedUriString(options.Value.DefaultOptions.ServicesUrl, UriKind.RelativeOrAbsolute)))
+                throw new McmaException($"Invalid services url in default resource manager options: {options.Value.DefaultOptions.ServicesUrl}");
 
-        private void SetDefaultOptions(ResourceManagerOptions defaultOptions)
-        {
-            if (defaultOptions != null &&
-                (string.IsNullOrWhiteSpace(defaultOptions.ServicesUrl) ||
-                 !Uri.IsWellFormedUriString(defaultOptions.ServicesUrl, UriKind.RelativeOrAbsolute)))
-                throw new McmaException($"Invalid services url in default resource manager options: {defaultOptions.ServicesUrl}");
-
-            DefaultOptions = defaultOptions;
+            DefaultOptions = options.Value?.DefaultOptions;
         }
 
         private HttpClient HttpClient { get; }
 
         private IAuthProvider AuthProvider { get; }
-        
-        private IDisposable DefaultOptionsSubscription { get; }
 
-        private ResourceManagerOptions DefaultOptions { get; set; }
+        private ResourceManagerOptions DefaultOptions { get; }
 
-        public IResourceManager Get(ResourceManagerOptions options = null, McmaTracker tracker = null)
+        public IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null)
             => new ResourceManager(AuthProvider,
                                    HttpClient,
                                    (options ?? DefaultOptions) ??
                                    throw new McmaException("Config for resource manager not provided, and there is no default config available"),
                                    tracker);
-
-        public void Dispose()
-        {
-            DefaultOptionsSubscription?.Dispose();
-        }
     }
 } 

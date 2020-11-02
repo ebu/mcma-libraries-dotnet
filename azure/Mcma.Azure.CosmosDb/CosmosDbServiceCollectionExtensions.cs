@@ -9,26 +9,20 @@ namespace Mcma.Azure.CosmosDb
 {
     public static class CosmosDbServiceCollectionExtensions
     {
-        public static IServiceCollection AddMcmaCosmosDb(this IServiceCollection services, Action<CosmosDbTableProviderOptions> configureOptions, Action<CosmosDbTableProviderBuilder> build = null)
+        public static IServiceCollection AddMcmaCosmosDb(this IServiceCollection services,
+                                                         Action<CosmosDbTableOptions> configureOptions = null,
+                                                         Action<CosmosDbTableBuilder> build = null)
         {
-            services.Configure(configureOptions);
-            
-            var builder = new CosmosDbTableProviderBuilder(services);
-            build?.Invoke(builder);
-            
-            services.TryAddSingleton<IQueryDefinitionBuilder, QueryDefinitionBuilder>();
-            services.TryAddSingleton<ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)>, CustomQueryBuilderRegistry>();
-            
-            return services.AddSingleton<IDocumentDatabaseTableProvider, CosmosDbTableProvider>();
-        }
+            if (configureOptions != null)
+                services.Configure(configureOptions);
 
-        public static IServiceCollection AddMcmaCosmosDb(this IServiceCollection services, string endpoint, string key, string databaseId, string region)
-            => services.AddMcmaCosmosDb(opts =>
-            {
-                opts.Endpoint = endpoint;
-                opts.Key = key;
-                opts.DatabaseId = databaseId;
-                opts.CosmosClient.ApplicationRegion = region;
-            });
+            var builder = new CosmosDbTableBuilder(services);
+            build?.Invoke(builder);
+
+            services.TryAddSingleton<IQueryDefinitionBuilder, QueryDefinitionBuilder>();
+            services.TryAddSingleton<ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)>, CosmosDbCustomQueryBuilderRegistry>();
+
+            return services.AddSingleton<IDocumentDatabaseTable, CosmosDbTable>();
+        }
     }
 }

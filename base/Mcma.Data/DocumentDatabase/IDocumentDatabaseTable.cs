@@ -16,6 +16,6 @@ namespace Mcma.Data
 
         Task DeleteAsync(string id);
 
-        IDocumentDatabaseMutex CreateMutex(string mutexName, string mutexHolder, TimeSpan? lockTimeout = null);
+        Task<IDocumentDatabaseMutex> CreateMutexAsync(string mutexName, string mutexHolder, TimeSpan? lockTimeout = null);
     }
 }

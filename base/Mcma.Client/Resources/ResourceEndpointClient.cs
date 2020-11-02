@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -51,11 +50,30 @@ namespace Mcma.Client
             return McmaHttpClient;
         }
 
-        private string GetFullUrl(string url) => !string.IsNullOrWhiteSpace(url) ? HttpEndpoint?.TrimEnd('/') + "/" + url : HttpEndpoint;
+        private string GetFullUrl(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return HttpEndpoint;
 
-        public async Task<QueryResults<T>> QueryAsync<T>(string url = null,
-                                                         IDictionary<string, string> queryParameters = null,
-                                                         CancellationToken cancellationToken = default)
+            if (url.StartsWith(HttpEndpoint, StringComparison.OrdinalIgnoreCase))
+                return url;
+            
+            return HttpEndpoint?.TrimEnd('/') + "/" + url;
+        }
+
+        public Task<QueryResults<T>> QueryAsync<T>(string url = null,
+                                                   params (string Key, string Value)[] queryParameters)
+            where T : McmaObject
+            => QueryAsync<T>(url, CancellationToken.None, queryParameters);
+
+        public Task<QueryResults<T>> QueryAsync<T>(CancellationToken cancellationToken,
+                                                   params (string Key, string Value)[] queryParameters)
+            where T : McmaObject
+            => QueryAsync<T>(null, cancellationToken, queryParameters);
+
+        public async Task<QueryResults<T>> QueryAsync<T>(string url,
+                                                         CancellationToken cancellationToken,
+                                                         params (string Key, string Value)[] queryParameters)
             where T : McmaObject
         {
             var mcmaHttpClient = await GetMcmaHttpClient();
@@ -64,35 +82,29 @@ namespace Mcma.Client
             if (queryParameters != null && queryParameters.Any())
                 url += $"?{string.Join("&", queryParameters.Select(kvp => $"{kvp.Key}={kvp.Value}"))}";
             
-            return await mcmaHttpClient.GetAsync<QueryResults<T>>(url, cancellationToken);
+            return await mcmaHttpClient.GetAsync<QueryResults<T>>(url, cancellationToken: cancellationToken);
         }
 
-        public async Task<T> PostAsync<T>(T body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject
-        {
-            var mcmaHttpClient = await GetMcmaHttpClient();
-            
-            return await mcmaHttpClient.PostAsync(url, body, cancellationToken);
-        }
+        private async Task ExecuteAsync(Func<McmaHttpClient, Task> executeAsync) => await executeAsync(await GetMcmaHttpClient());
 
-        public async Task<T> GetAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject
-        {
-            var mcmaHttpClient = await GetMcmaHttpClient();
-            
-            return await mcmaHttpClient.GetAsync<T>(GetFullUrl(url), cancellationToken);
-        }
+        private async Task<T> ExecuteAsync<T>(Func<McmaHttpClient, Task<T>> executeAsync) => await executeAsync(await GetMcmaHttpClient());
 
-        public async Task<T> PutAsync<T>(T body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject
-        {
-            var mcmaHttpClient = await GetMcmaHttpClient();
-            
-            return await mcmaHttpClient.PostAsync(url, body, cancellationToken);
-        }
+        public Task PostAsync(object body, string url = null, CancellationToken cancellationToken = default)
+            => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.PostAsync(GetFullUrl(url), body, cancellationToken));
 
-        public async Task DeleteAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject
-        {
-            var mcmaHttpClient = await GetMcmaHttpClient();
-            
-            await mcmaHttpClient.DeleteAsync(url, cancellationToken);
-        }
+        public Task<T> PostAsync<T>(object body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject
+            => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.PostAsync<T>(GetFullUrl(url), body, cancellationToken));
+
+        public Task<T> GetAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject
+            => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.GetAsync<T>(GetFullUrl(url), true, cancellationToken));
+
+        public Task PutAsync(object body, string url = null, CancellationToken cancellationToken = default)
+            => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.PutAsync(GetFullUrl(url), body, cancellationToken));
+
+        public Task<T> PutAsync<T>(object body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject
+            => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.PutAsync<T>(GetFullUrl(url), body, cancellationToken));
+
+        public Task DeleteAsync(string url = null, CancellationToken cancellationToken = default)
+            => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.DeleteAsync(GetFullUrl(url), cancellationToken));
     }
 }

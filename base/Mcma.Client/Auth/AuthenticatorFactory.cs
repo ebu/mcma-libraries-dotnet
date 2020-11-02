@@ -7,7 +7,9 @@ namespace Mcma.Client
 {
     public abstract class AuthenticatorFactory<TAuthContext> : IAuthenticatorFactory
     {
-        Type IAuthenticatorFactory.ContextType => typeof(TAuthContext); 
+        Type IAuthenticatorFactory.ContextType => typeof(TAuthContext);
+
+        protected virtual TAuthContext DefaultAuthContext => default;
 
         protected static bool TryParseContext(string authContextString, out TAuthContext authContext)
         {
@@ -25,6 +27,8 @@ namespace Mcma.Client
 
         public Task<IAuthenticator> GetAsync(object authContext)
         {
+            authContext ??= DefaultAuthContext;
+            
             if (authContext is string contextStr && TryParseContext(contextStr, out var parsedContext))
                 authContext = parsedContext;
 

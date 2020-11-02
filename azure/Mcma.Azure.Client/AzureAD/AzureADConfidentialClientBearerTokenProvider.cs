@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Client.AccessTokens;
@@ -7,26 +6,16 @@ using Microsoft.Identity.Client;
 
 namespace Mcma.Azure.Client.AzureAd
 {
-    public class AzureADConfidentialClientBearerTokenProvider : IBearerTokenProvider<AzureADAuthContext>, IDisposable
+    public class AzureADConfidentialClientBearerTokenProvider : IBearerTokenProvider<AzureADAuthContext>
     {
-        public AzureADConfidentialClientBearerTokenProvider(IOptionsMonitor<ConfidentialClientApplicationOptions> optionsMonitor)
+        public AzureADConfidentialClientBearerTokenProvider(IOptions<ConfidentialClientApplicationOptions> options)
         {
-            OptionsSubscription = optionsMonitor.OnChange(Configure);
-            Configure(optionsMonitor.CurrentValue);
-        }
-
-        private IDisposable OptionsSubscription { get; }
-
-        private IConfidentialClientApplication Client { get; set; }
-
-        private void Configure(ConfidentialClientApplicationOptions options)
-        {
-            if (Client == null && options == null)
+            if (options?.Value == null)
                 throw new McmaException("No Azure AD public client options provided.");
-
-            if (options != null)
-                Client = ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(options).Build();
+            
+            Client = ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(options.Value).Build();
         }
+        private IConfidentialClientApplication Client { get; }
 
         public async Task<BearerToken> GetAsync(AzureADAuthContext authContext, CancellationToken cancellationToken = default)
         {
@@ -35,11 +24,6 @@ namespace Mcma.Azure.Client.AzureAd
             var authResult = await Client.AcquireTokenForClient(new[] {authContext.Scope }).ExecuteAsync(cancellationToken);
             
             return authResult.ToBearerToken();
-        }
-
-        public void Dispose()
-        {
-            OptionsSubscription?.Dispose();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Mcma.Data.DocumentDatabase.Queries;
 
 namespace Mcma.Api
@@ -7,29 +8,35 @@ namespace Mcma.Api
     {
         public static Query<T> ToQuery<T>(this McmaApiRequestContext requestContext)
         {
-            var filterExpression =
-                requestContext.Request.QueryStringParameters.Any()
-                    ? requestContext.Request.QueryStringParameters
-                                    .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value)
-                                    .ToFilterExpression<T>()
-                    : null;
-
-            var pageStartToken = default(string);
-            if (requestContext.Request.QueryStringParameters.ContainsKey(nameof(pageStartToken)))
-                pageStartToken = requestContext.Request.QueryStringParameters[nameof(pageStartToken)];
-
-            var pageSize = default(int?);
-            if (requestContext.Request.QueryStringParameters.ContainsKey(nameof(pageSize)) &&
-                int.TryParse(requestContext.Request.QueryStringParameters[nameof(pageSize)], out var pageSizeTemp))
-                pageSize = pageSizeTemp;
-
-            return new Query<T>
+            var query = new Query<T>
             {
-                PageStartToken = pageStartToken,
-                PageSize = pageSize,
-                Path = requestContext.Request.Path,
-                FilterExpression = filterExpression
+                Path = requestContext.Request.Path
             };
+
+            if (!requestContext.Request.QueryStringParameters.Any())
+                return query;
+
+            var filters =
+                requestContext.Request.QueryStringParameters.ToDictionary(kvp => kvp.Key,
+                                                                          kvp => kvp.Value,
+                                                                          StringComparer.OrdinalIgnoreCase);
+            
+            if (filters.ContainsKey(nameof(query.PageStartToken)))
+            {
+                query.PageStartToken = filters[nameof(query.PageStartToken)];
+                filters.Remove(nameof(query.PageStartToken));
+            }
+
+            if (filters.ContainsKey(nameof(query.PageSize)) && int.TryParse(filters[nameof(query.PageSize)], out var pageSizeTemp))
+            {
+                query.PageSize = pageSizeTemp;
+                filters.Remove(nameof(query.PageSize));
+            }
+
+            if (filters.Any())
+                query.FilterExpression = filters.ToFilterExpression<T>();
+
+            return query;
         }
     }
 }

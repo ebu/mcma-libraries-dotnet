@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Azure.CosmosDb
 {
@@ -13,34 +14,22 @@ namespace Mcma.Azure.CosmosDb
     {
         public CosmosDbTable(ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> customQueryBuilderRegistry,
                              IQueryDefinitionBuilder queryDefinitionBuilder,
-                             CosmosDbTableProviderOptions options,
-                             Container container,
-                             ContainerProperties containerProperties)
+                             ICosmosDbContainerProvider containerProvider,
+                             IOptions<CosmosDbTableOptions> options)
         {
             CustomQueryBuilderRegistry = customQueryBuilderRegistry ?? throw new ArgumentNullException(nameof(customQueryBuilderRegistry));
             QueryDefinitionBuilder = queryDefinitionBuilder ?? throw new ArgumentNullException(nameof(queryDefinitionBuilder));
-            Container = container ?? throw new ArgumentNullException(nameof(container));
-            
-            if (containerProperties == null) throw new ArgumentNullException(nameof(containerProperties));
-
-            var partitionKeyParts = containerProperties.PartitionKeyPath.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
-            if (partitionKeyParts.Length > 1)
-                throw new McmaException(
-                    $"Container {containerProperties.Id} defines a partition key with multiple paths ({containerProperties.PartitionKeyPath}). MCMA only supports partition keys with a single path.");
-
-            PartitionKeyName = partitionKeyParts[0];
-            Options = options ?? new CosmosDbTableProviderOptions();
+            ContainerProvider = containerProvider ?? throw new ArgumentNullException(nameof(containerProvider));
+            Options = options?.Value ?? new CosmosDbTableOptions();
         }
 
         private ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> CustomQueryBuilderRegistry { get; }
 
         private IQueryDefinitionBuilder QueryDefinitionBuilder { get; }
 
-        private CosmosDbTableProviderOptions Options { get; }
+        private ICosmosDbContainerProvider ContainerProvider { get; }
 
-        private Container Container { get; }
-        
-        private string PartitionKeyName { get; }
+        private CosmosDbTableOptions Options { get; }
 
         private static PartitionKey ParsePartitionKey(string id)
         {
@@ -53,9 +42,11 @@ namespace Mcma.Azure.CosmosDb
                                                             string pageStartToken)
             where T : class
         {
+            var container = await ContainerProvider.GetAsync();
+
             queryRequestOptions.ConsistencyLevel ??= Options.ConsistentQuery.HasValue ? ConsistencyLevel.Strong : default;
 
-            var queryIterator = Container.GetItemQueryIterator<CosmosDbItem<T>>(queryDefinition, pageStartToken, queryRequestOptions);
+            var queryIterator = container.GetItemQueryIterator<CosmosDbItem<T>>(queryDefinition, pageStartToken, queryRequestOptions);
 
             var results = new List<CosmosDbItem<T>>();
             
@@ -78,7 +69,8 @@ namespace Mcma.Azure.CosmosDb
 
         public async Task<QueryResults<T>> QueryAsync<T>(Query<T> query) where T : class
         {
-            var queryDefinition = QueryDefinitionBuilder.Build(query, PartitionKeyName);
+            var containerProperties = await ContainerProvider.GetPropertiesAsync();
+            var queryDefinition = QueryDefinitionBuilder.Build(query, containerProperties.PartitionKeyName());
 
             return await ExecuteQuery<T>(queryDefinition, new QueryRequestOptions { MaxItemCount = query.PageSize }, query.PageStartToken);
         }
@@ -95,8 +87,10 @@ namespace Mcma.Azure.CosmosDb
         
         public async Task<T> GetAsync<T>(string id) where T : class
         {
+            var container = await ContainerProvider.GetAsync();
+            
             var resp =
-                await Container.ReadItemStreamAsync(Uri.EscapeDataString(id),
+                await container.ReadItemStreamAsync(Uri.EscapeDataString(id),
                                                     ParsePartitionKey(id),
                                                     new ItemRequestOptions
                                                     {
@@ -113,20 +107,28 @@ namespace Mcma.Azure.CosmosDb
 
         public async Task<T> PutAsync<T>(string id, T resource) where T : class
         {
+            var container = await ContainerProvider.GetAsync();
+            
             var item = new CosmosDbItem<T>(id, resource);
 
-            var resp = await Container.UpsertItemAsync(item, ParsePartitionKey(id));
+            var resp = await container.UpsertItemAsync(item, ParsePartitionKey(id));
 
             return resp.Resource?.Resource;
         }
 
         public async Task DeleteAsync(string id)
         {
-            var resp = await Container.DeleteItemStreamAsync(Uri.EscapeDataString(id), ParsePartitionKey(id));
+            var container = await ContainerProvider.GetAsync();
+            var resp = await container.DeleteItemStreamAsync(Uri.EscapeDataString(id), ParsePartitionKey(id));
             resp.EnsureSuccessStatusCode();
         }
 
-        public IDocumentDatabaseMutex CreateMutex(string mutexName, string mutexHolder, TimeSpan? lockTimeout = null)
-            => new CosmosDbMutex(Container, PartitionKeyName, mutexName, mutexHolder, lockTimeout);
+        public async Task<IDocumentDatabaseMutex> CreateMutexAsync(string mutexName, string mutexHolder, TimeSpan? lockTimeout = null)
+        {
+            var container = await ContainerProvider.GetAsync();
+            var containerProperties = await ContainerProvider.GetPropertiesAsync();
+            
+            return new CosmosDbMutex(container, containerProperties.PartitionKeyName(), mutexName, mutexHolder, lockTimeout);   
+        }
     }
 }

@@ -2,8 +2,6 @@
 {
     public class McmaApiOptions
     {
-        public string PublicUrl { get; set; }
-        
-        public string TableName { get; set; }
+        public string PublicUrl { get; set; } = McmaApiEnvironmentVariables.PublicUrl;
     }
 }

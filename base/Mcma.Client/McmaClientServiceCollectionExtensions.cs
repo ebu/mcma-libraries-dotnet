@@ -5,13 +5,12 @@ namespace Mcma.Client
 {
     public static class McmaClientServiceCollectionExtensions
     {
-        public static IServiceCollection AddMcmaClient(this IServiceCollection services, Action<AuthenticatorRegistry> addAuth)
+        public static IServiceCollection AddMcmaClient(this IServiceCollection services,
+                                                       Action<McmaClientBuilder> build)
         {
-            services.AddHttpClient()
-                    .AddSingleton<IResourceManagerProvider, ResourceManagerProvider>()
-                    .AddSingleton(provider => provider.GetRequiredService<IResourceManagerProvider>().Get());
-
-            return services.AddMcmaAuthentication(addAuth);
+            var builder = new McmaClientBuilder(services);
+            build(builder);
+            return services;
         }
     }
 }

@@ -47,13 +47,13 @@ namespace Mcma.Aws.Client
 
         public static class Signing
         {
-            public const string Algorithm = "Aws4-HMAC-SHA256";
+            public const string Algorithm = "AWS4-HMAC-SHA256";
 
-            public const string SecretKeyPrefix = "Aws4";
+            public const string SecretKeyPrefix = "AWS4";
 
             public const string ScopeTerminator = "aws4_request";
         }
 
-        public const string Aws4 = "Aws4";
+        public const string Aws4 = "AWS4";
     }
 }

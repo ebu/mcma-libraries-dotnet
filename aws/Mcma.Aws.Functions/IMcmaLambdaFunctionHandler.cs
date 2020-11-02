@@ -12,4 +12,9 @@ namespace Mcma.Aws.Functions
     {
         Task ExecuteAsync(TInput input, ILambdaContext context);
     }
+    
+    public interface IMcmaLambdaFunctionHandler
+    {
+        Task ExecuteAsync(ILambdaContext context);
+    }
 }

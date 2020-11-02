@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
-using Mcma.Aws.Lambda;
 using Microsoft.Extensions.DependencyInjection;
-
-[assembly: LambdaSerializer(typeof(McmaLambdaSerializer))]
 
 namespace Mcma.Aws.Functions
 {
@@ -27,9 +24,9 @@ namespace Mcma.Aws.Functions
         }
 
         protected abstract void Configure(IServiceCollection services);
-
+        
         public Task<TOutput> ExecuteAsync(TInput request, ILambdaContext context)
-            => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
+                => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
     }
     
     public abstract class McmaLambdaFunction<TFunctionHandler, TInput>
@@ -54,5 +51,29 @@ namespace Mcma.Aws.Functions
 
         public Task ExecuteAsync(TInput request, ILambdaContext context)
             => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
+    }
+    
+    public abstract class McmaLambdaFunction<TFunctionHandler>
+        where TFunctionHandler : class, IMcmaLambdaFunctionHandler
+    {
+        private Lazy<IServiceProvider> ServiceProvider { get; }
+
+        protected McmaLambdaFunction()
+        {
+            ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
+        }
+
+        private IServiceProvider BuildServiceProvider()
+        {
+            var services = new ServiceCollection();
+            Configure(services);
+            services.AddSingleton<TFunctionHandler>();
+            return services.BuildServiceProvider();
+        }
+
+        protected abstract void Configure(IServiceCollection services);
+
+        public Task ExecuteAsync(ILambdaContext context)
+            => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(context);
     }
 }

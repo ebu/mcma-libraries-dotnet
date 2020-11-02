@@ -24,18 +24,11 @@ namespace Mcma.Azure.Client
             return authenticatorRegistry.AddBearerTokens<AzureADAuthContext, AzureManagedIdentityBearerTokenProvider>(AzureConstants.AzureAdAuthType);
         }
 
-        public static AuthenticatorRegistry AddAzureADPublicClientAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                       Action<AzureADPublicClientBearerTokenProviderOptions> configureOptions)
-        {
-            authenticatorRegistry.Services.Configure(configureOptions);
-            return authenticatorRegistry.AddBearerTokens<AzureADAuthContext, AzureADPublicClientBearerTokenProvider>(AzureConstants.AzureAdAuthType);
-        }
-
         public static AuthenticatorRegistry AddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
                                                                              Action<ConfidentialClientApplicationOptions> configureOptions)
         {
             authenticatorRegistry.Services.Configure(configureOptions);
-            return authenticatorRegistry.AddBearerTokens<AzureADAuthContext, AzureADPublicClientBearerTokenProvider>(AzureConstants.AzureAdAuthType);
+            return authenticatorRegistry.AddBearerTokens<AzureADAuthContext, AzureADConfidentialClientBearerTokenProvider>(AzureConstants.AzureAdAuthType);
         }
     }
 }

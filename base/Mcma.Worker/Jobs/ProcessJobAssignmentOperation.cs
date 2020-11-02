@@ -5,28 +5,25 @@ using System.Threading.Tasks;
 using Mcma.Client;
 using Mcma.Data;
 using Mcma.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Mcma.Worker
 {
     public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJobAssignmentRequest> where TJob : Job
     {
-        internal ProcessJobAssignmentOperation(IDocumentDatabaseTableProvider dbTableProvider,
+        public ProcessJobAssignmentOperation(IDocumentDatabaseTable dbTable,
                                                IResourceManagerProvider resourceManagerProvider,
-                                               IOptions<McmaWorkerOptions> options)
+                                               IEnumerable<IJobProfile<TJob>> profiles)
         {
-            DbTableProvider = dbTableProvider ?? throw new ArgumentNullException(nameof(dbTableProvider));
+            DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
             ResourceManagerProvider = resourceManagerProvider ?? throw new ArgumentNullException(nameof(resourceManagerProvider));
-            McmaWorkerOptions = options.ValidateAndGet();
+            Profiles = profiles?.ToList() ?? new List<IJobProfile<TJob>>();
         }
 
-        private IDocumentDatabaseTableProvider DbTableProvider { get; }
+        private IDocumentDatabaseTable DbTable { get; }
 
         private IResourceManagerProvider ResourceManagerProvider { get; }
 
-        private McmaWorkerOptions McmaWorkerOptions { get; }
-
-        internal List<IJobProfile<TJob>> Profiles { get; } = new List<IJobProfile<TJob>>();
+        internal List<IJobProfile<TJob>> Profiles { get; }
 
         private JobStatus InitialJobStatus { get; set; } = JobStatus.Running;
 
@@ -47,8 +44,8 @@ namespace Mcma.Worker
 
             var jobAssignmentHelper =
                 new ProcessJobAssignmentHelper<TJob>(
-                    await DbTableProvider.GetAsync(McmaWorkerOptions.TableName),
-                    ResourceManagerProvider.Get(McmaWorkerOptions.ResourceManager),
+                    DbTable,
+                    ResourceManagerProvider.Get(requestContext.Tracker),
                     requestContext);
 
             try

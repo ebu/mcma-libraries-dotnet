@@ -46,7 +46,7 @@ namespace Mcma.Client
                 Services.Add(ServiceRegistryClient);
 
                 var servicesEndpoint = ServiceRegistryClient.GetResourceEndpointClient<Service>();
-
+                
                 var response = await servicesEndpoint.QueryAsync<Service>();
 
                 Services.AddRange(response.Results.Select(GetServiceClient));
@@ -75,8 +75,11 @@ namespace Mcma.Client
         }
 
         async Task<IResourceEndpointClient> IResourceManager.GetResourceEndpointClientAsync(string url) => await GetResourceEndpointAsync(url);
+
+        public Task<IEnumerable<T>> QueryAsync<T>(params (string, string)[] filter) where T : McmaObject
+            => QueryAsync<T>(CancellationToken.None, filter);
         
-        public async Task<IEnumerable<T>> QueryAsync<T>((string, string)[] filter, CancellationToken cancellationToken = default) where T : McmaObject
+        public async Task<IEnumerable<T>> QueryAsync<T>(CancellationToken cancellationToken, params (string, string)[] filter) where T : McmaObject
         {
             if (!Services.Any())
                 await InitAsync();
@@ -96,10 +99,7 @@ namespace Mcma.Client
 
                 try
                 {
-                    var queryResults =
-                        await resourceEndpoint.QueryAsync<T>(
-                            queryParameters: filter.ToDictionary(x => x.Item1, x => x.Item2),
-                            cancellationToken: cancellationToken);
+                    var queryResults = await resourceEndpoint.QueryAsync<T>(cancellationToken, filter);
                     
                     results.AddRange(queryResults.Results);
                     
@@ -119,7 +119,7 @@ namespace Mcma.Client
             return new ReadOnlyCollection<T>(results);
         }
 
-        public async Task<T> CreateAsync<T>(string resourceId, T resource, CancellationToken cancellationToken = default) where T : McmaObject
+        public async Task<T> CreateAsync<T>(T resource, CancellationToken cancellationToken = default) where T : McmaObject
         {
             if (!Services.Any())
                 await InitAsync();
@@ -129,12 +129,12 @@ namespace Mcma.Client
                     .Select(s => s.GetResourceEndpointClient<T>())
                     .FirstOrDefault();
             if (resourceEndpoint != null)
-                return await resourceEndpoint.PostAsync(resource, resourceId, cancellationToken);
+                return await resourceEndpoint.PostAsync<T>(resource, cancellationToken: cancellationToken);
 
-            if (string.IsNullOrWhiteSpace(resourceId))
+            if (!(resource is McmaResource mcmaResource) || string.IsNullOrWhiteSpace(mcmaResource.Id))
                 throw new McmaException($"There is no endpoint available for creating resources of type '{typeof(T).Name}', and the provided resource does not specify an endpoint in its 'id' property.");
 
-            return await McmaHttpClient.PostAsync(resourceId, resource, cancellationToken);
+            return await McmaHttpClient.PostAsync<T>(mcmaResource.Id, mcmaResource, cancellationToken);
         }
 
         public async Task<T> UpdateAsync<T>(string resourceId, T resource, CancellationToken cancellationToken = default) where T : McmaObject
@@ -147,9 +147,9 @@ namespace Mcma.Client
                     .Select(s => s.GetResourceEndpointClient<T>())
                     .FirstOrDefault(re => resourceId.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
             if (resourceEndpoint != null)
-                return await resourceEndpoint.PutAsync(resource, resourceId, cancellationToken);
+                return await resourceEndpoint.PutAsync<T>(resource, resourceId, cancellationToken);
 
-            return await McmaHttpClient.PutAsync(resourceId, resource, cancellationToken);
+            return await McmaHttpClient.PutAsync<T>(resourceId, resource, cancellationToken);
         }
 
         public async Task DeleteAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject
@@ -163,7 +163,7 @@ namespace Mcma.Client
                         .FirstOrDefault(re => resourceId.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
 
             if (resourceEndpoint != null)
-                await resourceEndpoint.DeleteAsync<T>(resourceId, cancellationToken);
+                await resourceEndpoint.DeleteAsync(resourceId, cancellationToken);
             else
                 await McmaHttpClient.DeleteAsync(resourceId, cancellationToken);
         }
@@ -174,7 +174,7 @@ namespace Mcma.Client
 
             return resourceEndpoint != null
                 ? await resourceEndpoint.GetAsync<T>(resourceId, cancellationToken)
-                : await McmaHttpClient.GetAsync<T>(resourceId, cancellationToken);
+                : await McmaHttpClient.GetAsync<T>(resourceId, true, cancellationToken);
         }
 
         public async Task SendNotificationAsync<T>(string resourceId, T resource, NotificationEndpoint notificationEndpoint, CancellationToken cancellationToken = default)

@@ -9,19 +9,17 @@ namespace Mcma.Api.Routing.Defaults.Routes
     internal class DefaultQueryRoute<TResource> : McmaApiRoute, IDefaultQueryRoute<TResource> where TResource : McmaResource
     {
         public DefaultQueryRoute(
+            IDocumentDatabaseTable dbTable,
             IDefaultQueryRouteStartedHandler<TResource> startedHandler,
             IDefaultRouteQueryExecutor<TResource> queryExecutor,
             IDefaultQueryRouteCompletedHandler<TResource> completedHandler,
-            IDocumentDatabaseTableProvider dbTableProvider,
-            IOptions<DefaultRouteCollectionOptions<TResource>> options,
-            IOptions<McmaApiOptions> apiOptions)
+            IOptions<DefaultRouteCollectionOptions<TResource>> options)
             : base(HttpMethod.Get, (options.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root)
         {
             StartedHandler = startedHandler;
             QueryExecutor = queryExecutor;
             CompletedHandler = completedHandler;
-            DbTableProvider = dbTableProvider;
-            ApiOptions = apiOptions.ValidateAndGet();
+            DbTable = dbTable;
         }
         
         public HttpMethod Method => HttpMethod.Get;
@@ -32,18 +30,14 @@ namespace Mcma.Api.Routing.Defaults.Routes
 
         private IDefaultQueryRouteCompletedHandler<TResource> CompletedHandler { get; }
 
-        private IDocumentDatabaseTableProvider DbTableProvider { get; }
-        
-        private McmaApiOptions ApiOptions { get; }
+        private IDocumentDatabaseTable DbTable { get; }
 
         public override async Task HandleAsync(McmaApiRequestContext requestContext)
         {
             if (StartedHandler != null && !await StartedHandler.OnStartedAsync(requestContext))
                 return;
 
-            var table = await DbTableProvider.GetAsync(ApiOptions.TableName);
-
-            var results = await QueryExecutor.ExecuteQueryAsync(requestContext, table);
+            var results = await QueryExecutor.ExecuteQueryAsync(requestContext, DbTable);
 
             if (CompletedHandler != null)
                 await CompletedHandler.OnCompletedAsync(requestContext, results);

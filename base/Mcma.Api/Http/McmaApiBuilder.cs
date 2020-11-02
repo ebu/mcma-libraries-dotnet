@@ -16,6 +16,12 @@ namespace Mcma.Api
         
         public IServiceCollection Services { get; }
 
+        public McmaApiBuilder Configure(Action<McmaApiOptions> configureOptions)
+        {
+            Services.Configure(configureOptions);
+            return this;
+        }
+
         public McmaApiBuilder AddRoute<T>() where T : class, IMcmaApiRoute
         {
             Services.AddSingleton<IMcmaApiRoute, T>();

@@ -7,36 +7,42 @@ using Amazon.DynamoDBv2.DocumentModel;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;
 using Mcma.Serialization;
+using Mcma.Utility;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Aws.DynamoDb
 {
     public class DynamoDbTable : IDocumentDatabaseTable
     {
-        public DynamoDbTable(ICustomQueryBuilderRegistry<QueryOperationConfig> customQueryBuilderRegistry,
+        public DynamoDbTable(ICustomQueryBuilderRegistry<QueryOperationConfig> customQueryBuilderRegistry, 
                              IAttributeMapper attributeMapper,
+                             ITableDescriptionProvider tableDescriptionProvider,
                              IFilterExpressionBuilder filterExpressionBuilder,
-                             IAmazonDynamoDB dynamoDb,
-                             DynamoDbTableDescription tableDescription,
-                             DynamoDbTableProviderOptions options)
+                             IOptions<DynamoDbTableOptions> providerOptions)
         {
             CustomQueryBuilderRegistry = customQueryBuilderRegistry ?? throw new ArgumentNullException(nameof(customQueryBuilderRegistry));
             AttributeMapper = attributeMapper ?? throw new ArgumentNullException(nameof(attributeMapper));
+            TableDescriptionProvider = tableDescriptionProvider ?? throw new ArgumentNullException(nameof(tableDescriptionProvider));
             FilterExpressionBuilder = filterExpressionBuilder ?? throw new ArgumentNullException(nameof(filterExpressionBuilder));
-            TableDescription = tableDescription ?? throw new ArgumentNullException(nameof(tableDescription));
-            Options = options ?? new DynamoDbTableProviderOptions();
-            Table = dynamoDb != null ? Table.LoadTable(dynamoDb, tableDescription.TableName) : throw new ArgumentNullException(nameof(dynamoDb));
+            
+            Options = providerOptions?.Value ?? new DynamoDbTableOptions();
+            
+            DynamoDb = new AmazonDynamoDBClient(Options.Credentials, Options.Config);
+            Table = Table.LoadTable(DynamoDb, Options.TableName);
         }
-
+        
         private ICustomQueryBuilderRegistry<QueryOperationConfig> CustomQueryBuilderRegistry { get; }
 
         private IAttributeMapper AttributeMapper { get; }
 
+        private ITableDescriptionProvider TableDescriptionProvider { get; }
+
         private IFilterExpressionBuilder FilterExpressionBuilder { get; }
 
-        private DynamoDbTableDescription TableDescription { get; }
-
-        private DynamoDbTableProviderOptions Options { get; }
+        private DynamoDbTableOptions Options { get; }
+        
+        private IAmazonDynamoDB DynamoDb { get; }
 
         private Table Table { get; }
 
@@ -57,14 +63,14 @@ namespace Mcma.Aws.DynamoDb
             return resourceJson?.ToMcmaObject<T>();
         }
 
-        private Document ResourceToDocument<T>(string partitionKey, string sortKey, T resource)
+        private Document ResourceToDocument<T>(DynamoDbTableDescription tableDescription, string partitionKey, string sortKey, T resource)
         {
             var resourceJson = resource.ToMcmaJson().RemoveEmptyStrings();
             
             var item = new JObject
             {
-                [TableDescription.KeyNames.Partition] = partitionKey,
-                [TableDescription.KeyNames.Sort] = sortKey,
+                [tableDescription.KeyNames.Partition] = partitionKey,
+                [tableDescription.KeyNames.Sort] = sortKey,
                 [nameof(resource)] = resourceJson
             };
 
@@ -76,11 +82,13 @@ namespace Mcma.Aws.DynamoDb
 
         public async Task<QueryResults<T>> QueryAsync<T>(Query<T> query) where T : class
         {
+            var tableDescription = await TableDescriptionProvider.GetTableDescriptionAsync(DynamoDb, Options.TableName);
+            
             var keyExpression =
                 new Expression
                 {
                     ExpressionStatement = "#partitionKey = :partitionKey",
-                    ExpressionAttributeNames = new Dictionary<string, string> {["#partitionKey"] = TableDescription.KeyNames.Partition},
+                    ExpressionAttributeNames = new Dictionary<string, string> {["#partitionKey"] = tableDescription.KeyNames.Partition},
                     ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":partitionKey"] = query.Path}
                 };
 
@@ -90,7 +98,7 @@ namespace Mcma.Aws.DynamoDb
             if (query.SortBy != null)
             {
                 var matchingIndex =
-                    TableDescription.LocalSecondaryIndexes.FirstOrDefault(
+                    tableDescription.LocalSecondaryIndexes.FirstOrDefault(
                         lsi => lsi.SortKeyName.Equals(query.SortBy, StringComparison.OrdinalIgnoreCase));
                 
                 indexName = matchingIndex.Name ?? throw new McmaException($"No matching local secondary index found for sorting by '{query.SortBy}'");
@@ -104,16 +112,16 @@ namespace Mcma.Aws.DynamoDb
                 BackwardSearch = !query.SortAscending,
                 ConsistentRead = Options.ConsistentQuery ?? false,
                 Limit = query.PageSize ?? int.MaxValue,
-                PaginationToken = query.PageStartToken
+                PaginationToken = query.PageStartToken?.FromBase64()
             };
 
             var tableQuery = Table.Query(queryOpConfig);
-            var results = await tableQuery.GetRemainingAsync();
+            var results = await tableQuery.GetNextSetAsync();
 
             return new QueryResults<T>
             {
                 Results = results.Select(DocumentToResource<T>).ToArray(),
-                NextPageStartToken = tableQuery.PaginationToken
+                NextPageStartToken = tableQuery.NextKey != null && tableQuery.NextKey.Any() ? tableQuery.PaginationToken.ToBase64() : null
             };
         }
 
@@ -122,15 +130,15 @@ namespace Mcma.Aws.DynamoDb
             var customQueryBuilder = CustomQueryBuilderRegistry.Get<TParameters>(customQuery.Name);
 
             var queryOpConfig = customQueryBuilder.Build(customQuery);
-            queryOpConfig.PaginationToken = customQuery.PageStartToken;
+            queryOpConfig.PaginationToken = customQuery.PageStartToken?.FromBase64();
 
             var tableQuery = Table.Query(queryOpConfig);
-            var results = await tableQuery.GetRemainingAsync();
+            var results = await tableQuery.GetNextSetAsync();
 
             return new QueryResults<TResource>
             {
                 Results = results.Select(DocumentToResource<TResource>).ToArray(),
-                NextPageStartToken = tableQuery.PaginationToken
+                NextPageStartToken = tableQuery.NextKey != null && tableQuery.NextKey.Any() ? tableQuery.PaginationToken.ToBase64() : null
             };
         }
 
@@ -147,8 +155,9 @@ namespace Mcma.Aws.DynamoDb
 
         public async Task<T> PutAsync<T>(string id, T resource) where T : class
         {
+            var tableDescription = await TableDescriptionProvider.GetTableDescriptionAsync(DynamoDb, Options.TableName);
             var (partitionKey, sortKey) = ParsePartitionAndSortKeys(id);
-            await Table.PutItemAsync(ResourceToDocument(partitionKey, sortKey, resource));
+            await Table.PutItemAsync(ResourceToDocument(tableDescription, partitionKey, sortKey, resource));
             return resource;
         }
 
@@ -158,7 +167,11 @@ namespace Mcma.Aws.DynamoDb
             await Table.DeleteItemAsync(partitionKey, sortKey);
         }
 
-        public IDocumentDatabaseMutex CreateMutex(string mutexName, string mutexHolder, TimeSpan? lockTimeout)
-            => new DynamoDbMutex(Table, TableDescription, mutexName, mutexHolder, lockTimeout);
+        public async Task<IDocumentDatabaseMutex> CreateMutexAsync(string mutexName, string mutexHolder, TimeSpan? lockTimeout)
+        {
+            var tableDescription = await TableDescriptionProvider.GetTableDescriptionAsync(DynamoDb, Options.TableName);
+            
+            return new DynamoDbMutex(Table, tableDescription, mutexName, mutexHolder, lockTimeout);
+        }
     }
 }

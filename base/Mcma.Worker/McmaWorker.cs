@@ -6,9 +6,9 @@ using Mcma.Logging;
 
 namespace Mcma.Worker
 {
-    public class McmaMcmaWorker : IMcmaWorker
+    public class McmaWorker : IMcmaWorker
     {
-        public McmaMcmaWorker(ILoggerProvider loggerProvider, IEnumerable<IMcmaWorkerOperation> operations)
+        public McmaWorker(ILoggerProvider loggerProvider, IEnumerable<IMcmaWorkerOperation> operations)
         {
             LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
             Operations = operations?.ToArray() ?? throw new McmaException("No operations registered for worker.");

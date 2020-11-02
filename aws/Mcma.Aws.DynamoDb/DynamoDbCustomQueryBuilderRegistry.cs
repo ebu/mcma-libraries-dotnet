@@ -6,9 +6,9 @@ using Mcma.Data.DocumentDatabase.Queries;
 
 namespace Mcma.Aws.DynamoDb
 {
-    public class CustomQueryBuilderRegistry : ICustomQueryBuilderRegistry<QueryOperationConfig>
+    public class DynamoDbCustomQueryBuilderRegistry : ICustomQueryBuilderRegistry<QueryOperationConfig>
     {
-        public CustomQueryBuilderRegistry(IEnumerable<ICustomQueryBuilder> queryBuilders)
+        public DynamoDbCustomQueryBuilderRegistry(IEnumerable<ICustomQueryBuilder> queryBuilders)
         {
             QueryBuilders = queryBuilders?.ToArray() ?? new ICustomQueryBuilder[0];
         }

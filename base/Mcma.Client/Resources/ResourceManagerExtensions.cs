@@ -13,10 +13,6 @@ namespace Mcma.Client
             return resourceManager.GetAsync<T>(url);
         }
 
-        public static Task<T> CreateAsync<T>(this IResourceManager resourceManager, T resource, CancellationToken cancellationToken = default)
-            where T : McmaResource
-            => resourceManager.CreateAsync(resource.Id, resource, cancellationToken);
-
         public static Task<T> UpdateAsync<T>(this IResourceManager resourceManager, T resource, CancellationToken cancellationToken = default)
             where T : McmaResource
             => resourceManager.UpdateAsync(resource.Id, resource, cancellationToken);

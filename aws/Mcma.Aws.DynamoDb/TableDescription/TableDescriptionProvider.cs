@@ -9,19 +9,12 @@ namespace Mcma.Aws.DynamoDb
 {
     public class TableDescriptionProvider : ITableDescriptionProvider
     {
-        public TableDescriptionProvider(IAmazonDynamoDB dynamoDb)
-        {
-            DynamoDb = dynamoDb;
-        }
-
-        private IAmazonDynamoDB DynamoDb { get; }
-
         private Dictionary<string, DynamoDbTableDescription> TableDescriptions { get; } =
             new Dictionary<string, DynamoDbTableDescription>(StringComparer.OrdinalIgnoreCase);
 
         private SemaphoreSlim TableDescriptionsSemaphore { get; } = new SemaphoreSlim(1, 1);
 
-        public async Task<DynamoDbTableDescription> GetTableDescriptionAsync(string tableName)
+        public async Task<DynamoDbTableDescription> GetTableDescriptionAsync(IAmazonDynamoDB dynamoDb, string tableName)
         {
             await TableDescriptionsSemaphore.WaitAsync();
 
@@ -30,7 +23,7 @@ namespace Mcma.Aws.DynamoDb
                 if (TableDescriptions.ContainsKey(tableName))
                     return TableDescriptions[tableName];
                 
-                var data = await DynamoDb.DescribeTableAsync(tableName);
+                var data = await dynamoDb.DescribeTableAsync(tableName);
 
                 string partitionKeyName = null;
                 string sortKeyName = null;

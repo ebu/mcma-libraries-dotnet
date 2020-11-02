@@ -10,7 +10,7 @@ namespace Mcma.Worker
             var builder = new McmaWorkerBuilder(services);
             buildWorker(builder);
             
-            return services.AddSingleton<IMcmaWorker, McmaMcmaWorker>();
+            return services.AddSingleton<IMcmaWorker, McmaWorker>();
         }
     }
 }

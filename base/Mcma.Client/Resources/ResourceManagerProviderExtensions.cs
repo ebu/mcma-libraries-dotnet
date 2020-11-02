@@ -7,13 +7,12 @@ namespace Mcma.Client
                                            string servicesAuthType = null,
                                            string servicesAuthContext = null,
                                            McmaTracker tracker = null)
-            => resourceManagerProvider.Get(
-                new ResourceManagerOptions
-                {
-                    ServicesUrl = servicesUrl,
-                    ServicesAuthType = servicesAuthType,
-                    ServicesAuthContext = servicesAuthContext
-                },
-                tracker);
+            => resourceManagerProvider.Get(tracker,
+                                           new ResourceManagerOptions
+                                           {
+                                               ServicesUrl = servicesUrl,
+                                               ServicesAuthType = servicesAuthType,
+                                               ServicesAuthContext = servicesAuthContext
+                                           });
     }
 } 
