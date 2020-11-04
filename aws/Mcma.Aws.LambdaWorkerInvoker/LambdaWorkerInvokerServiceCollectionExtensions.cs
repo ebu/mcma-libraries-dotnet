@@ -14,6 +14,10 @@ namespace Mcma.Aws.WorkerInvoker
 
         public static IServiceCollection AddMcmaLambdaWorkerInvoker(this IServiceCollection services, string lambdaFunctionName = null)
             => services.AddMcmaLambdaWorkerInvoker(
-                opts => opts.WorkerFunctionId = lambdaFunctionName ?? McmaLambdaWorkerInvokerEnvironmentVariables.WorkerFunctionName);
+                opts =>
+                {
+                    if (lambdaFunctionName != null)
+                        opts.WorkerFunctionId = lambdaFunctionName;
+                });
     }
 }

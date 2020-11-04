@@ -7,7 +7,7 @@ namespace Mcma.Logging
     {
         protected LoggerProvider(IOptions<LoggerProviderOptions> options)
         {
-            Source = options?.Value?.Source ?? throw new McmaException("Source not configured for logger provider.");
+            Source = options.Value?.Source ?? throw new McmaException("Source not configured for logger provider.");
         }
 
         protected string Source { get; }

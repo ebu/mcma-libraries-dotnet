@@ -2,7 +2,7 @@
 {
     public static class McmaApiOptionsExtensions
     {
-        public static string CurrentRequestPublicUrl(this McmaApiOptions options, McmaApiRequestContext requestContext)
+        public static string PublicUrlForCurrentRequest(this McmaApiOptions options, McmaApiRequestContext requestContext)
             => options.PublicUrlForPath(requestContext.Request.Path);
 
         public static string PublicUrlForPath(this McmaApiOptions options, string path)

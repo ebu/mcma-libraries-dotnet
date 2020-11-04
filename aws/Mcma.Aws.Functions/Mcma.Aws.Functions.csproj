@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <PackageVersion>0.14.0-alpha32</PackageVersion>
+        <PackageVersion>0.14.0-alpha45</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
         <RootNamespace>Mcma.Aws.Functions</RootNamespace>
@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../Mcma.Aws.Serialization/Mcma.Aws.Serialization.csproj" />
+        <ProjectReference Include="..\Mcma.Aws.S3\Mcma.Aws.S3.csproj" />
     </ItemGroup>
 
     <ItemGroup>

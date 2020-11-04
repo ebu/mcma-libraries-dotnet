@@ -1,7 +1,7 @@
 using Mcma.Client.AccessTokens;
 using Microsoft.Identity.Client;
 
-namespace Mcma.Azure.Client.AzureAd
+namespace Mcma.Azure.Client.AzureAD
 {
     public static class AuthenticationResultExtensions
     {

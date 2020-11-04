@@ -2,6 +2,9 @@
 {
     public class ResourceManagerProviderOptions
     {
-        public ResourceManagerOptions DefaultOptions { get; set; }
+        public ResourceManagerOptions DefaultOptions { get; set; } =
+            new ResourceManagerOptions(McmaResourceManagerEnvironmentVariables.ServicesUrl,
+                                       McmaResourceManagerEnvironmentVariables.ServicesAuthType,
+                                       McmaResourceManagerEnvironmentVariables.ServicesAuthContext);
     }
 }

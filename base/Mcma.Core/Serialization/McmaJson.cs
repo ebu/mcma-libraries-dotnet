@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Serialization
@@ -20,6 +21,7 @@ namespace Mcma.Serialization
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 Converters =
                 {
+                    new StringEnumConverter(),
                     new McmaObjectConverter(),
                     new McmaExpandoObjectConverter()
                 }

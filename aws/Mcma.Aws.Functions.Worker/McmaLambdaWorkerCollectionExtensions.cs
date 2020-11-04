@@ -15,21 +15,29 @@ namespace Mcma.Aws.Functions.ApiHandler
         static McmaLambdaWorkerCollectionExtensions() => McmaTypes.Add<AwsS3FileLocator>().Add<AwsS3FolderLocator>();
 
         public static IServiceCollection AddMcmaAwsLambdaWorker(this IServiceCollection services,
-                                                          string applicationName,
-                                                          Action<McmaWorkerBuilder> buildWorker,
-                                                          string logGroupName = null)
-            => services.AddMcmaCloudWatchLogging(applicationName, logGroupName ?? McmaCloudWatchEnvironmentVariables.LogGroupName)
-                       .AddMcmaDynamoDb()
+                                                                string applicationName,
+                                                                Action<McmaWorkerBuilder> buildWorker,
+                                                                string logGroupName = null,
+                                                                Action<DynamoDbTableOptions> configureDynamoDb = null)
+            => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
+                       .AddMcmaDynamoDb(configureDynamoDb)
+                       .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
                        .AddMcmaWorker(buildWorker);
 
         public static IServiceCollection AddMcmaAwsLambdaJobAssignmentWorker<TJob>(this IServiceCollection services,
                                                                                    string applicationName,
                                                                                    Action<ProcessJobAssignmentOperationBuilder<TJob>> addProfiles,
-                                                                                   string logGroupName = null)
+                                                                                   string logGroupName = null,
+                                                                                   Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                                                   Action<McmaWorkerBuilder> addAdditionalOperations = null)
             where TJob : Job
-            => services.AddMcmaCloudWatchLogging(applicationName, logGroupName ?? McmaCloudWatchEnvironmentVariables.LogGroupName)
-                       .AddMcmaDynamoDb()
-                       .AddMcmaClient(clientBuilder => clientBuilder.ConfigureDefaultsFromEnvironmentVariables().Auth.AddAws4Auth())
-                       .AddMcmaWorker(workerBuilder => workerBuilder.AddProcessJobAssignmentOperation(addProfiles));
+            => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
+                       .AddMcmaDynamoDb(configureDynamoDb)
+                       .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
+                       .AddMcmaWorker(workerBuilder =>
+                       {
+                           workerBuilder.AddProcessJobAssignmentOperation(addProfiles);
+                           addAdditionalOperations?.Invoke(workerBuilder);
+                       });
     }
 }

@@ -1,4 +1,5 @@
 using Mcma.Data;
+using Mcma.Serialization;
 using Microsoft.Azure.Cosmos;
 
 namespace Mcma.Azure.CosmosDb
@@ -15,6 +16,10 @@ namespace Mcma.Azure.CosmosDb
         
         public bool? ConsistentQuery { get; set; }
 
-        public CosmosClientOptions CosmosClient { get; set; } = new CosmosClientOptions {ApplicationRegion = McmaCosmosDbEnvironmentVariables.Region};
+        public CosmosClientOptions CosmosClient { get; set; } = new CosmosClientOptions
+        {
+            ApplicationRegion = McmaCosmosDbEnvironmentVariables.Region,
+            Serializer = new CosmosJsonDotNetSerializer(McmaJson.DefaultSettings())
+        };
     }
 }

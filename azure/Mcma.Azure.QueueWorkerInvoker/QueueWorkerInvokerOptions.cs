@@ -1,12 +1,18 @@
-﻿using Azure.Storage.Queues;
+﻿using System;
+using Azure.Storage.Queues;
 using Mcma.WorkerInvoker;
 
 namespace Mcma.Azure.WorkerInvoker
 {
     public class QueueWorkerInvokerOptions : WorkerInvokerOptions
     {
-        public string ConnectionString { get; set; }
+        public QueueWorkerInvokerOptions()
+        {
+            WorkerFunctionId = McmaQueueWorkerInvokerEnvironmentVariables.WorkerQueueName;
+        }
+
+        public string ConnectionString { get; set; } = Environment.GetEnvironmentVariable("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING");
         
-        public QueueClientOptions QueueClient { get; set; }
+        public QueueClientOptions QueueClientOptions { get; set; }
     }
 }

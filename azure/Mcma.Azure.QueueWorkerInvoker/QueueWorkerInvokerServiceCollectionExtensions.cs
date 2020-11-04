@@ -14,6 +14,10 @@ namespace Mcma.Azure.WorkerInvoker
 
         public static IServiceCollection AddMcmaQueueWorkerInvoker(this IServiceCollection services, string queueName = null)
             => services.AddMcmaQueueWorkerInvoker(
-                opts => opts.WorkerFunctionId = queueName ?? McmaQueueWorkerInvokerEnvironmentVariables.WorkerQueueName);
+                opts =>
+                {
+                    if (queueName != null)
+                        opts.WorkerFunctionId = queueName;
+                });
     }
 }

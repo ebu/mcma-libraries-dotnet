@@ -45,8 +45,5 @@ namespace Mcma.Client
 
             return this;
         }
-
-        public McmaClientBuilder ConfigureDefaultsFromEnvironmentVariables() =>
-            ConfigureDefaults(ResourceManagerOptionsHelper.SetFromEnvironmentVariables);
     }
 }

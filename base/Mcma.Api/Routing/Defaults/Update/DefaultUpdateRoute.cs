@@ -42,7 +42,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
                 return;
             }
 
-            resource.OnUpsert(ApiOptions.CurrentRequestPublicUrl(requestContext));
+            resource.OnUpsert(ApiOptions.PublicUrlForCurrentRequest(requestContext));
 
             await DbTable.PutAsync(requestContext.Request.Path, resource);
 

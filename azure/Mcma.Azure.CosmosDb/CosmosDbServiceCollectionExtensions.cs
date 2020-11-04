@@ -20,6 +20,7 @@ namespace Mcma.Azure.CosmosDb
             build?.Invoke(builder);
 
             services.TryAddSingleton<IQueryDefinitionBuilder, QueryDefinitionBuilder>();
+            services.TryAddSingleton<ICosmosDbContainerProvider, CosmosDbContainerProvider>();
             services.TryAddSingleton<ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)>, CosmosDbCustomQueryBuilderRegistry>();
 
             return services.AddSingleton<IDocumentDatabaseTable, CosmosDbTable>();

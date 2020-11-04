@@ -20,7 +20,7 @@ namespace Mcma.Azure.CosmosDb
             CustomQueryBuilderRegistry = customQueryBuilderRegistry ?? throw new ArgumentNullException(nameof(customQueryBuilderRegistry));
             QueryDefinitionBuilder = queryDefinitionBuilder ?? throw new ArgumentNullException(nameof(queryDefinitionBuilder));
             ContainerProvider = containerProvider ?? throw new ArgumentNullException(nameof(containerProvider));
-            Options = options?.Value ?? new CosmosDbTableOptions();
+            Options = options.Value ?? new CosmosDbTableOptions();
         }
 
         private ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)> CustomQueryBuilderRegistry { get; }

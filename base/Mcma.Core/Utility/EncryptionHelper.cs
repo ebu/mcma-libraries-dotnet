@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Mcma.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

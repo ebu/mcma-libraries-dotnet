@@ -20,7 +20,7 @@ namespace Mcma.Azure.BlobStorage.Proxies
 
         public async Task<Stream> GetAsync(Stream writeTo = null)
         {
-            writeTo = writeTo ?? new MemoryStream();
+            writeTo ??= new MemoryStream();
 
             await BlobClient.DownloadToAsync(writeTo);
 

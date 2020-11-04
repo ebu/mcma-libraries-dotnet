@@ -1,6 +1,6 @@
 using System;
 
-namespace Mcma.Azure.Client.AzureAd
+namespace Mcma.Azure.Client.AzureAD
 {
     public class AzureADAuthContext
     {

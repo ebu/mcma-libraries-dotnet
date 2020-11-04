@@ -5,7 +5,7 @@ using Mcma.Client.AccessTokens;
 using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Options;
 
-namespace Mcma.Azure.Client.AzureAd
+namespace Mcma.Azure.Client.AzureAD.ManagedIdentity
 {
     public class AzureManagedIdentityBearerTokenProvider : IBearerTokenProvider<AzureADAuthContext>, IDisposable
     {
@@ -21,7 +21,10 @@ namespace Mcma.Azure.Client.AzureAd
 
         private void Configure(AzureManagedIdentityBearerTokenProviderOptions options)
         {
-            AzureServiceTokenProvider = new AzureServiceTokenProvider(options.ConnectionString, options.AzureAdInstance);
+            AzureServiceTokenProvider =
+                options.AzureAdInstance != null
+                    ? new AzureServiceTokenProvider(options.ConnectionString, options.AzureAdInstance)
+                    : new AzureServiceTokenProvider(options.ConnectionString);
         }
 
         public async Task<BearerToken> GetAsync(AzureADAuthContext authContext, CancellationToken cancellationToken = default)

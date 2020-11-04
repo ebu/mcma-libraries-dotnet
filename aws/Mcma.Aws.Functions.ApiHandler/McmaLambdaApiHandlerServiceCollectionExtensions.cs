@@ -6,14 +6,13 @@ using Mcma.Aws.CloudWatch;
 using Mcma.Aws.DynamoDb;
 using Mcma.Aws.S3;
 using Mcma.Aws.WorkerInvoker;
-using Mcma.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Aws.Functions.ApiHandler
 {
     public static class McmaLambdaApiHandlerServiceCollectionExtensions
     {
-        static McmaLambdaApiHandlerServiceCollectionExtensions() => McmaTypes.Add<AwsS3FileLocator>().Add<AwsS3FolderLocator>();
+        static McmaLambdaApiHandlerServiceCollectionExtensions() => AwsS3LocatorHelper.AddTypes();
         
         public static IServiceCollection AddMcmaLambdaApiHandler(this IServiceCollection services,
                                                               string applicationName,
@@ -28,10 +27,15 @@ namespace Mcma.Aws.Functions.ApiHandler
                                                                               string applicationName,
                                                                               string logGroupName = null,
                                                                               string workerFunctionName = null,
-                                                                              Action<DynamoDbTableOptions> configureDynamoDb = null)
+                                                                              Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                                              Action<McmaApiBuilder> buildApi = null)
             => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
-                       .AddMcmaLambdaWorkerInvoker(workerFunctionName)
                        .AddMcmaDynamoDb(configureDynamoDb)
-                       .AddMcmaApiGatewayApi(apiBuilder => apiBuilder.AddDefaultJobAssignmentRoutes());
+                       .AddMcmaLambdaWorkerInvoker(workerFunctionName)
+                       .AddMcmaApiGatewayApi(apiBuilder =>
+                       {
+                           apiBuilder.AddDefaultJobAssignmentRoutes();
+                           buildApi?.Invoke(apiBuilder);
+                       });
     }
 }

@@ -14,5 +14,14 @@ namespace Mcma.Aws.Client
             
             return authenticatorRegistry.Add<Aws4AuthContext, Aws4AuthenticatorFactory>(AwsConstants.Aws4);   
         }
+        
+        public static AuthenticatorRegistry TryAddAws4Auth(this AuthenticatorRegistry authenticatorRegistry,
+                                                        Action<Aws4AuthenticatorFactoryOptions> configureOptions = null)
+        {
+            if (configureOptions != null)
+                authenticatorRegistry.Services.Configure(configureOptions);
+            
+            return authenticatorRegistry.TryAdd<Aws4AuthContext, Aws4AuthenticatorFactory>(AwsConstants.Aws4);   
+        }
     }
 }

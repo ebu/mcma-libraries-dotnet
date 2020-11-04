@@ -12,7 +12,7 @@ namespace Mcma.Azure.WorkerInvoker
         public QueueWorkerInvoker(IOptions<QueueWorkerInvokerOptions> options)
             : base(options)
         {
-            QueueServiceClient = new QueueServiceClient(options.Value.ConnectionString, options.Value.QueueClient);
+            QueueServiceClient = new QueueServiceClient(options.Value.ConnectionString, options.Value.QueueClientOptions);
         }
         
         private QueueServiceClient QueueServiceClient { get; }

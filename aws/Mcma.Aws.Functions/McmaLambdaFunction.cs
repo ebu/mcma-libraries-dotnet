@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
+using Mcma.Aws.S3;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Aws.Functions
@@ -8,6 +9,8 @@ namespace Mcma.Aws.Functions
     public abstract class McmaLambdaFunction<TFunctionHandler, TInput, TOutput>
         where TFunctionHandler : class, IMcmaLambdaFunctionHandler<TInput, TOutput>
     {
+        static McmaLambdaFunction() => AwsS3LocatorHelper.AddTypes();
+        
         private Lazy<IServiceProvider> ServiceProvider { get; }
 
         protected McmaLambdaFunction()

@@ -9,7 +9,7 @@ namespace Mcma.Azure.CosmosDb
     {
         public CosmosDbContainerProvider(IOptions<CosmosDbTableOptions> options)
         {
-            Options = options?.Value ?? new CosmosDbTableOptions();
+            Options = options.Value ?? new CosmosDbTableOptions();
 
             CosmosClient = new CosmosClient(Options.Endpoint, Options.Key, Options.CosmosClient);
             Database = CosmosClient.GetDatabase(Options.DatabaseId);

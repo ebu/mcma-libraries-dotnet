@@ -4,11 +4,14 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Mcma.Serialization;
 
 namespace Mcma.Aws.S3
 {
-    public static class AwsS3LocatorExtensions
+    public static class AwsS3LocatorHelper
     {
+        public static McmaTypes.ITypeRegistrations AddTypes() => McmaTypes.Add<AwsS3FileLocator>().Add<AwsS3FolderLocator>();
+        
         public static async Task<string> GetBucketLocationAsync(this AwsS3Locator s3Locator)
         {
             using (var s3Client = new AmazonS3Client(RegionEndpoint.USEast1))

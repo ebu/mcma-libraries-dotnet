@@ -4,13 +4,13 @@ using Mcma.Client.AccessTokens;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 
-namespace Mcma.Azure.Client.AzureAd
+namespace Mcma.Azure.Client.AzureAD.ConfidentialClient
 {
     public class AzureADConfidentialClientBearerTokenProvider : IBearerTokenProvider<AzureADAuthContext>
     {
         public AzureADConfidentialClientBearerTokenProvider(IOptions<ConfidentialClientApplicationOptions> options)
         {
-            if (options?.Value == null)
+            if (options.Value == null)
                 throw new McmaException("No Azure AD public client options provided.");
             
             Client = ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(options.Value).Build();

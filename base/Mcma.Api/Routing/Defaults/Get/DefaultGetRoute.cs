@@ -13,7 +13,7 @@ namespace Mcma.Api.Routing.Defaults.Routes
                                IDefaultGetRouteStartedHandler<TResource> startedHandler,
                                IDefaultGetRouteCompletedHandler<TResource> completedHandler,
                                IOptions<DefaultRouteCollectionOptions<TResource>> options)
-            : base(HttpMethod.Get, (options?.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root + "/{id}")
+            : base(HttpMethod.Get, (options.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root + "/{id}")
         {
             DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
             StartedHandler = startedHandler;
