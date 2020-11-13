@@ -12,15 +12,15 @@ namespace Mcma.Azure.WorkerInvoker
         public QueueWorkerInvoker(IOptions<QueueWorkerInvokerOptions> options)
             : base(options)
         {
-            QueueServiceClient = new QueueServiceClient(options.Value.ConnectionString, options.Value.QueueClientOptions);
+            var queueServiceClient = new QueueServiceClient(options.Value.ConnectionString, options.Value.QueueClientOptions);
+            QueueClient = queueServiceClient.GetQueueClient(options.Value.WorkerFunctionId);
         }
         
-        private QueueServiceClient QueueServiceClient { get; }
+        private QueueClient QueueClient { get; }
 
-        protected override async Task InvokeAsync(string workerFunctionId, WorkerRequest request)
+        protected override async Task InvokeAsync(WorkerRequest request)
         {
-            var queueClient = QueueServiceClient.GetQueueClient(workerFunctionId);
-            await queueClient.SendMessageAsync(request.ToMcmaJson().ToString().ToBase64());
+            await QueueClient.SendMessageAsync(request.ToMcmaJson().ToString().ToBase64());
         }
     }
 }

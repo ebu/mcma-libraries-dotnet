@@ -18,13 +18,13 @@ namespace Mcma.Aws.WorkerInvoker
         
         private IAmazonLambda LambdaClient { get; }
 
-        protected override async Task InvokeAsync(string workerFunctionId, WorkerRequest request)
+        protected override async Task InvokeAsync(WorkerRequest request)
         {
             // invoking worker lambda function that will handle the work for the service
             await LambdaClient.InvokeAsync(
                 new InvokeRequest
                 {
-                    FunctionName = workerFunctionId,
+                    FunctionName = Options.WorkerFunctionId,
                     InvocationType = "Event",
                     LogType = "None",
                     Payload = request.ToMcmaJson().ToString()
