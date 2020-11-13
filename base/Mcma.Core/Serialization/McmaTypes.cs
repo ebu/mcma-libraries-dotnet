@@ -1,39 +1,15 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Mcma.Logging;
 
 namespace Mcma.Serialization
 {
+    /// <summary>
+    /// Static registry of types of which MCMA serialization must be aware
+    /// </summary>
     public static class McmaTypes
     {
-        public interface ITypeRegistrations
-        {
-            ITypeRegistrations Add<T>();
-
-            ITypeRegistrations Add(Type type);
-        }
-
-        private class TypeRegistrations : ITypeRegistrations, IEnumerable<Type>
-        {
-            internal List<Type> Types { get; } = new List<Type>();
-
-            public ITypeRegistrations Add<T>() => Add(typeof(T));
-
-            public ITypeRegistrations Add(Type type)
-            {
-                if (!Types.Contains(type))
-                    Types.Add(type);
-                return this;
-            }
-
-            public IEnumerator<Type> GetEnumerator() => Types.GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-
         static McmaTypes()
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -60,26 +36,39 @@ namespace Mcma.Serialization
             }
         }
         
-        public static ITypeRegistrations Add<T>() => Add(typeof(T));
+        /// <summary>
+        /// Adds a well-known type to the registry
+        /// </summary>
+        /// <typeparam name="T">The type to add</typeparam>
+        /// <returns></returns>
+        public static IMcmaTypeRegistrations Add<T>() => Add(typeof(T));
         
-        public static ITypeRegistrations Add(Type type) => Types.Add(type);
+        /// <summary>
+        /// Adds a well-known type to the registry
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static IMcmaTypeRegistrations Add(Type type) => Types.Add(type);
 
-        public static Type FindType(string typeString)
+        /// <summary>
+        /// Finds a registered type with the given name
+        /// </summary>
+        /// <param name="name">The name of the type to find. Must be an unqualified name (<see cref="Type.Name"/>), as would be found in the @type json property</param>
+        /// <returns>The type with the given name, if any</returns>
+        public static Type FindType(string name)
         {
-            if (typeString == null)
+            if (name == null)
                 return null;
 
             // check for match in explicitly-provided type collection
-            var objectType = Types.FirstOrDefault(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase));
+            var objectType = Types.FirstOrDefault(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             if (objectType == null)
             {
                 // check for match in core types
-                objectType = Type.GetType(typeof(McmaObject).AssemblyQualifiedName.Replace(nameof(McmaObject), typeString));
+                objectType = Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), name));
             }
 
             return objectType;
         }
-
-        public static Type GetResourceType(this McmaResource resource) => resource?.Type != null ? FindType(resource.Type) : null;
     }
 }
