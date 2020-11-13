@@ -6,6 +6,13 @@ namespace Mcma.Utility
 {
     public static class ExpressionExtensions
     {
+        /// <summary>
+        /// Gets the <see cref="PropertyInfo"/> referenced by an <see cref="Expression{TDelegate}"/>
+        /// </summary>
+        /// <param name="expression">The expression referencing a property</param>
+        /// <typeparam name="TObject">The type of object the expression references</typeparam>
+        /// <returns>The <see cref="PropertyInfo"/> for the referenced property</returns>
+        /// <exception cref="McmaException">Thrown if the provided expression is not MemberExpression that references a property</exception>
         public static PropertyInfo GetProperty<TObject>(this Expression<Func<TObject, object>> expression)
         {
             var body = expression.Body;
@@ -22,6 +29,12 @@ namespace Mcma.Utility
             return property;
         }
 
+        /// <summary>
+        /// Gets the name of a property referenced by an <see cref="Expression{TDelegate}"/>
+        /// </summary>
+        /// <param name="expression">The expression referencing a property</param>
+        /// <typeparam name="TObject">The type of object the expression references</typeparam>
+        /// <returns>The name of the referenced property</returns>
         public static string GetPropertyName<TObject>(this Expression<Func<TObject, object>> expression)
             => expression.GetProperty().Name;
     }
