@@ -8,7 +8,7 @@ namespace Mcma.WorkerInvoker
         protected WorkerInvoker(IOptions<WorkerInvokerOptions> options)
         {
             if (string.IsNullOrWhiteSpace(options.Value?.WorkerFunctionId))
-                throw new McmaException($"Worker function not configured");
+                throw new McmaException("Worker function not configured");
 
             Options = options.Value;
         }
@@ -17,16 +17,15 @@ namespace Mcma.WorkerInvoker
         
         public Task InvokeAsync(string operationName, object input = null, McmaTracker tracker = null)
             =>
-            InvokeAsync(
-                Options.WorkerFunctionId,
-                new WorkerRequest
-                {
-                    OperationName = operationName,
-                    Input = input,
-                    Tracker = tracker
-                }
-            );
+                InvokeAsync(
+                    new WorkerRequest
+                    {
+                        OperationName = operationName,
+                        Input = input,
+                        Tracker = tracker
+                    }
+                );
 
-        protected abstract Task InvokeAsync(string workerFunctionId, WorkerRequest workerRequest);
+        protected abstract Task InvokeAsync(WorkerRequest workerRequest);
     }
 }

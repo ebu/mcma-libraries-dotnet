@@ -10,7 +10,7 @@ namespace Mcma.Aws.S3
 {
     public static class AwsS3LocatorHelper
     {
-        public static McmaTypes.ITypeRegistrations AddTypes() => McmaTypes.Add<AwsS3FileLocator>().Add<AwsS3FolderLocator>();
+        public static IMcmaTypeRegistrations AddTypes() => McmaTypes.Add<AwsS3FileLocator>().Add<AwsS3FolderLocator>();
         
         public static async Task<string> GetBucketLocationAsync(this AwsS3Locator s3Locator)
         {

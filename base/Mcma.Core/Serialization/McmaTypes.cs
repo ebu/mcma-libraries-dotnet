@@ -42,7 +42,7 @@ namespace Mcma.Serialization
             AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => AddTypesFromAssembly(args.LoadedAssembly);
         }
 
-        private static TypeRegistrations Types { get; } = new TypeRegistrations();
+        private static McmaTypeRegistrations Types { get; } = new McmaTypeRegistrations();
         
         private static void AddTypesFromAssembly(Assembly assembly)
         {
@@ -52,7 +52,7 @@ namespace Mcma.Serialization
             try
             {
                 foreach (var mcmaType in assembly.GetExportedTypes().Where(t => typeof(McmaObject).IsAssignableFrom(t)))
-                    Types.Add(mcmaType);
+                    McmaTypes.Add(mcmaType);
             }
             catch (Exception ex)
             {

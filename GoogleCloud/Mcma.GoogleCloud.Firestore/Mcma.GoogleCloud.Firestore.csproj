@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>Latest</LangVersion>
+        <PackageVersion>0.14.0-rc1</PackageVersion>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageOutputPath>bin/packages</PackageOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Cloud.Firestore" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\base\Mcma.Data\Mcma.Data.csproj" />
+    </ItemGroup>
+</Project>

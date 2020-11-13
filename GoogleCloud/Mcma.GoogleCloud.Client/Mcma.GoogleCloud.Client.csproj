@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>Latest</LangVersion>
+        <PackageVersion>0.14.0-rc1</PackageVersion>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageOutputPath>bin/packages</PackageOutputPath>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="../../Base/Mcma.Client/Mcma.Client.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.49.0.1869" />
+    </ItemGroup>
+
+</Project>
