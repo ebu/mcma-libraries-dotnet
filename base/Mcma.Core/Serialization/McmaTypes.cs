@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Mcma.Logging;
@@ -9,31 +7,6 @@ namespace Mcma.Serialization
 {
     public static class McmaTypes
     {
-        public interface ITypeRegistrations
-        {
-            ITypeRegistrations Add<T>();
-
-            ITypeRegistrations Add(Type type);
-        }
-
-        private class TypeRegistrations : ITypeRegistrations, IEnumerable<Type>
-        {
-            internal List<Type> Types { get; } = new List<Type>();
-
-            public ITypeRegistrations Add<T>() => Add(typeof(T));
-
-            public ITypeRegistrations Add(Type type)
-            {
-                if (!Types.Contains(type))
-                    Types.Add(type);
-                return this;
-            }
-
-            public IEnumerator<Type> GetEnumerator() => Types.GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-
         static McmaTypes()
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -60,9 +33,9 @@ namespace Mcma.Serialization
             }
         }
         
-        public static ITypeRegistrations Add<T>() => Add(typeof(T));
+        public static IMcmaTypeRegistrations Add<T>() => Add(typeof(T));
         
-        public static ITypeRegistrations Add(Type type) => Types.Add(type);
+        public static IMcmaTypeRegistrations Add(Type type) => Types.Add(type);
 
         public static Type FindType(string typeString)
         {
