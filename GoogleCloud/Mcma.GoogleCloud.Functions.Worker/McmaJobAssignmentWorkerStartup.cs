@@ -1,4 +1,4 @@
-﻿using Google.Cloud.Functions.Hosting;
+﻿﻿using Google.Cloud.Functions.Hosting;
 using Mcma.GoogleCloud.Firestore;
 using Mcma.Worker;
 using Microsoft.AspNetCore.Hosting;

@@ -1,4 +1,4 @@
-﻿namespace Mcma.GoogleCloud.Storage
+﻿﻿namespace Mcma.GoogleCloud.Storage
 {
     public abstract class CloudStorageLocator : Locator
     {

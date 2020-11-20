@@ -1,4 +1,4 @@
-﻿using Mcma.Data;
+﻿﻿using Mcma.Data;
 
 namespace Mcma.GoogleCloud.Firestore
 {

@@ -1,4 +1,4 @@
-﻿namespace Mcma.GoogleCloud.Client
+﻿﻿namespace Mcma.GoogleCloud.Client
 {
     public static class GoogleConstants
     {

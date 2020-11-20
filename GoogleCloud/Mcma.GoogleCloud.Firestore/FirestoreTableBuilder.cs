@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿﻿using System.Linq;
 using Google.Cloud.Firestore;
 using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Extensions.DependencyInjection;

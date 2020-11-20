@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using Google.Cloud.Logging.V2;
 using Mcma.Logging;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using Mcma.Serialization;
+﻿﻿using Mcma.Serialization;
 using StorageObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace Mcma.GoogleCloud.Storage
