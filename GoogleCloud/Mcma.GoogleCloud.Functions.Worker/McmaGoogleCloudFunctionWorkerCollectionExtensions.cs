@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Client;
 using Mcma.GoogleCloud.Client;
 using Mcma.GoogleCloud.Logger;

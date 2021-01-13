@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Azure.Cosmos;

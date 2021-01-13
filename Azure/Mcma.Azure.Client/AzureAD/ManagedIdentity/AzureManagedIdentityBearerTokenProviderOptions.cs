@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma.Azure.Client.AzureAD.ManagedIdentity
+﻿namespace Mcma.Azure.Client.AzureAD.ManagedIdentity
 {
     public class AzureManagedIdentityBearerTokenProviderOptions
     {

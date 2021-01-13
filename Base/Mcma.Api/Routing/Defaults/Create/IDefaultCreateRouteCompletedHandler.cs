@@ -1,4 +1,4 @@
-﻿﻿using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Mcma.Api.Routing.Defaults.Routes
 {

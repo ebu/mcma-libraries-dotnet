@@ -1,4 +1,4 @@
-﻿﻿using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Google.Cloud.Firestore;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;

@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma
+﻿namespace Mcma
 {
     /// <summary>
     /// Represents an endpoint exposed by an MCMA service for performing operations against a specific type of resource

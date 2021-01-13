@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma.Aws.Client
+﻿namespace Mcma.Aws.Client
 {
     public class Aws4AuthenticatorFactoryOptions
     {

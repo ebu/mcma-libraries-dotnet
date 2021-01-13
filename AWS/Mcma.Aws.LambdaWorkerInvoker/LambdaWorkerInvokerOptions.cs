@@ -1,4 +1,4 @@
-﻿﻿using Amazon.Lambda;
+﻿using Amazon.Lambda;
 using Amazon.Runtime;
 using Mcma.WorkerInvoker;
 

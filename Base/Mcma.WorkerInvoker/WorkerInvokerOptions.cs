@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma.WorkerInvoker
+﻿namespace Mcma.WorkerInvoker
 {
     public class WorkerInvokerOptions
     {

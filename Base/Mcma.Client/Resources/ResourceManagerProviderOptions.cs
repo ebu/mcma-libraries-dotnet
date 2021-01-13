@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma.Client
+﻿namespace Mcma.Client
 {
     public class ResourceManagerProviderOptions
     {

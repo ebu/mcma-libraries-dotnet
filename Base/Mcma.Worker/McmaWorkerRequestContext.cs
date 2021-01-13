@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Logging;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;

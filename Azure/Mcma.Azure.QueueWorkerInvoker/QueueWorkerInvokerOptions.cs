@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Azure.Storage.Queues;
 using Mcma.WorkerInvoker;
 

@@ -1,4 +1,4 @@
-﻿﻿using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 
 namespace Mcma.Aws.DynamoDb

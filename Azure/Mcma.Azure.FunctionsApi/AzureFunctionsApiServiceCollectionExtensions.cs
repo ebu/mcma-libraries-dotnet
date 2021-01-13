@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Api;
 using Microsoft.Extensions.DependencyInjection;
 

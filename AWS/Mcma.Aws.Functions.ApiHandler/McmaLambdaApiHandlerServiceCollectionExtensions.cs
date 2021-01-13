@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Api;
 using Mcma.Api.Routing.Defaults;
 using Mcma.Aws.ApiGateway;

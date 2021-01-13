@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Amazon.DynamoDBv2.DocumentModel;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;

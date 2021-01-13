@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma.Api
+﻿namespace Mcma.Api
 {
     public class McmaApiOptions
     {

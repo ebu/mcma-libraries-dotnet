@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma.Logging
+﻿namespace Mcma.Logging
 {
     public class LoggerProviderOptions
     {

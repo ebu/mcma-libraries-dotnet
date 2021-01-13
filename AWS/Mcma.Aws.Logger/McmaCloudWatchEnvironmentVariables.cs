@@ -1,4 +1,4 @@
-﻿﻿using Mcma.Utility;
+﻿using Mcma.Utility;
 
 namespace Mcma.Aws.CloudWatch
 {

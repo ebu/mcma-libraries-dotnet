@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma;
 using Mcma.Logging;
 

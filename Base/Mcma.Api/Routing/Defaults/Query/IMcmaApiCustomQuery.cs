@@ -1,4 +1,4 @@
-﻿﻿using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;
 

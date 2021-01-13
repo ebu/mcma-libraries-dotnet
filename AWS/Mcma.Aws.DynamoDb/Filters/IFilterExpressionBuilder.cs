@@ -1,4 +1,4 @@
-﻿﻿using Amazon.DynamoDBv2.DocumentModel;
+﻿using Amazon.DynamoDBv2.DocumentModel;
 using Mcma.Data.DocumentDatabase.Queries;
 
 namespace Mcma.Aws.DynamoDb

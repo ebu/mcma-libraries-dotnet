@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Google.Cloud.Functions.Hosting;
 using Mcma.Api;
 using Mcma.Aws.Functions.ApiHandler;

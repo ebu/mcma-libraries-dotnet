@@ -1,4 +1,4 @@
-﻿﻿using System.Linq;
+﻿using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Aws.DynamoDb

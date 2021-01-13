@@ -1,4 +1,4 @@
-﻿﻿using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 
 namespace Mcma.Aws.Functions

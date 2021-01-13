@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Microsoft.Azure.Cosmos;
 
 namespace Mcma.Azure.CosmosDb

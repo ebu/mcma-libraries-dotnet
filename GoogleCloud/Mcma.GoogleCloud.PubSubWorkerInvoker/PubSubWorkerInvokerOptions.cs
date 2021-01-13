@@ -1,4 +1,4 @@
-﻿﻿using Google.Cloud.PubSub.V1;
+﻿using Google.Cloud.PubSub.V1;
 using Mcma.WorkerInvoker;
 
 namespace Mcma.GoogleCloud.PubSubWorkerInvoker

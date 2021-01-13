@@ -1,4 +1,4 @@
-﻿﻿using Mcma.Data.DocumentDatabase.Queries;
+﻿using Mcma.Data.DocumentDatabase.Queries;
 using FirestoreQuery = Google.Cloud.Firestore.Query;
 
 namespace Mcma.GoogleCloud.Firestore

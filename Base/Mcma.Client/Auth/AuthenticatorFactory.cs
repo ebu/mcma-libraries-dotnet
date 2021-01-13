@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Threading.Tasks;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;

@@ -1,4 +1,4 @@
-﻿﻿using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 
 namespace Mcma.Azure.CosmosDb

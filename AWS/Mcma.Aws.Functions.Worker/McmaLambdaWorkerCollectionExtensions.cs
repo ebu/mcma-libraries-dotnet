@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Aws.Client;
 using Mcma.Aws.CloudWatch;
 using Mcma.Aws.DynamoDb;

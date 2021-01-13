@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Google.Cloud.Firestore;
 using Mcma.Data;
 using Mcma.Data.DocumentDatabase.Queries;

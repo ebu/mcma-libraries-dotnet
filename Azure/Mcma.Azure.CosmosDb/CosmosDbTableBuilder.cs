@@ -1,4 +1,4 @@
-﻿﻿using Mcma.Data.DocumentDatabase.Queries;
+﻿using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 

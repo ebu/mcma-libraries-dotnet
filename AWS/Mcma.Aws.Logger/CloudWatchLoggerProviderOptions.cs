@@ -1,4 +1,4 @@
-﻿﻿using Amazon.CloudWatchLogs;
+﻿using Amazon.CloudWatchLogs;
 using Amazon.Runtime;
 using Mcma.Logging;
 

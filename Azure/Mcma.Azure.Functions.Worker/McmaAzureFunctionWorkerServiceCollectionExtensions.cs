@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using Mcma.Azure.BlobStorage;
 using Mcma.Azure.Client;
 using Mcma.Azure.Client.AzureAD.ManagedIdentity;

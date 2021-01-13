@@ -1,4 +1,4 @@
-﻿﻿using Mcma.Api.Routes;
+﻿using Mcma.Api.Routes;
 
 namespace Mcma.Api.Routing.Defaults.Routes
 {

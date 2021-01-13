@@ -1,4 +1,4 @@
-﻿﻿using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Mcma.Api;
 using Mcma.Logging;
 using Microsoft.AspNetCore.Http;

@@ -1,4 +1,4 @@
-﻿﻿namespace Mcma
+﻿namespace Mcma
 {
     /// <summary>
     /// Implemented by <see cref="Locator"/> objects that support exposing a URL
