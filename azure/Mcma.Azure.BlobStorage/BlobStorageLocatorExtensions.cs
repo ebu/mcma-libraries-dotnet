@@ -8,9 +8,7 @@ namespace Mcma.Azure.BlobStorage
         public static BlobStorageFileLocator FileLocator(this BlobStorageFolderLocator folderLocator, string fileName)
             => new BlobStorageFileLocator
             {
-                StorageAccountName = folderLocator.StorageAccountName,
-                Container = folderLocator.Container,
-                FilePath = folderLocator.FilePath(fileName)
+                Url = $"{folderLocator.Url.TrimEnd('/')}/{fileName}"
             };
     }
 }

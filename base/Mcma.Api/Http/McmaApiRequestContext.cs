@@ -47,7 +47,7 @@ namespace Mcma.Api
             
             try
             {
-                Request.JsonBody = JToken.Parse(Encoding.UTF8.GetString(Request.Body));
+                Request.JsonBody = McmaJson.Parse(Encoding.UTF8.GetString(Request.Body));
                 return true;
             }
             catch (Exception e)
@@ -86,7 +86,7 @@ namespace Mcma.Api
                 {
                     var trackerDataJson = Encoding.UTF8.GetString(Convert.FromBase64String(tracker));
                     if (!string.IsNullOrWhiteSpace(trackerDataJson))
-                        return JToken.Parse(trackerDataJson).ToMcmaObject<McmaTracker>();
+                        return McmaJson.Parse(trackerDataJson).ToMcmaObject<McmaTracker>();
                 }
                 catch (Exception e)
                 {

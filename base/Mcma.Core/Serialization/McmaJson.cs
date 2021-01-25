@@ -18,6 +18,7 @@ namespace Mcma.Serialization
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                DateParseHandling = DateParseHandling.DateTimeOffset,
                 Converters =
                 {
                     new McmaObjectConverter(),
@@ -34,6 +35,8 @@ namespace Mcma.Serialization
         public static JsonSerializer Serializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(false));
 
         private static JsonSerializer PreserveCasingSerializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(true));
+
+        public static JToken Parse(string json) => JsonConvert.DeserializeObject<JToken>(json, DefaultSettings());
 
         public static T ToMcmaObject<T>(this JToken json) => json.ToObject<T>(Serializer);
 

@@ -2,8 +2,6 @@
 {
     public class AwsS3FolderLocator : AwsS3Locator
     {
-        public string KeyPrefix { get; set; }
-
-        protected override string UrlPath => KeyPrefix;
+        public string KeyPrefix => GetParsedUrl().Key;
     }
 }

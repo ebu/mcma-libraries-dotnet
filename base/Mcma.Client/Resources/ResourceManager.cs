@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Mcma.Logging;
 using Mcma.Serialization;
 using Mcma.Utility;
+using Newtonsoft.Json.Linq;
 
 namespace Mcma.Client
 {
@@ -106,12 +107,28 @@ namespace Mcma.Client
 
                 try
                 {
-                    var queryResults =
-                        await resourceEndpoint.GetAsync<QueryResults<T>>(
+                    var getResponse =
+                        await resourceEndpoint.GetAsync(
                             queryParams: filter.ToDictionary(x => x.Item1, x => x.Item2),
                             tracker: tracker);
                     
-                    results.AddRange(queryResults.Results);
+                    await getResponse.ThrowIfFailedAsync();
+
+                    var json = await getResponse.Content.ReadAsJsonAsync();
+                    
+                    switch (json)
+                    {
+                        case JArray jsonArray:
+                            results.AddRange(jsonArray.Select(x => x.ToObject<T>()));
+                            break;
+                        case JObject jsonObject when jsonObject.Property(nameof(QueryResults<object>.Results), StringComparison.OrdinalIgnoreCase) != null:
+                            results.AddRange(jsonObject.ToMcmaObject<QueryResults<T>>().Results);
+                            break;
+                        default:
+                            throw new McmaException(
+                                $"Unexpected response type received when querying endpoint {resourceEndpoint.HttpEndpoint} for resources of type '{typeof(T).Name}'. " +
+                                    $"JSON: {Environment.NewLine}{json}");
+                    }
                     
                     usedHttpEndpoints.Add(resourceEndpoint.HttpEndpoint);
                 }

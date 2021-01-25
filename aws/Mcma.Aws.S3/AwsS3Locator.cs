@@ -1,11 +1,11 @@
 ﻿namespace Mcma.Aws.S3
 {
-    public abstract class AwsS3Locator : Locator, IUrlLocator
+    public class AwsS3Locator : UrlLocator
     {
-        public string Bucket { get; set; }
+        private S3ParsedUrl ParsedUrl { get; set; } 
 
-        public string Url => $"http://{Bucket}.s3.amazonaws.com/{UrlPath}";
+        public string Bucket => GetParsedUrl().Bucket;
 
-        protected abstract string UrlPath { get; }
+        internal S3ParsedUrl GetParsedUrl() => ParsedUrl?.Url == Url ? ParsedUrl : ParsedUrl = new S3ParsedUrl(Url);
     }
 }

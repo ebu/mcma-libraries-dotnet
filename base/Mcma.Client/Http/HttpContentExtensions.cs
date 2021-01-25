@@ -15,7 +15,7 @@ namespace Mcma.Client
         {
             var responseBody = await content.ReadAsStringAsync();
 
-            return !string.IsNullOrWhiteSpace(responseBody) ? JToken.Parse(responseBody) : JValue.CreateNull();
+            return !string.IsNullOrWhiteSpace(responseBody) ? McmaJson.Parse(responseBody) : JValue.CreateNull();
         }
 
         public static async Task<JToken> ReadAsJsonArrayAsync(this HttpContent content)

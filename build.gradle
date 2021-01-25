@@ -1,4 +1,4 @@
-def requiredVersionDotnet = "~3.1.0"
+def requiredVersionDotnet = "~5.0.0"
 
 allprojects {
     ext {

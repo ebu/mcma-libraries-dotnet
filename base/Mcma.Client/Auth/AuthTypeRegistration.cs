@@ -38,7 +38,7 @@ namespace Mcma.Client
             mcmaObject = default;
             try
             {
-                mcmaObject = JToken.Parse(context).ToMcmaObject<T>();
+                mcmaObject = McmaJson.Parse(context).ToMcmaObject<T>();
                 return true;
             }
             catch

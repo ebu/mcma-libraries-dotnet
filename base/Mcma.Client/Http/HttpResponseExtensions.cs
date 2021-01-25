@@ -1,8 +1,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Mcma.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Mcma.Client
 {
@@ -29,10 +29,11 @@ namespace Mcma.Client
                         // in the case that the response body is json, try to parse it to a JToken so we can better format it in the exception
                         try
                         {
-                            errorBody = JToken.Parse(errorBody).ToString(Formatting.Indented);
+                            errorBody = McmaJson.Parse(errorBody).ToString(Formatting.Indented);
                         }
                         catch
                         {
+                            // may not be json - just ignore this
                         }
                     
                         // if we have a body, append the body (as text) to the 
@@ -41,6 +42,7 @@ namespace Mcma.Client
                 }
                 catch
                 {
+                    // failed to read body - just ignore this
                 }
             }
 
