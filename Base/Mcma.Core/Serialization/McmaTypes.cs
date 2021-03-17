@@ -5,6 +5,9 @@ using Mcma.Logging;
 
 namespace Mcma.Serialization
 {
+    /// <summary>
+    /// Static registry of types of which MCMA serialization must be aware
+    /// </summary>
     public static class McmaTypes
     {
         static McmaTypes()
@@ -12,10 +15,10 @@ namespace Mcma.Serialization
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 AddTypesFromAssembly(assembly);
 
-            AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => AddTypesFromAssembly(args.LoadedAssembly);
+            AppDomain.CurrentDomain.AssemblyLoad += (_, args) => AddTypesFromAssembly(args.LoadedAssembly);
         }
 
-        private static McmaTypeRegistrations Types { get; } = new McmaTypeRegistrations();
+        private static McmaTypeRegistrations Types { get; } = new();
         
         private static void AddTypesFromAssembly(Assembly assembly)
         {
@@ -33,10 +36,25 @@ namespace Mcma.Serialization
             }
         }
         
+        /// <summary>
+        /// Adds a well-known type to the registry
+        /// </summary>
+        /// <typeparam name="T">The type to add</typeparam>
+        /// <returns></returns>
         public static IMcmaTypeRegistrations Add<T>() => Add(typeof(T));
         
+        /// <summary>
+        /// Adds a well-known type to the registry
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static IMcmaTypeRegistrations Add(Type type) => Types.Add(type);
 
+        /// <summary>
+        /// Finds a registered type with the given name
+        /// </summary>
+        /// <param name="typeString">The name of the type to find. Must be an unqualified name (<see cref="Type.Name"/>), as would be found in the @type json property</param>
+        /// <returns>The type with the given name, if any</returns>
         public static Type FindType(string typeString)
         {
             if (typeString == null)
@@ -52,7 +70,5 @@ namespace Mcma.Serialization
 
             return objectType;
         }
-
-        public static Type GetResourceType(this McmaResource resource) => resource?.Type != null ? FindType(resource.Type) : null;
     }
 }

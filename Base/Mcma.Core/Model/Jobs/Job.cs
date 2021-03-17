@@ -14,7 +14,7 @@ namespace Mcma
 
         public DateTimeOffset? Deadline { get; set; }
 
-       public McmaTracker Tracker { get; set; }
+        public McmaTracker Tracker { get; set; }
 
         public NotificationEndpoint NotificationEndpoint { get; set; }
     }

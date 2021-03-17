@@ -2,51 +2,101 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using System.Linq.Expressions;
-using Mcma.Logging;
 
 namespace Mcma
 {
+    /// <summary>
+    /// Base class for all MCMA data model objects, exposing an ExpandoObject-like dynamic interface
+    /// </summary>
     public class McmaExpandoObject : IDictionary<string, object>, IDynamicMetaObjectProvider
     {
         private ExpandoObject ExpandoObject { get; } = new ExpandoObject();
 
         private IDictionary<string, object> PropertyDictionary => ExpandoObject;
         
+        /// <summary>
+        /// Gets or sets a property using the property's key as an indexer
+        /// </summary>
+        /// <param name="key"></param>
         public object this[string key] { get => PropertyDictionary[key]; set => PropertyDictionary[key] = value; }
 
+        /// <summary>
+        /// Checks if the object has a property with the given name
+        /// </summary>
+        /// <param name="key">The key of the property to check for</param>
+        /// <param name="caseSensitive">Flag indicating if the check should be case-sensitive. Defaults to true.</param>
+        /// <returns>True if the object contains a property with the given key; otherwise, false</returns>
         public bool HasProperty(string key, bool caseSensitive = true)
         {
             var dict = GetPropertyDictionary(caseSensitive);
             return dict.ContainsKey(key);
         }
 
+        /// <summary>
+        /// Gets the value for the property with the given key
+        /// </summary>
+        /// <param name="key">The key of the property to get the value for</param>
+        /// <param name="caseSensitive">Flag indicating if the check should be case-sensitive. Defaults to true.</param>
+        /// <typeparam name="T">The expected type of the property's value</typeparam>
+        /// <returns>The value of the property</returns>
+        /// <exception cref="InvalidCastException">Thrown when the type of the value of the property does not match expected type T</exception>
         public T Get<T>(string key, bool caseSensitive = true)
         {
             var dict = GetPropertyDictionary(caseSensitive);
-            return dict.ContainsKey(key) ? (T)dict[key] : default(T);
+            return dict.ContainsKey(key) ? (T)dict[key] : default;
         }
 
+        /// <summary>
+        /// Tries to get the value for a given property. If the property is not found on the object, it's set to the default value for type T.
+        /// </summary>
+        /// <param name="key">The key of the property to get the value for</param>
+        /// <param name="caseSensitive">Flag indicating if the check should be case-sensitive. Defaults to true.</param>
+        /// <typeparam name="T">The expected type of the property's value</typeparam>
+        /// <returns>The value of the property</returns>
+        /// <exception cref="InvalidCastException">Thrown when the type of the value of the property does not match expected type T</exception>
         public T GetOrAdd<T>(string key, bool caseSensitive = true) where T : new()
             => TryGet<T>(key, false, out var val) ? val : Set(key, new T());
-        
-        public bool TryGet<T>(string key, out T value) => TryGet<T>(key, true, out value);
-        
+
+        /// <summary>
+        /// Tries to get the value for a given property. If the property is not found on the object, it's set to the default value for type T.
+        /// </summary>
+        /// <param name="key">The key of the property to get the value for</param>
+        /// <param name="value">The value of the property, if found</param>
+        /// <typeparam name="T">The expected type of the property's value</typeparam>
+        /// <returns>True if the property was found on the object; otherwise false</returns>
+        /// <exception cref="InvalidCastException">Thrown when the type of the value of the property does not match expected type T</exception>
+        public bool TryGet<T>(string key, out T value) => TryGet(key, true, out value);
+
+        /// <summary>
+        /// Tries to get the value for a given property. If the property is not found on the object, it's set to the default value for type T.
+        /// </summary>
+        /// <param name="key">The key of the property to get the value for</param>
+        /// <param name="caseSensitive">Flag indicating if the check should be case-sensitive. Defaults to true.</param>
+        /// <param name="value">The value of the property, if found</param>
+        /// <typeparam name="T">The expected type of the property's value</typeparam>
+        /// <returns>The value of the property</returns>
+        /// <exception cref="InvalidCastException">Thrown when the type of the value of the property does not match expected type T</exception>
         public bool TryGet<T>(string key, bool caseSensitive, out T value)
         {
             var dict = GetPropertyDictionary(caseSensitive);
 
-            value = default(T);
-            if (dict.ContainsKey(key))
-            {
-                value = (T)dict[key];
-                return true;
-            }
+            value = default;
             
-            return false;
+            if (!dict.ContainsKey(key))
+                return false;
+            
+            value = (T)dict[key];
+            return true;
         }
 
+        /// <summary>
+        /// Sets the value of a property
+        /// </summary>
+        /// <param name="key">The key of the property to set</param>
+        /// <param name="value">The value to set for the property</param>
+        /// <typeparam name="T">The type of the property's value</typeparam>
+        /// <returns>The value stored on the object</returns>
         public T Set<T>(string key, T value) => (T)(this[key] = value);
 
         private IDictionary<string, object> GetPropertyDictionary(bool caseSensitive)
