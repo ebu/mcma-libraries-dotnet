@@ -25,7 +25,7 @@ namespace Mcma.Serialization
             try
             {
                 foreach (var mcmaType in assembly.GetExportedTypes().Where(t => typeof(McmaObject).IsAssignableFrom(t)))
-                    McmaTypes.Add(mcmaType);
+                    Add(mcmaType);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace Mcma.Serialization
             if (objectType == null)
             {
                 // check for match in core types
-                objectType = Type.GetType(typeof(McmaObject).AssemblyQualifiedName.Replace(nameof(McmaObject), typeString));
+                objectType = Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeString) ?? typeString);
             }
 
             return objectType;

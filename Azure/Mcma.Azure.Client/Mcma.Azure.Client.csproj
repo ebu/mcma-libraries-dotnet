@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageVersion>0.14.0-rc1</PackageVersion>
+    <LangVersion>latest</LangVersion>
+    <PackageVersion>0.14.0-rc2</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\base\Mcma.Client\Mcma.Client.csproj" />
-    <ProjectReference Include="..\..\base\Mcma.Core\Mcma.Core.csproj" />
+    <ProjectReference Include="..\..\Base\Mcma.Client\Mcma.Client.csproj" />
+    <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

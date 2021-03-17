@@ -83,7 +83,7 @@ namespace Mcma.Worker
                 true);
 
         public Task<JobAssignment> UpdateJobAssignmentOutputAsync()
-            => UpdateJobAssignmentAsync(ja => ja.JobOutput = JobOutput);
+            => UpdateJobAssignmentAsync(ja => ja.JobOutput = JobOutput, true);
 
         public Task<JobAssignment> UpdateJobAssignmentStatusAsync(JobStatus status)
             => UpdateJobAssignmentAsync(

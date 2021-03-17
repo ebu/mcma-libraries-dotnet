@@ -3,14 +3,14 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <PackageVersion>0.14.0-rc1</PackageVersion>
+        <PackageVersion>0.14.0-rc2</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
         <RootNamespace>Mcma.Aws.Functions.Worker</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\base\Mcma.Worker\Mcma.Worker.csproj" />
+        <ProjectReference Include="..\..\Base\Mcma.Worker\Mcma.Worker.csproj" />
         <ProjectReference Include="..\Mcma.Aws.DynamoDb\Mcma.Aws.DynamoDb.csproj" />
         <ProjectReference Include="..\Mcma.Aws.Functions\Mcma.Aws.Functions.csproj" />
         <ProjectReference Include="..\Mcma.Aws.Logger\Mcma.Aws.Logger.csproj" />

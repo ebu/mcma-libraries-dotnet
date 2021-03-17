@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.0-rc1</PackageVersion>
+    <PackageVersion>0.14.0-rc2</PackageVersion>
     <Title>MCMA Workers (.NET)</Title>
-    <Description>Library containing base classes and interfaces for MCMA worker services</Description>
+    <Description>Library containing Base classes and interfaces for MCMA worker services</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
   </PropertyGroup>

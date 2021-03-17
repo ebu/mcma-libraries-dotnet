@@ -26,9 +26,9 @@ namespace Mcma.Aws.CloudWatch
 
         private string LogStreamName { get; }
 
-        private List<InputLogEvent> LogEvents { get; } = new List<InputLogEvent>();
+        private List<InputLogEvent> LogEvents { get; } = new();
 
-        private object LogEventsLock { get; } = new object();
+        private object LogEventsLock { get; } = new();
 
         private bool LogGroupCreated { get; set; }
         
@@ -129,17 +129,25 @@ namespace Mcma.Aws.CloudWatch
 
         private void AddLogEvent(LogEvent logEvent)
         {
+            if (logEvent == null)
+                return;
+            
+            var messageJson = logEvent.ToMcmaJson().ToString();
             lock (LogEventsLock)
-                LogEvents.Add(new InputLogEvent { Message = logEvent.ToMcmaJson().ToString(), Timestamp = logEvent.Timestamp.DateTime });
+                LogEvents.Add(new InputLogEvent
+                {
+                    Message = messageJson.Substring(0, Math.Min(messageJson.Length, 262144)),
+                    Timestamp = logEvent.Timestamp.DateTime
+                });
 
             if (ProcessingTask != null) return;
             
             ProcessingTask = ProcessBatchAsync();
-            ProcessingTask.ContinueWith(t => ProcessingTask = null);
+            ProcessingTask.ContinueWith(_ => ProcessingTask = null);
         }
 
-        protected override CloudWatchLogger Get(string source, string requestId, McmaTracker tracker) =>
-            new CloudWatchLogger(source, requestId, tracker, AddLogEvent);
+        protected override CloudWatchLogger Get(string source, string requestId, McmaTracker tracker)
+            => new(source, requestId, tracker, AddLogEvent);
 
         public override async Task FlushAsync()
         {

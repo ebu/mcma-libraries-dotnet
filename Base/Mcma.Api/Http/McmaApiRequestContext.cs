@@ -44,7 +44,7 @@ namespace Mcma.Api
             
             try
             {
-                Request.JsonBody = JToken.Parse(Encoding.UTF8.GetString(Request.Body));
+                Request.JsonBody = McmaJson.Parse(Encoding.UTF8.GetString(Request.Body));
                 return true;
             }
             catch (Exception e)
@@ -56,13 +56,16 @@ namespace Mcma.Api
 
         public T GetRequestBody<T>() where T : McmaObject => Request?.JsonBody?.ToMcmaObject<T>();
 
-        public void SetResponseStatusCode(HttpStatusCode status, string statusMessage = null)
-            => SetResponseStatus((int)status, statusMessage);
+        public void SetResponseError(HttpStatusCode status, string errorMessage)
+            => SetResponseError((int)status, errorMessage);
 
-        public void SetResponseStatus(int status, string statusMessage = null)
+        public void SetResponseError(int status, string errorMessage)
         {
+            if (status < 400)
+                throw new McmaException("McmaApiRequestContext.SetResponseError can only be used to handle 4xx or 5xx errors");
+                
             Response.StatusCode = status;
-            Response.StatusMessage = statusMessage;
+            Response.ErrorMessage = errorMessage;
         }
 
         public void SetResponseBody(object body) => Response.JsonBody = body?.ToMcmaJson();
@@ -83,7 +86,7 @@ namespace Mcma.Api
                 {
                     var trackerDataJson = Encoding.UTF8.GetString(Convert.FromBase64String(tracker));
                     if (!string.IsNullOrWhiteSpace(trackerDataJson))
-                        return JToken.Parse(trackerDataJson).ToMcmaObject<McmaTracker>();
+                        return McmaJson.Parse(trackerDataJson).ToMcmaObject<McmaTracker>();
                 }
                 catch (Exception e)
                 {

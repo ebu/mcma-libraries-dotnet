@@ -7,7 +7,7 @@ namespace Mcma.Api
     {
         public int StatusCode { get; set; }
 
-        public string StatusMessage { get; set; }
+        public string ErrorMessage { get; set; }
 
         public IDictionary<string, string> Headers { get; set; }
 

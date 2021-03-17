@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using Mcma.Serialization;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Client
@@ -10,7 +11,7 @@ namespace Mcma.Client
         {
             var responseBody = await content.ReadAsStringAsync();
 
-            return !string.IsNullOrWhiteSpace(responseBody) ? JToken.Parse(responseBody) : JValue.CreateNull();
+            return !string.IsNullOrWhiteSpace(responseBody) ? McmaJson.Parse(responseBody) : JValue.CreateNull();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Mcma.Aws.Functions
     public abstract class McmaLambdaFunction<TFunctionHandler, TInput, TOutput>
         where TFunctionHandler : class, IMcmaLambdaFunctionHandler<TInput, TOutput>
     {
-        static McmaLambdaFunction() => AwsS3LocatorHelper.AddTypes();
+        static McmaLambdaFunction() => S3LocatorHelper.AddTypes();
         
         private Lazy<IServiceProvider> ServiceProvider { get; }
 

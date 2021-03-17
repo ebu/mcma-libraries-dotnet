@@ -4,17 +4,15 @@ namespace Mcma.Azure.BlobStorage
 {
     public static class BlobStorageLocatorHelper
     {
-        public static IMcmaTypeRegistrations AddTypes() => McmaTypes.Add<BlobStorageFileLocator>().Add<BlobStorageFolderLocator>();
+        public static IMcmaTypeRegistrations AddTypes() => McmaTypes.Add<BlobStorageLocator>();
         
-        public static string FilePath(this BlobStorageFolderLocator folderLocator, string fileName)
-            => folderLocator.FolderPath?.TrimEnd('/') + (!string.IsNullOrWhiteSpace(folderLocator.FolderPath) ? "/" : "") + fileName;
+        public static string GetChildFilePath(this BlobStorageLocator folderLocator, string fileName)
+            => folderLocator.Path?.TrimEnd('/') + (!string.IsNullOrWhiteSpace(folderLocator.Path) ? "/" : "") + fileName;
 
-        public static BlobStorageFileLocator FileLocator(this BlobStorageFolderLocator folderLocator, string fileName)
-            => new BlobStorageFileLocator
+        public static BlobStorageLocator GetChildLocator(this BlobStorageLocator folderLocator, string fileName)
+            => new()
             {
-                StorageAccountName = folderLocator.StorageAccountName,
-                Container = folderLocator.Container,
-                FilePath = folderLocator.FilePath(fileName)
+                Url = $"{folderLocator.Url.TrimEnd('/')}/{fileName}"
             };
     }
 }

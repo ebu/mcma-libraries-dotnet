@@ -12,7 +12,7 @@ namespace Mcma.Aws.Functions.ApiHandler
 {
     public static class McmaLambdaApiHandlerServiceCollectionExtensions
     {
-        static McmaLambdaApiHandlerServiceCollectionExtensions() => AwsS3LocatorHelper.AddTypes();
+        static McmaLambdaApiHandlerServiceCollectionExtensions() => S3LocatorHelper.AddTypes();
         
         public static IServiceCollection AddMcmaLambdaApiHandler(this IServiceCollection services,
                                                               string applicationName,

@@ -11,7 +11,7 @@ namespace Mcma.GoogleCloud.Storage.Proxies
         {
             var builder = new StorageClientBuilder();
             build?.Invoke(builder);
-            services.TryAddSingleton(provider => builder.Build());
+            services.TryAddSingleton(_ => builder.Build());
             return services;
         }
     }

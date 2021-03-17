@@ -16,7 +16,7 @@ namespace Mcma.Client
             authContext = default;
             try
             {
-                authContext = JToken.Parse(authContextString).ToMcmaObject<TAuthContext>();
+                authContext = McmaJson.Parse(authContextString).ToMcmaObject<TAuthContext>();
                 return true;
             }
             catch

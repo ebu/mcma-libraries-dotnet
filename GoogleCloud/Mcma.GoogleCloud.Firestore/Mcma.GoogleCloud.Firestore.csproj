@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>Latest</LangVersion>
-        <PackageVersion>0.14.0-rc1</PackageVersion>
+        <PackageVersion>0.14.0-rc2</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
     </PropertyGroup>
@@ -13,6 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\base\Mcma.Data\Mcma.Data.csproj" />
+      <ProjectReference Include="..\..\Base\Mcma.Data\Mcma.Data.csproj" />
     </ItemGroup>
 </Project>

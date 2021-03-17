@@ -17,7 +17,7 @@ namespace Mcma.Azure.CosmosDb
             using (var streamReader = new StreamReader(responseMessage.Content))
                 bodyText = await streamReader.ReadToEndAsync();
 
-            return JToken.Parse(bodyText).ToMcmaObject<T>();
+            return McmaJson.Parse(bodyText).ToMcmaObject<T>();
         }
     }
 }

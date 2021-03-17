@@ -1,23 +1,31 @@
-﻿using Mcma;
+﻿using System;
 
 namespace Mcma.Azure.BlobStorage
 {
-    public abstract class BlobStorageLocator : Locator, IUrlLocator
+    public class BlobStorageLocator : UrlLocator
     {
+        public BlobStorageLocator()
+        {
+            ParsedUrl = new Lazy<BlobStorageParsedUrl>(() => BlobStorageParsedUrl.Parse(Url));
+        }
+
+        private Lazy<BlobStorageParsedUrl> ParsedUrl { get; }
+
         /// <summary>
-        /// Gets or sets the name of the storage account
+        /// Gets the name of the storage account
         /// </summary>
         /// <value></value>
-        public string StorageAccountName { get; set; }
+        public string StorageAccountName => ParsedUrl.Value.StorageAccountName;
 
         /// <summary>
-        /// Gets or sets the share on which the file resides
+        /// Gets the share on which the file resides
         /// </summary>
-        public string Container { get; set; }
-
+        public string Container => ParsedUrl.Value.Container;
+        
         /// <summary>
-        /// Gets the url to the file on Blob storage
+        /// Gets the path of the file or folder within the container
         /// </summary>
-        public abstract string Url { get; }
+        /// <returns></returns>
+        public string Path => ParsedUrl.Value.Path;
     }
 }

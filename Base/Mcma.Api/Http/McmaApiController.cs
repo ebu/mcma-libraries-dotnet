@@ -142,8 +142,8 @@ namespace Mcma.Api
                 }
                 else if ((response.StatusCode / 200 << 0) * 200 == 400)
                 {
-                    response.Headers = GetDefaultResponseHeaders();
-                    response.JsonBody = new McmaApiError(response.StatusCode, response.StatusMessage, request.Path).ToMcmaJson();
+                    if (response.Body == null && response.JsonBody == null)
+                        response.JsonBody = new McmaApiError(response.StatusCode, response.ErrorMessage, request.Path).ToMcmaJson();
                 }
                 else if (response.StatusCode == 0)
                 {

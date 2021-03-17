@@ -11,7 +11,7 @@ namespace Mcma.Data
         {
             MutexName = mutexName ?? throw new ArgumentNullException(nameof(mutexName));
             MutexHolder = mutexHolder ?? throw new ArgumentNullException(nameof(mutexHolder));
-            LockTimeout = lockTimeout ?? TimeSpan.FromMinutes(1);
+            LockTimeout = lockTimeout ?? TimeSpan.FromMinutes(5);
             Logger = logger;
         }
 

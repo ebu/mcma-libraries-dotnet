@@ -17,7 +17,7 @@ namespace Mcma.Aws.CloudWatch
         protected override void WriteLogEvent(LogEvent logEvent)
         {
             if (logEvent.Level > 0)
-                LogAction(logEvent);
+                LogAction?.Invoke(logEvent);
         }
     }
 }
