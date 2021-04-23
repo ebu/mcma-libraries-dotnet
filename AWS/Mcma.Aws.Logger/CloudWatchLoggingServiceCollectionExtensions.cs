@@ -9,7 +9,7 @@ namespace Mcma.Aws.CloudWatch
         public static IServiceCollection AddMcmaCloudWatchLogging(this IServiceCollection services, Action<CloudWatchLoggerProviderOptions> configureOptions)
         {
             services.Configure(configureOptions);
-            return services.AddSingleton<ILoggerProvider, CloudWatchLoggerProvider>();
+            return services.AddMcmaLogging<CloudWatchLoggerProvider>();
         }
 
         public static IServiceCollection AddMcmaCloudWatchLogging(this IServiceCollection services, string source, string logGroupName = null)

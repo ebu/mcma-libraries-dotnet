@@ -1,4 +1,3 @@
-
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -18,8 +17,8 @@ namespace Mcma.Aws.Client
         
         public Aws4Signer(string accessKey, string secretKey, string region, string sessionToken = null, string service = AwsConstants.Services.ExecuteApi)
         {
-            AccessKey = accessKey;
-            SecretKey = secretKey;
+            AccessKey = accessKey ?? throw new ArgumentNullException(nameof(accessKey));
+            SecretKey = secretKey ?? throw new ArgumentNullException(nameof(secretKey));
             Region = region;
             SessionToken = sessionToken;
             Service = service;
@@ -37,7 +36,7 @@ namespace Mcma.Aws.Client
 
         public async Task<HttpRequestMessage> SignAsync(HttpRequestMessage request, HashAlgorithm hashAlgorithm = null, CancellationToken cancellationToken = default)
         {
-            hashAlgorithm = hashAlgorithm ?? new SHA256Managed();
+            hashAlgorithm ??= new SHA256Managed();
 
             var algorithmName = hashAlgorithm.GetType().Name;
             if (algorithmName.EndsWith(CngSuffix))

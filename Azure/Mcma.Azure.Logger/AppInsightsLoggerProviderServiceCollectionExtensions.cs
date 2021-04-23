@@ -9,7 +9,7 @@ namespace Mcma.Azure.Logger
         public static IServiceCollection AddMcmaAppInsightsLogging(this IServiceCollection services, Action<AppInsightsLoggerProviderOptions> configureOptions)
         {
             services.Configure(configureOptions);
-            return services.AddSingleton<ILoggerProvider, AppInsightsLoggerProvider>();
+            return services.AddMcmaLogging<AppInsightsLoggerProvider>();
         }
 
         public static IServiceCollection AddMcmaAppInsightsLogging(this IServiceCollection services, string source)

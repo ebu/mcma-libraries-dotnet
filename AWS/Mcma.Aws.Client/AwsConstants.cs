@@ -30,6 +30,12 @@ namespace Mcma.Aws.Client
         public static class Services
         {
             public const string ExecuteApi = "execute-api";
+
+            public const string S3 = "s3";
+
+            public const string SQS = "sqs";
+
+            public const string SNS = "sns";
         }
 
         public static class Headers

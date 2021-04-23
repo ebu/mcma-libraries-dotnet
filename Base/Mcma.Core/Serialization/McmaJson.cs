@@ -101,8 +101,25 @@ namespace Mcma.Serialization
         /// <param name="obj">The object to convert</param>
         /// <param name="preserveCasing">A flag indicating if the casing of properties on the object should be preserved. Default is false.</param>
         /// <returns></returns>
-        public static JToken ToMcmaJson<T>(this T obj, bool preserveCasing = false)
+        public static JToken ToMcmaJson(this object obj, bool preserveCasing = false)
             => JToken.FromObject(obj, preserveCasing ? PreserveCasingSerializer : Serializer);
+
+        /// <summary>
+        /// Converts an object to a <see cref="JObject"/> using MCMA serialization
+        /// </summary>
+        /// <param name="obj">The object to convert</param>
+        /// <param name="preserveCasing">A flag indicating if the casing of properties on the object should be preserved. Default is false.</param>
+        /// <returns></returns>
+        public static JObject ToMcmaJsonObject(this object obj, bool preserveCasing = false)
+            => JObject.FromObject(obj, preserveCasing ? PreserveCasingSerializer : Serializer);
+
+        /// <summary>
+        /// Converts a <see cref="JObject"/> to a collection of <see cref="KeyValuePair{TKey,TValue}"/>s of strings to objects
+        /// </summary>
+        /// <param name="jObj"></param>
+        /// <returns></returns>
+        public static IEnumerable<KeyValuePair<string, object>> ToKeyValuePairs(this JObject jObj)
+            => jObj.Select<KeyValuePair<string, JToken>, KeyValuePair<string, object>>(x => new KeyValuePair<string, object>(x.Key, ToKeyValuePairValue(x.Value)));
 
         /// <summary>
         /// Helper method for reading JSON from a stream
@@ -178,5 +195,14 @@ namespace Mcma.Serialization
                 serializer.Serialize(writer, keyValuePair.Value);
             }
         }
+        
+        private static object ToKeyValuePairValue(JToken token)
+            => token switch
+            {
+                JObject jObj => jObj.ToKeyValuePairs(),
+                JArray jArr => jArr.Select(ToKeyValuePairValue),
+                JValue jVal => jVal.Value,
+                _ => token.ToString()
+            };
     }
 }

@@ -3,12 +3,9 @@ using Mcma.WorkerInvoker;
 
 namespace Mcma.GoogleCloud.PubSubWorkerInvoker
 {
-    public class PubSubWorkerInvokerOptions : WorkerInvokerOptions
+    public class PubSubWorkerInvokerOptions
     {
-        public PubSubWorkerInvokerOptions()
-        {
-            WorkerFunctionId = McmaPubSubWorkerInvokerEnvironmentVariables.WorkerTopicName;
-        }
+        public string WorkerTopicName { get; set; } = McmaPubSubWorkerInvokerEnvironmentVariables.WorkerTopicName;
 
         public PublisherClient.ClientCreationSettings PublisherClientCreationSettings { get; set; }
         

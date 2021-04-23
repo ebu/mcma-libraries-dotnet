@@ -8,13 +8,13 @@ namespace Mcma.Api.Routing.Defaults
 {
     public class InvokeWorkerOnCreationCompleted : IDefaultCreateRouteCompletedHandler<JobAssignment>
     {
-        public InvokeWorkerOnCreationCompleted(IWorkerInvoker workerInvoker, IOptions<McmaApiOptions> options)
+        public InvokeWorkerOnCreationCompleted(IMcmaWorkerInvoker workerInvoker, IOptions<McmaApiOptions> options)
         {
             WorkerInvoker = workerInvoker ?? throw new ArgumentNullException(nameof(workerInvoker));
             Options = options.Value ?? new McmaApiOptions();
         }
         
-        private IWorkerInvoker WorkerInvoker { get; }
+        private IMcmaWorkerInvoker WorkerInvoker { get; }
         
         private McmaApiOptions Options { get; }
 

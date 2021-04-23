@@ -18,9 +18,11 @@ namespace Mcma.Aws.Functions.ApiHandler
                                                               string applicationName,
                                                               Action<McmaApiBuilder> buildApi,
                                                               string logGroupName = null,
-                                                              Action<DynamoDbTableOptions> configureDynamoDb = null)
+                                                              Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                              Action<S3StorageClientOptions> configureS3Client = null)
             => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
                        .AddMcmaDynamoDb(configureDynamoDb)
+                       .AddMcmaS3StorageClient(configureS3Client)
                        .AddMcmaApiGatewayApi(buildApi);
 
         public static IServiceCollection AddMcmaLambdaJobAssignmentApiHandler(this IServiceCollection services,
@@ -28,9 +30,11 @@ namespace Mcma.Aws.Functions.ApiHandler
                                                                               string logGroupName = null,
                                                                               string workerFunctionName = null,
                                                                               Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                                              Action<S3StorageClientOptions> configureS3Client = null,
                                                                               Action<McmaApiBuilder> buildApi = null)
             => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
                        .AddMcmaDynamoDb(configureDynamoDb)
+                       .AddMcmaS3StorageClient(configureS3Client)
                        .AddMcmaLambdaWorkerInvoker(workerFunctionName)
                        .AddMcmaApiGatewayApi(apiBuilder =>
                        {

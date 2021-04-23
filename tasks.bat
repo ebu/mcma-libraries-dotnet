@@ -1,1 +1,1 @@
-dotnet script tasks.csx -- %1
+dotnet script tasks.csx -- %*

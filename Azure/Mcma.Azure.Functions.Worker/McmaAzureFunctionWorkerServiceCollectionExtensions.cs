@@ -17,10 +17,12 @@ namespace Mcma.Azure.Functions.Worker
         public static IServiceCollection AddMcmaAzureFunctionWorker(this IServiceCollection services,
                                                                     string applicationName,
                                                                     Action<McmaWorkerBuilder> buildWorker,
-                                                                    Action<CosmosDbTableOptions> configureCosmosDb = null)
+                                                                    Action<CosmosDbTableOptions> configureCosmosDb = null,
+                                                                    Action<BlobStorageClientOptions> configureBlobStorageClient = null)
             =>
                 services.AddMcmaAppInsightsLogging(applicationName)
                         .AddMcmaCosmosDb(configureCosmosDb)
+                        .AddMcmaBlobStorageClient(configureBlobStorageClient)
                         .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAzureADManagedIdentityAuth())
                         .AddMcmaWorker(buildWorker);
 
@@ -28,10 +30,12 @@ namespace Mcma.Azure.Functions.Worker
                                                                                        string applicationName,
                                                                                        Action<ProcessJobAssignmentOperationBuilder<TJob>> addProfiles,
                                                                                        Action<CosmosDbTableOptions> configureCosmosDb = null,
+                                                                                       Action<BlobStorageClientOptions> configureBlobStorageClient = null,
                                                                                        Action<McmaWorkerBuilder> addAdditionalOperations = null)
             where TJob : Job
             => services.AddMcmaAppInsightsLogging(applicationName)
                        .AddMcmaCosmosDb(configureCosmosDb)
+                       .AddMcmaBlobStorageClient(configureBlobStorageClient)
                        .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAzureADManagedIdentityAuth())
                        .AddMcmaWorker(workerBuilder =>
                        {

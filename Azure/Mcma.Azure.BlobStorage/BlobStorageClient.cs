@@ -26,7 +26,8 @@ namespace Mcma.Azure.BlobStorage
 
         private string GetUrl(string bucket, string objectPath) => $"{Options.AccountUri.ToString().TrimEnd('/')}/{bucket}/{objectPath.TrimStart('/')}";
 
-        private BlobClient GetBlobClient(string bucket, string objectPath) => ServiceClient.GetBlobContainerClient(bucket).GetBlobClient(objectPath);
+        private BlobClient GetBlobClient(BlobStorageParsedUrl parsedUrl) =>
+            ServiceClient.GetBlobContainerClient(parsedUrl.Container).GetBlobClient(parsedUrl.Path);
 
         private static BlobSasPermissions TranslateAccessType(PresignedUrlAccessType accessType)
             => accessType switch
@@ -39,15 +40,17 @@ namespace Mcma.Azure.BlobStorage
                                                            $"Value {accessType} is not valid for enum {nameof(PresignedUrlAccessType)}")
             };
 
-        public Task<string> GetPresignedUrlAsync(string bucket, string objectPath, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
+        public Task<string> GetPresignedUrlAsync(string url, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
         {
             var startsOn = DateTimeOffset.UtcNow;
             var expiresOn = DateTimeOffset.UtcNow.Add(validFor ?? TimeSpan.FromMinutes(15));
+
+            var parsedUrl = BlobStorageParsedUrl.Parse(url);
             
             var sasBuilder = new BlobSasBuilder
             {
-                BlobContainerName = bucket,
-                BlobName = objectPath,
+                BlobContainerName = parsedUrl.Container,
+                BlobName = parsedUrl.Path,
                 Resource = "b",
                 StartsOn = startsOn,
                 ExpiresOn = expiresOn
@@ -55,19 +58,21 @@ namespace Mcma.Azure.BlobStorage
             
             sasBuilder.SetPermissions(TranslateAccessType(accessType));
 
-            return Task.FromResult($"{GetUrl(bucket, objectPath)}?{sasBuilder.ToSasQueryParameters(SharedKeyCredential)}");
+            return Task.FromResult($"{url}?{sasBuilder.ToSasQueryParameters(SharedKeyCredential)}");
         }
         
-        public async Task DownloadAsync(string bucket, string objectPath, Stream destination, Action<StreamProgress> progressHandler = null)
+        public async Task DownloadAsync(string url, Stream destination, Action<StreamProgress> progressHandler = null)
         {
-            var resp = await GetBlobClient(bucket, objectPath).DownloadAsync();
+            var parsedUrl = BlobStorageParsedUrl.Parse(url);
+            var resp = await GetBlobClient(parsedUrl).DownloadAsync();
 
             await resp.Value.Content.CopyToAsync(destination, resp.Value.Content.CreateProgressHandler(progressHandler));
         }
 
-        public async Task UploadAsync(string bucket, string objectPath, Stream content, Action<StreamProgress> progressHandler = null)
+        public async Task UploadAsync(string url, Stream content, Action<StreamProgress> progressHandler = null)
         {
-            await GetBlobClient(bucket, objectPath).UploadAsync(content, progressHandler: content.CreateProgressHandler(progressHandler));
+            var parsedUrl = BlobStorageParsedUrl.Parse(url);
+            await GetBlobClient(parsedUrl).UploadAsync(content, progressHandler: content.CreateProgressHandler(progressHandler));
         }
     }
 }

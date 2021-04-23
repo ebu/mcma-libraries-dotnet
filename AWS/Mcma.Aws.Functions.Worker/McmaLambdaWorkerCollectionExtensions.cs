@@ -4,7 +4,6 @@ using Mcma.Aws.CloudWatch;
 using Mcma.Aws.DynamoDb;
 using Mcma.Aws.S3;
 using Mcma.Client;
-using Mcma.Serialization;
 using Mcma.Worker;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,9 +17,11 @@ namespace Mcma.Aws.Functions.ApiHandler
                                                                 string applicationName,
                                                                 Action<McmaWorkerBuilder> buildWorker,
                                                                 string logGroupName = null,
-                                                                Action<DynamoDbTableOptions> configureDynamoDb = null)
+                                                                Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                                Action<S3StorageClientOptions> configureS3Client = null)
             => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
                        .AddMcmaDynamoDb(configureDynamoDb)
+                       .AddMcmaS3StorageClient(configureS3Client)
                        .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
                        .AddMcmaWorker(buildWorker);
 
@@ -29,10 +30,12 @@ namespace Mcma.Aws.Functions.ApiHandler
                                                                                    Action<ProcessJobAssignmentOperationBuilder<TJob>> addProfiles,
                                                                                    string logGroupName = null,
                                                                                    Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                                                   Action<S3StorageClientOptions> configureS3Client = null,
                                                                                    Action<McmaWorkerBuilder> addAdditionalOperations = null)
             where TJob : Job
             => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
                        .AddMcmaDynamoDb(configureDynamoDb)
+                       .AddMcmaS3StorageClient(configureS3Client)
                        .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
                        .AddMcmaWorker(workerBuilder =>
                        {

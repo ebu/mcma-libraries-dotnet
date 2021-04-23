@@ -9,7 +9,7 @@ namespace Mcma.Azure.WorkerInvoker
         public static IServiceCollection AddMcmaQueueWorkerInvoker(this IServiceCollection services, Action<QueueWorkerInvokerOptions> configureOptions)
         {
             services.Configure(configureOptions);
-            return services.AddSingleton<IWorkerInvoker, QueueWorkerInvoker>();
+            return services.AddSingleton<IMcmaWorkerInvoker, QueueMcmaWorkerInvoker>();
         }
 
         public static IServiceCollection AddMcmaQueueWorkerInvoker(this IServiceCollection services, string queueName = null)
@@ -17,7 +17,7 @@ namespace Mcma.Azure.WorkerInvoker
                 opts =>
                 {
                     if (queueName != null)
-                        opts.WorkerFunctionId = queueName;
+                        opts.WorkerQueueName = queueName;
                 });
     }
 }

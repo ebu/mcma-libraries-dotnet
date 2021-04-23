@@ -11,10 +11,10 @@ namespace Mcma.GoogleCloud.PubSubWorkerInvoker
             if (configureOptions != null)
                 services.Configure(configureOptions);
 
-            return services.AddSingleton<IWorkerInvoker, PubSubWorkerInvoker>();
+            return services.AddSingleton<IMcmaWorkerInvoker, PubSubMcmaWorkerInvoker>();
         }
 
         public static IServiceCollection AddMcmaPubSubWorkerInvoker(this IServiceCollection services, string pubSubTopicName)
-            => services.AddMcmaPubSubWorkerInvoker(opts => opts.WorkerFunctionId = pubSubTopicName);
+            => services.AddMcmaPubSubWorkerInvoker(opts => opts.WorkerTopicName = pubSubTopicName);
     }
 }

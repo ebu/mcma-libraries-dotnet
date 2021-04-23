@@ -2,7 +2,7 @@
 
 namespace Mcma.Azure.BlobStorage
 {
-    public class BlobStorageLocator : UrlLocator
+    public class BlobStorageLocator : Locator
     {
         public BlobStorageLocator()
         {

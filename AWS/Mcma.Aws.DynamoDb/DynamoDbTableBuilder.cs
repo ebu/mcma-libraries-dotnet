@@ -17,7 +17,7 @@ namespace Mcma.Aws.DynamoDb
         public DynamoDbTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
             where TCustomQueryBuilder : class, ICustomQueryBuilder<TParameters, QueryOperationConfig>
         {
-            Services.AddSingleton<ICustomQueryBuilder<TParameters, QueryOperationConfig>, TCustomQueryBuilder>();
+            Services.AddCustomQueryBuilder<TParameters, QueryOperationConfig, TCustomQueryBuilder>();
             return this;
         }
 

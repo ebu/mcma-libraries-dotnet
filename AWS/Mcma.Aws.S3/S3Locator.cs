@@ -2,7 +2,7 @@
 
 namespace Mcma.Aws.S3
 {
-    public class S3Locator : UrlLocator
+    public class S3Locator : Locator
     {
         public S3Locator()
         {

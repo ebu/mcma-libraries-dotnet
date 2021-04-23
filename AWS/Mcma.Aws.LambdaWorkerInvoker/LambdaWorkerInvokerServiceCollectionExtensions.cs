@@ -9,7 +9,7 @@ namespace Mcma.Aws.WorkerInvoker
         public static IServiceCollection AddMcmaLambdaWorkerInvoker(this IServiceCollection services, Action<LambdaWorkerInvokerOptions> configureOptions)
         {
             services.Configure(configureOptions);
-            return services.AddSingleton<IWorkerInvoker, LambdaWorkerInvoker>();
+            return services.AddSingleton<IMcmaWorkerInvoker, LambdaMcmaWorkerInvoker>();
         }
 
         public static IServiceCollection AddMcmaLambdaWorkerInvoker(this IServiceCollection services, string lambdaFunctionName = null)
@@ -17,7 +17,7 @@ namespace Mcma.Aws.WorkerInvoker
                 opts =>
                 {
                     if (lambdaFunctionName != null)
-                        opts.WorkerFunctionId = lambdaFunctionName;
+                        opts.WorkerFunctionName = lambdaFunctionName;
                 });
     }
 }

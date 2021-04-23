@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mcma.Logging;
+using Mcma.Worker.Common;
 
 namespace Mcma.Worker
 {
@@ -18,11 +19,12 @@ namespace Mcma.Worker
 
         private IMcmaWorkerOperation[] Operations { get; }
 
-        public async Task DoWorkAsync(McmaWorkerRequestContext requestContext)
+        public async Task DoWorkAsync(McmaWorkerRequest request, string requestId)
         {
-            if (requestContext == null)
-                throw new ArgumentNullException(nameof(requestContext));
-            
+            if (request == null)
+                throw new ArgumentNullException(nameof(request));
+
+            var requestContext = new McmaWorkerRequestContext(request, requestId);
             requestContext.SetLogger(LoggerProvider);
             
             var operation = Operations.FirstOrDefault(op => op.Accepts(requestContext));

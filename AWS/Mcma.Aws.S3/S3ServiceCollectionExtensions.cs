@@ -11,8 +11,7 @@ namespace Mcma.Aws.S3
             if (configureOptions != null)
                 services.Configure(configureOptions);
             
-            return services.AddSingleton<IS3StorageClient, S3StorageClient>()
-                           .AddSingleton<IStorageClient>(serviceProvider => serviceProvider.GetRequiredService<IS3StorageClient>());
+            return services.AddSingletonStorageClient<IS3StorageClient, S3StorageClient>();
         }
     }
 }

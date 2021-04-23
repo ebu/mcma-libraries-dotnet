@@ -4,12 +4,9 @@ using Mcma.WorkerInvoker;
 
 namespace Mcma.Aws.WorkerInvoker
 {
-    public class LambdaWorkerInvokerOptions : WorkerInvokerOptions
+    public class LambdaWorkerInvokerOptions
     {
-        public LambdaWorkerInvokerOptions()
-        {
-            WorkerFunctionId = McmaLambdaWorkerInvokerEnvironmentVariables.WorkerFunctionName;
-        }
+        public string WorkerFunctionName { get; set; } = McmaLambdaWorkerInvokerEnvironmentVariables.WorkerFunctionName;
         
         public AWSCredentials Credentials { get; set; } = FallbackCredentialsFactory.GetCredentials();
         

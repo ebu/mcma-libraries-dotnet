@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -29,32 +30,35 @@ namespace Mcma.Aws.S3
                                                            $"Value {accessType} is not valid for enum ${nameof(PresignedUrlAccessType)}.")
             };
 
-        public Task<string> GetPresignedUrlAsync(string bucket, string objectPath, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
+        public Task<string> GetPresignedUrlAsync(string url, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
         {
             using var client = new AmazonS3Client(Options.Credentials);
+
+            var s3ParsedUrl = S3ParsedUrl.Parse(url);
 
             return Task.FromResult(
                 client.GetPreSignedURL(new GetPreSignedUrlRequest
                 {
-                    BucketName = bucket,
-                    Key = objectPath,
+                    BucketName = s3ParsedUrl.Bucket,
+                    Key = s3ParsedUrl.Key,
                     Verb = TranslateAccessType(accessType),
                     Expires = DateTime.UtcNow + (validFor ?? TimeSpan.FromMinutes(15))
                 }));
         }
 
-        public async Task DownloadAsync(string bucket, string objectPath, Stream destination, Action<StreamProgress> progressHandler = null)
+        public async Task DownloadAsync(string url, Stream destination, Action<StreamProgress> progressHandler = null)
         {
             using var client = new AmazonS3Client(Options.Credentials);
-            
-            var resp = await client.GetObjectAsync(bucket, objectPath);
+
+            var s3ParsedUrl = S3ParsedUrl.Parse(url);
+            var resp = await client.GetObjectAsync(s3ParsedUrl.Bucket, s3ParsedUrl.Key);
             
             using var respStream = resp.ResponseStream;
             
             await respStream.CopyToAsync(destination, respStream.CreateProgressHandler(progressHandler));
         }
 
-        public async Task UploadAsync(string bucket, string path, Stream content, Action<StreamProgress> progressHandler = null)
+        public async Task UploadAsync(string url, Stream content, Action<StreamProgress> progressHandler = null)
         {
             using var client = new AmazonS3Client(Options.Credentials);
 
@@ -65,10 +69,11 @@ namespace Mcma.Aws.S3
                                                                 ConcurrentServiceRequests = Options.MultipartUpload.MaximumConcurrentRequests
                                                             });
 
+            var s3ParsedUrl = S3ParsedUrl.Parse(url);
             var uploadRequest = new TransferUtilityUploadRequest
             {
-                BucketName = bucket,
-                Key = path,
+                BucketName = s3ParsedUrl.Bucket,
+                Key = s3ParsedUrl.Key,
                 InputStream = content,
                 PartSize = Options.MultipartUpload.PartSize
             };

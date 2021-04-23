@@ -1,5 +1,7 @@
 ﻿using System;
+using Azure.Storage.Blobs.Models;
 using Mcma.Utility;
+using Microsoft.Extensions.Azure;
 
 namespace Mcma.Azure.BlobStorage
 {

@@ -10,7 +10,7 @@ namespace Mcma.Api.Routing.Defaults
 {
     internal class JobAssignmentCancelRoute : McmaApiRoute
     {
-        public JobAssignmentCancelRoute(IDocumentDatabaseTable dbTable, IWorkerInvoker workerInvoker)
+        public JobAssignmentCancelRoute(IDocumentDatabaseTable dbTable, IMcmaWorkerInvoker workerInvoker)
             : base(HttpMethod.Post, "/job-assignments/{id}/cancel")
         {
             DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
@@ -19,7 +19,7 @@ namespace Mcma.Api.Routing.Defaults
 
         private IDocumentDatabaseTable DbTable { get; }
 
-        private IWorkerInvoker WorkerInvoker { get; }
+        private IMcmaWorkerInvoker WorkerInvoker { get; }
 
         public override async Task HandleAsync(McmaApiRequestContext requestContext)
         {

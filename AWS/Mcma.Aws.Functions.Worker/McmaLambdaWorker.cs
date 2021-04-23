@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Mcma.Logging;
 using Mcma.Worker;
+using Mcma.Worker.Common;
 
 namespace Mcma.Aws.Functions.Worker
 {
@@ -28,7 +29,7 @@ namespace Mcma.Aws.Functions.Worker
                 logger.Debug(request);
                 logger.Debug(context);
 
-                await McmaWorker.DoWorkAsync(new McmaWorkerRequestContext(request, context.AwsRequestId));
+                await McmaWorker.DoWorkAsync(request, context.AwsRequestId);
             }
             finally
             {

@@ -20,6 +20,15 @@ namespace Mcma.Worker
             return this;
         }
 
+        public ProcessJobAssignmentOperationBuilder<TJob> AddProfile<TProfile, TOptions>(Action<TOptions> configure)
+            where TProfile : class, IJobProfile<TJob>
+            where TOptions : class
+        {
+            Services.Configure(configure);
+            AddProfile<TProfile>();
+            return this;
+        }
+
         public ProcessJobAssignmentOperationBuilder<TJob> AddProfile(string profileName,
                                                                      Func<ProcessJobAssignmentHelper<TJob>, McmaWorkerRequestContext, Task> profileHandler)
         {

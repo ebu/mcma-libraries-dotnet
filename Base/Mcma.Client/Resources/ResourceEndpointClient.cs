@@ -42,8 +42,10 @@ namespace Mcma.Client
         {
             if (McmaHttpClient != null)
                 return McmaHttpClient;
-            
-            var authenticator = AuthProvider != null ? await AuthProvider.GetAsync(AuthType, AuthContext) : null;
+
+            var authenticator = AuthProvider != null && !string.IsNullOrWhiteSpace(AuthType)
+                                    ? await AuthProvider.GetAsync(AuthType, AuthContext)
+                                    : null;
 
             McmaHttpClient = new McmaHttpClient(HttpClient, authenticator, Tracker);
 

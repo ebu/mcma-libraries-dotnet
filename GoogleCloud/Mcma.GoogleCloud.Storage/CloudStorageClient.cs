@@ -34,23 +34,25 @@ namespace Mcma.GoogleCloud.Storage.Proxies
                                                            $"Value {accessType} is not valid for enum {nameof(PresignedUrlAccessType)}")
             };
         
-        public Task<string> GetPresignedUrlAsync(string bucket, string objectPath, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
+        public Task<string> GetPresignedUrlAsync(string url, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
         {
             if (!(StorageClient.Service.HttpClientInitializer is ServiceAccountCredential credential))
                 throw new McmaException("Unable to sign url because storage client is not authenticated with service account credentials.");
 
+            var parsedUrl = CloudStorageParsedUrl.Parse(url);
             var urlSigner = UrlSigner.FromServiceAccountCredential(credential);
 
-            return urlSigner.SignAsync(bucket,
-                                       objectPath,
+            return urlSigner.SignAsync(parsedUrl.Bucket,
+                                       parsedUrl.Name,
                                        validFor ?? TimeSpan.FromMinutes(15),
                                        TranslateAccessType(accessType),
                                        Options.SigningVersion);
         }
 
-        public async Task DownloadAsync(string bucket, string objectPath, Stream destination, Action<StreamProgress> progressHandler = null)
+        public async Task DownloadAsync(string url, Stream destination, Action<StreamProgress> progressHandler = null)
         {
-            var storageObject = await StorageClient.GetObjectAsync(bucket, objectPath);
+            var parsedUrl = CloudStorageParsedUrl.Parse(url);
+            var storageObject = await StorageClient.GetObjectAsync(parsedUrl.Bucket, parsedUrl.Name);
 
             var progress =
                 new Progress<IDownloadProgress>(
@@ -61,9 +63,10 @@ namespace Mcma.GoogleCloud.Storage.Proxies
             await StorageClient.DownloadObjectAsync(storageObject, destination, progress: progress);
         }
 
-        public async Task UploadAsync(string bucket, string objectPath, Stream source, Action<StreamProgress> progressHandler = null)
+        public async Task UploadAsync(string url, Stream source, Action<StreamProgress> progressHandler = null)
         {
-            var storageObject = await StorageClient.GetObjectAsync(bucket, objectPath);
+            var parsedUrl = CloudStorageParsedUrl.Parse(url);
+            var storageObject = await StorageClient.GetObjectAsync(parsedUrl.Bucket, parsedUrl.Name);
 
             var progress =
                 new Progress<IUploadProgress>(

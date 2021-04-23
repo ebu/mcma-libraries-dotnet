@@ -1,4 +1,5 @@
 ﻿using System;
+using Mcma.Worker.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Worker

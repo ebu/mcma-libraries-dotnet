@@ -1,4 +1,5 @@
-﻿using Mcma.Data.DocumentDatabase.Queries;
+﻿using System;
+using Mcma.Data.DocumentDatabase.Queries;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,7 @@ namespace Mcma.Azure.CosmosDb
     {
         public CosmosDbTableBuilder(IServiceCollection services)
         {
-            Services = services;
+            Services = services ?? throw new ArgumentNullException(nameof(services));
         }
         
         private IServiceCollection Services { get; }
@@ -16,7 +17,7 @@ namespace Mcma.Azure.CosmosDb
         public CosmosDbTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
             where TCustomQueryBuilder : class, ICustomQueryBuilder<TParameters, (QueryDefinition, QueryRequestOptions)>
         {
-            Services.AddSingleton<ICustomQueryBuilder<TParameters, (QueryDefinition, QueryRequestOptions)>, TCustomQueryBuilder>();
+            Services.AddCustomQueryBuilder<TParameters, (QueryDefinition, QueryRequestOptions), TCustomQueryBuilder>();
             return this;
         }
     }

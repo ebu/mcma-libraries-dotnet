@@ -15,12 +15,12 @@ namespace Mcma.GoogleCloud.Firestore
 
         public IServiceCollection Services { get; }
         
-        public FirestoreDbBuilder Firestore { get; } = new FirestoreDbBuilder();
+        public FirestoreDbBuilder Firestore { get; } = new();
 
         public FirestoreTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
             where TCustomQueryBuilder : class, ICustomQueryBuilder<TParameters, Query>
         {
-            Services.AddSingleton<ICustomQueryBuilder<TParameters, Query>, TCustomQueryBuilder>();
+            Services.AddCustomQueryBuilder<TParameters, Query, TCustomQueryBuilder>();
             return this;
         }
 

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.0-rc2</PackageVersion>
+    <PackageVersion>0.14.0-rc32</PackageVersion>
     <Title>MCMA Workers (.NET)</Title>
     <Description>Library containing Base classes and interfaces for MCMA worker services</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -14,6 +14,7 @@
     <ProjectReference Include="..\Mcma.Core\Mcma.Core.csproj" />
     <ProjectReference Include="..\Mcma.Data\Mcma.Data.csproj" />
     <ProjectReference Include="..\Mcma.Client\Mcma.Client.csproj" />
+    <ProjectReference Include="..\Mcma.Worker.Common\Mcma.Worker.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

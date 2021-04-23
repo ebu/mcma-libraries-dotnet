@@ -3,7 +3,7 @@ using Mcma.GoogleCloud.Storage.Proxies;
 
 namespace Mcma.GoogleCloud.Storage
 {
-    public class CloudStorageLocator : UrlLocator
+    public class CloudStorageLocator : Locator
     {
         public CloudStorageLocator()
         {

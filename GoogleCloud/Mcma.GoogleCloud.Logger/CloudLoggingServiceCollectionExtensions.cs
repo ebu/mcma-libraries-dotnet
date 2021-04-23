@@ -14,9 +14,9 @@ namespace Mcma.GoogleCloud.Logger
             
             var builder = new LoggingServiceV2ClientBuilder();
             configureClient?.Invoke(builder);
-            services.AddSingleton(provider => builder.Build());
+            services.AddSingleton(_ => builder.Build());
             
-            return services.AddSingleton<ILoggerProvider, CloudLoggingLoggerProvider>();
+            return services.AddMcmaLogging<CloudLoggingLoggerProvider>();
         }
 
         public static IServiceCollection AddMcmaCloudLogging(this IServiceCollection services, string source, Action<LoggingServiceV2ClientBuilder> configureClient = null)

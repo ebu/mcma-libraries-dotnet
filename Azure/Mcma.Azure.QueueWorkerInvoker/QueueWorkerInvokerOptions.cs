@@ -4,12 +4,9 @@ using Mcma.WorkerInvoker;
 
 namespace Mcma.Azure.WorkerInvoker
 {
-    public class QueueWorkerInvokerOptions : WorkerInvokerOptions
+    public class QueueWorkerInvokerOptions
     {
-        public QueueWorkerInvokerOptions()
-        {
-            WorkerFunctionId = McmaQueueWorkerInvokerEnvironmentVariables.WorkerQueueName;
-        }
+        public string WorkerQueueName { get; set; } = McmaQueueWorkerInvokerEnvironmentVariables.WorkerQueueName;
 
         public string ConnectionString { get; set; } = Environment.GetEnvironmentVariable("WEBSITE_CONTENTAZUREFILECONNECTIONSTRING");
         

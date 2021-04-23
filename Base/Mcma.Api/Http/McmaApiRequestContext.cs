@@ -24,7 +24,7 @@ namespace Mcma.Api
 
         private ILoggerProvider LoggerProvider { get; }
 
-        public McmaApiResponse Response { get; } = new McmaApiResponse();
+        public McmaApiResponse Response { get; } = new();
 
         public string RequestId => Request?.Id;
 
