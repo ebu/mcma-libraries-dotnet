@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Mcma.Serialization;
 using Mcma.Worker.Common;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -13,7 +14,7 @@ namespace Mcma.WorkerInvoker
                     new McmaWorkerRequest
                     {
                         OperationName = operationName,
-                        Input = input != null ? JObject.FromObject(input) : null,
+                        Input = input?.ToMcmaJsonObject(),
                         Tracker = tracker
                     }
                 );
