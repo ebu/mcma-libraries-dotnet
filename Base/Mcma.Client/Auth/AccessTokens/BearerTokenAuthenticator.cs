@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Mcma.Client.AccessTokens
+namespace Mcma.Client.Auth.AccessTokens
 {
     internal class BearerTokenAuthenticator<TAuthContext> : IAuthenticator
     {

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>Latest</LangVersion>
+        <PackageVersion>0.15.0</PackageVersion>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageOutputPath>bin/packages</PackageOutputPath>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Mcma.Data.Google.Firestore\Mcma.Data.Google.Firestore.csproj" />
+        <ProjectReference Include="..\Mcma.Api.Google.CloudFunctions\Mcma.Api.Google.CloudFunctions.csproj" />
+        <ProjectReference Include="..\Mcma.Logging.Google.CloudLogging\Mcma.Logging.Google.CloudLogging.csproj" />
+        <ProjectReference Include="..\Mcma.WorkerInvoker.Google.PubSub\Mcma.WorkerInvoker.Google.PubSub.csproj" />
+        <ProjectReference Include="..\Mcma.Storage.Google.CloudStorage\Mcma.Storage.Google.CloudStorage.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Google.Cloud.Functions.Hosting" Version="1.0.0-beta02" />
+    </ItemGroup>
+
+</Project>

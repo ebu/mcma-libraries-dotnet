@@ -1,4 +1,6 @@
-namespace Mcma
+using Mcma.Model.Jobs;
+
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents a job-like object (<see cref="Job"/>, <see cref="JobAssignment"/>, <see cref="JobExecution"/>, etc)

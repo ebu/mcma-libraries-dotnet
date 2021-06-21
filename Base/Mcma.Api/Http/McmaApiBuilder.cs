@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Mcma.Api.Routes;
+using Mcma.Api.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public class McmaApiBuilder
     {

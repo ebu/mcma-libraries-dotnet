@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq.Expressions;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Base class for all MCMA data model objects, exposing an ExpandoObject-like dynamic interface

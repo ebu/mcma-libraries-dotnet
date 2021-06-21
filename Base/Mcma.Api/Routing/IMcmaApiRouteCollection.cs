@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Mcma.Api.Routes
+namespace Mcma.Api.Routing
 {
     public interface IMcmaApiRouteCollection : IEnumerable<IMcmaApiRoute>
     {

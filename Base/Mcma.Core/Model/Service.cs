@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents a service in an MCMA environment

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents a type of job processing a service can do

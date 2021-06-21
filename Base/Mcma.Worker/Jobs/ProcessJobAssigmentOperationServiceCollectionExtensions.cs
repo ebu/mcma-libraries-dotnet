@@ -1,6 +1,7 @@
 ﻿using System;
+using Mcma.Model.Jobs;
 
-namespace Mcma.Worker
+namespace Mcma.Worker.Jobs
 {
     public static class ProcessJobAssigmentOperationServiceCollectionExtensions
     {

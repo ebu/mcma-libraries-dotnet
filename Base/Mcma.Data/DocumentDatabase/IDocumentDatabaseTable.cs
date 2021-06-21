@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Mcma.Data.DocumentDatabase.Queries;
+using Mcma.Data.DocumentDatabase.Queries.Custom;
+using Mcma.Model;
 
-namespace Mcma.Data
+namespace Mcma.Data.DocumentDatabase
 {
     public interface IDocumentDatabaseTable
     {

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Mcma.Client;
-using Mcma.Data;
+using Mcma.Client.Resources;
+using Mcma.Data.DocumentDatabase;
 using Mcma.Logging;
+using Mcma.Model;
+using Mcma.Model.Jobs;
 
-namespace Mcma.Worker
+namespace Mcma.Worker.Jobs
 {
     public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJobAssignmentRequest> where TJob : Job
     {

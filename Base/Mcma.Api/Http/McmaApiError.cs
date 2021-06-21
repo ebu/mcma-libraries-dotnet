@@ -1,6 +1,7 @@
 ﻿using System;
+using Mcma.Model;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public class McmaApiError : McmaObject
     {

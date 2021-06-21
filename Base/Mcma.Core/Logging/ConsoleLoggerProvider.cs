@@ -1,3 +1,4 @@
+using Mcma.Model;
 using Microsoft.Extensions.Options;
 
 namespace Mcma.Logging

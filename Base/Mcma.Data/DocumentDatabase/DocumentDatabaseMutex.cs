@@ -1,9 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Mcma.Logging;
 
-namespace Mcma.Data
+namespace Mcma.Data.DocumentDatabase
 {
     public abstract class DocumentDatabaseMutex : IDocumentDatabaseMutex
     {

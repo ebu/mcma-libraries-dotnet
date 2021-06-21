@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Mcma.Api.Http;
 
-namespace Mcma.Api.Routes
+namespace Mcma.Api.Routing
 {
     public class DelegateMcmaApiRoute : McmaApiRoute
     {

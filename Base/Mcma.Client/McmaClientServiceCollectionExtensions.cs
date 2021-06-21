@@ -5,11 +5,10 @@ namespace Mcma.Client
 {
     public static class McmaClientServiceCollectionExtensions
     {
-        public static IServiceCollection AddMcmaClient(this IServiceCollection services,
-                                                       Action<McmaClientBuilder> build)
+        public static IServiceCollection AddMcmaClient(this IServiceCollection services, Action<McmaClientBuilder> build = null)
         {
             var builder = new McmaClientBuilder(services);
-            build(builder);
+            build?.Invoke(builder);
             return services;
         }
     }

@@ -3,8 +3,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Mcma.Client.Auth;
+using Mcma.Client.Http;
+using Mcma.Model;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     internal class ResourceEndpointClient : IResourceEndpointClient
     {

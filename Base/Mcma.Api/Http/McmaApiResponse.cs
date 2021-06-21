@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public class McmaApiResponse
     {

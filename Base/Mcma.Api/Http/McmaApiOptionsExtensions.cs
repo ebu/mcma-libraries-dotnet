@@ -1,4 +1,4 @@
-﻿namespace Mcma.Api
+﻿namespace Mcma.Api.Http
 {
     public static class McmaApiOptionsExtensions
     {

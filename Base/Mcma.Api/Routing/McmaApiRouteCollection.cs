@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Mcma.Api.Http;
 
-namespace Mcma.Api.Routes
+namespace Mcma.Api.Routing
 {
     public class McmaApiRouteCollection : IMcmaApiRouteCollection
     {

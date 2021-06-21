@@ -1,4 +1,5 @@
 using System;
+using Mcma.Model;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;
 

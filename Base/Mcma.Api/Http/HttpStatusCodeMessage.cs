@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public static class HttpStatusCodeMessage
     {

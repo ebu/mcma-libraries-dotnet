@@ -1,5 +1,7 @@
 
-namespace Mcma.Client
+using Mcma.Model;
+
+namespace Mcma.Client.Resources
 {
     public interface IResourceManagerProvider
     {

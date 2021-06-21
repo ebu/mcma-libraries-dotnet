@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mcma.Data;
-using Mcma.Data.DocumentDatabase.Queries;
+using Mcma.Api.Http;
+using Mcma.Data.DocumentDatabase;
+using Mcma.Data.DocumentDatabase.Queries.Custom;
+using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults.Query
 {
     public class McmaApiCustomQuery<TResource, TParameters> : IMcmaApiCustomQuery<TResource>
         where TResource : class

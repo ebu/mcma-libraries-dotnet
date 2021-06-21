@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using Mcma.Api.Routes;
+using Mcma.Api.Http;
+using Mcma.Api.Routing.Defaults.Create;
+using Mcma.Api.Routing.Defaults.Delete;
+using Mcma.Api.Routing.Defaults.Get;
+using Mcma.Api.Routing.Defaults.Query;
+using Mcma.Api.Routing.Defaults.Update;
+using Mcma.Model;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults
 {
     public class DefaultRouteCollectionBuilder<TResource> where TResource : McmaResource
     {

@@ -5,10 +5,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Mcma.Client.Auth;
+using Mcma.Client.Http;
 using Mcma.Logging;
+using Mcma.Model;
 using Mcma.Serialization;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     internal class ResourceManager : IResourceManager
     {
@@ -58,7 +61,7 @@ namespace Mcma.Client
         }
         
 
-        private ServiceClient GetServiceClient(Service service) => new ServiceClient(AuthProvider, HttpClient, service, Tracker);
+        private ServiceClient GetServiceClient(Service service) => new(AuthProvider, HttpClient, service, Tracker);
 
         IServiceClient IResourceManager.GetServiceClient(Service service) => GetServiceClient(service);
 
@@ -131,7 +134,7 @@ namespace Mcma.Client
             if (resourceEndpoint != null)
                 return await resourceEndpoint.PostAsync<T>(resource, cancellationToken: cancellationToken);
 
-            if (!(resource is McmaResource mcmaResource) || string.IsNullOrWhiteSpace(mcmaResource.Id))
+            if (resource is not McmaResource mcmaResource || string.IsNullOrWhiteSpace(mcmaResource.Id))
                 throw new McmaException($"There is no endpoint available for creating resources of type '{typeof(T).Name}', and the provided resource does not specify an endpoint in its 'id' property.");
 
             return await McmaHttpClient.PostAsync<T>(mcmaResource.Id, mcmaResource, cancellationToken);

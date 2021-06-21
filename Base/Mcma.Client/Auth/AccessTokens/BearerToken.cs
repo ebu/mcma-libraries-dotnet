@@ -1,6 +1,6 @@
 using System;
 
-namespace Mcma.Client.AccessTokens
+namespace Mcma.Client.Auth.AccessTokens
 {
     public class BearerToken
     {

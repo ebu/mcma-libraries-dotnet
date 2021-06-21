@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mcma.Data
+namespace Mcma.Data.DocumentDatabase
 {
     public class LockData
     {

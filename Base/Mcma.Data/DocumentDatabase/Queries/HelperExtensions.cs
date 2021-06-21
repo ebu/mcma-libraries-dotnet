@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Mcma.Data.DocumentDatabase.Queries.Custom;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Data.DocumentDatabase.Queries

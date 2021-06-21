@@ -1,4 +1,6 @@
 ﻿using System;
+using Mcma.Client.Auth;
+using Mcma.Client.Resources;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Client
@@ -37,8 +39,10 @@ namespace Mcma.Client
             return this;
         }
 
-        public McmaClientBuilder ConfigureDefaults(string servicesUrl, string servicesAuthType = null, string servicesAuthContext = null)
+        public McmaClientBuilder ConfigureDefaults(string servicesUrl = null, string servicesAuthType = null, string servicesAuthContext = null)
         {
+            servicesUrl ??= McmaResourceManagerEnvironmentVariables.ServicesUrl;
+            
             Services.Configure<ResourceManagerProviderOptions>(
                 opts =>
                     opts.DefaultOptions = new ResourceManagerOptions(servicesUrl, servicesAuthType, servicesAuthContext));

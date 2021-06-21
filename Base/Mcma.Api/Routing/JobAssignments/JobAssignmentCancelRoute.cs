@@ -2,11 +2,12 @@
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Mcma.Api.Routes;
-using Mcma.Data;
+using Mcma.Api.Http;
+using Mcma.Data.DocumentDatabase;
+using Mcma.Model;
 using Mcma.WorkerInvoker;
 
-namespace Mcma.Api.Routing.Defaults
+namespace Mcma.Api.Routing.JobAssignments
 {
     internal class JobAssignmentCancelRoute : McmaApiRoute
     {

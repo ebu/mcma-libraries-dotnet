@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Mcma.Api.Http;
+using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults.Delete
 {
     public interface IDefaultDeleteRouteCompletedHandler<in TResource> where TResource : McmaResource
     {

@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Mcma.Model;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     public static class ResourceManagerExtensions
     {

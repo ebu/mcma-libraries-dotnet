@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents an error as defined by RFC 7807 (https://tools.ietf.org/html/rfc7807)

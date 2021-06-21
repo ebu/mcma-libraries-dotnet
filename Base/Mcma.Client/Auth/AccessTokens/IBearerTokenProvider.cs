@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Mcma.Client.AccessTokens
+namespace Mcma.Client.Auth.AccessTokens
 {
     public interface IBearerTokenProvider<in TAuthContext>
     {

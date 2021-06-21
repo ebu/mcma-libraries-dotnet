@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Mcma.Api.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
 
-namespace Mcma.Api.Routes
+namespace Mcma.Api.Routing
 {
     public abstract class McmaApiRoute : IMcmaApiRoute
     {

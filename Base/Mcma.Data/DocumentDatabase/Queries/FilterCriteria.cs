@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Mcma.Utility;
 
 namespace Mcma.Data.DocumentDatabase.Queries
 {
@@ -23,17 +24,11 @@ namespace Mcma.Data.DocumentDatabase.Queries
         public object PropertyValue { get; }
     }
     
-    public class FilterCriteria<TDoc, TProp> : IFilterExpression<TDoc>
+    public class FilterCriteria<TDoc, TProp> : FilterCriteria<TDoc>
     {
-        public FilterCriteria(Expression<Func<TDoc, TProp>> property, BinaryOperator @operator, TProp propertyValue)
+        public FilterCriteria(Expression<Func<TDoc, TProp>> propertyExpression, BinaryOperator @operator, TProp propertyValue)
+            : base(propertyExpression.GetProperty().Name, @operator, propertyValue)
         {
-            Property = property;
-            Operator = @operator;
-            PropertyValue = propertyValue;
         }
-        
-        public Expression<Func<TDoc, TProp>> Property { get; }
-        public BinaryOperator Operator { get; }
-        public TProp PropertyValue { get; }
     }
 }

@@ -1,6 +1,6 @@
 using Newtonsoft.Json.Linq;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents a notification sent for an MCMA resource

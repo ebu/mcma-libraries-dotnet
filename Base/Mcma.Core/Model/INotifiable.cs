@@ -1,4 +1,4 @@
-﻿namespace Mcma
+﻿namespace Mcma.Model
 {
     /// <summary>
     /// Implemented by objects that might have notifications associated to them, e.g jobs and job assignments

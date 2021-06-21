@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Mcma.Data;
+using Mcma.Api.Http;
+using Mcma.Data.DocumentDatabase;
+using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults.Query
 {
     public interface IDefaultRouteQueryExecutor<TResource>
     {

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mcma.Api.Routing.Defaults.Routes;
+using Mcma.Api.Http;
+using Mcma.Api.Routing.Defaults.Create;
+using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults
+namespace Mcma.Api.Routing.JobAssignments
 {
     public class SetTrackerOnCreationStarted : IDefaultCreateRouteStartedHandler<JobAssignment>
     {

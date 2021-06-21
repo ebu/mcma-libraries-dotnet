@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Mcma.Model;
 using Mcma.Serialization;
 using Mcma.Worker.Common;
 using Microsoft.Extensions.Options;

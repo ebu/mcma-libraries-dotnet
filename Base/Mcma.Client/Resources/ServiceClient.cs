@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using Mcma.Client.Auth;
+using Mcma.Model;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     internal class ServiceClient : IServiceClient
     {

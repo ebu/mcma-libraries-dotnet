@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Used for tracking calls across multiple operations in an MCMA environment, particularly for the purpose of logging. Typically this will be stored on job-like objects that support it.

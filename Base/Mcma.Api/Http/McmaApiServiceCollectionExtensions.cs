@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public static class McmaApiServiceCollectionExtensions
     {

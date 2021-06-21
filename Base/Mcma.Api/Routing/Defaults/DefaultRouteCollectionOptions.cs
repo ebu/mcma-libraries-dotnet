@@ -1,4 +1,5 @@
-﻿using Mcma.Utility;
+﻿using Mcma.Model;
+using Mcma.Utility;
 
 namespace Mcma.Api.Routing.Defaults
 {

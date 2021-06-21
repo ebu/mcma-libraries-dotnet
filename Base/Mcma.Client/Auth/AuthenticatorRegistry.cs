@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Client
+namespace Mcma.Client.Auth
 {
     public class AuthenticatorRegistry
     {

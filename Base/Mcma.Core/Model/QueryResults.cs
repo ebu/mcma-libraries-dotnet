@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents the results of running a query for MCMA resources against an MCMA service

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Serialization;
 
-namespace Mcma.Client
+namespace Mcma.Client.Http
 {
     public static class McmaHttpClientExtensions
     {

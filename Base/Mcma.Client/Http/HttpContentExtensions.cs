@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;
 
-namespace Mcma.Client
+namespace Mcma.Client.Http
 {
     public static class HttpContentExtensions
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents an attempt by the job processor to execute a job. Differs from a job assignment in that it is not necessarily associated with a service for processing and will

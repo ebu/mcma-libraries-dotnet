@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
-using Mcma;
 using Newtonsoft.Json.Linq;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public class McmaApiRequest
     {

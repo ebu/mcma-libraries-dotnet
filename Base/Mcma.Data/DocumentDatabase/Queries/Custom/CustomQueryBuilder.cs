@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mcma.Data.DocumentDatabase.Queries
+namespace Mcma.Data.DocumentDatabase.Queries.Custom
 {
     public abstract class CustomQueryBuilder<TParameters, TProviderQuery> : ICustomQueryBuilder<TParameters, TProviderQuery>
     {

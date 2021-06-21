@@ -1,12 +1,10 @@
 using System;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Serialization;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-namespace Mcma.Client
+namespace Mcma.Client.Http
 {
     public static class HttpResponseExtensions
     {

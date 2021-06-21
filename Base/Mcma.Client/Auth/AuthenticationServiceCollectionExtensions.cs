@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Client
+namespace Mcma.Client.Auth
 {
     public static class AuthenticationServiceCollectionExtensions
     {

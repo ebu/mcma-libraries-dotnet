@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Mcma.Logging;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public interface IMcmaApiController
     {

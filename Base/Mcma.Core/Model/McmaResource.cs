@@ -1,6 +1,6 @@
 using System;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// An MCMA resource, defining an ID and properties for tracking date created and modified

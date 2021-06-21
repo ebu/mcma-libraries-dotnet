@@ -1,6 +1,6 @@
 using System;
 
-namespace Mcma
+namespace Mcma.Model.Jobs
 {
     public class Job : JobBase, INotifiable
     {

@@ -1,4 +1,5 @@
 using System;
+using Mcma.Model;
 using Newtonsoft.Json.Linq;
 
 namespace Mcma.Logging

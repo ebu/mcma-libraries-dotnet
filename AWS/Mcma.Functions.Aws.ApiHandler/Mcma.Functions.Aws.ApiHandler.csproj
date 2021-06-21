@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
+        <PackageVersion>0.15.0</PackageVersion>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageOutputPath>bin/packages</PackageOutputPath>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Mcma.Api.Aws.ApiGateway\Mcma.Api.Aws.ApiGateway.csproj" />
+        <ProjectReference Include="..\Mcma.Data.Aws.DynamoDb\Mcma.Data.Aws.DynamoDb.csproj" />
+        <ProjectReference Include="..\Mcma.WorkerInvoker.Aws.Lambda\Mcma.WorkerInvoker.Aws.Lambda.csproj" />
+        <ProjectReference Include="..\Mcma.Logging.Aws.CloudWatch\Mcma.Logging.Aws.CloudWatch.csproj" />
+        <ProjectReference Include="..\Mcma.Storage.Aws.S3\Mcma.Storage.Aws.S3.csproj" />
+        <ProjectReference Include="..\Mcma.Serialization.Aws\Mcma.Serialization.Aws.csproj" />
+        <ProjectReference Include="..\Mcma.Functions.Aws\Mcma.Functions.Aws.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.9" />
+    </ItemGroup>
+
+</Project>

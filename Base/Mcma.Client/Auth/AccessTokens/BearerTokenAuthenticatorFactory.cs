@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Mcma.Client.AccessTokens
+namespace Mcma.Client.Auth.AccessTokens
 {
     internal class BearerTokenAuthenticatorFactory<TAuthContext> : AuthenticatorFactory<TAuthContext>
     {

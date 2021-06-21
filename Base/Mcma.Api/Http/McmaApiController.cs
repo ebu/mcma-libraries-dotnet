@@ -5,12 +5,12 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Mcma.Api.Routes;
+using Mcma.Api.Routing;
 using Mcma.Logging;
 using Mcma.Serialization;
 using Microsoft.Net.Http.Headers;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public class McmaApiController : IMcmaApiController
     {

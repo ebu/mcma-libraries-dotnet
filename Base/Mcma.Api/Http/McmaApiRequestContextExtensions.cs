@@ -1,6 +1,7 @@
 ﻿using System.Net;
+using Mcma.Model;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public static class McmaApiRequestContextExtensions
     {

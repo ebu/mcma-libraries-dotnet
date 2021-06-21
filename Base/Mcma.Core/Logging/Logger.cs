@@ -1,4 +1,5 @@
 using System;
+using Mcma.Model;
 
 namespace Mcma.Logging
 {

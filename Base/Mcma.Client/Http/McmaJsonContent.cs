@@ -2,7 +2,7 @@
 using System.Text;
 using Mcma.Serialization;
 
-namespace Mcma.Client
+namespace Mcma.Client.Http
 {
     public class McmaJsonContent : StringContent
     {

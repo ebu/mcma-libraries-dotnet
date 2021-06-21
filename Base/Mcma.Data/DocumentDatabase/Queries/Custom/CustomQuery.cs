@@ -1,4 +1,4 @@
-﻿namespace Mcma.Data.DocumentDatabase.Queries
+﻿namespace Mcma.Data.DocumentDatabase.Queries.Custom
 {
     public class CustomQuery<TParameters>
     {

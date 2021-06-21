@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Mcma.Client
+namespace Mcma.Client.Auth
 {
     internal interface IAuthenticatorFactory
     {

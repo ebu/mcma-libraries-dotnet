@@ -1,6 +1,8 @@
-using Mcma.Api.Routing.Defaults.Routes;
+using Mcma.Api.Http;
+using Mcma.Api.Routing.Defaults;
+using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults
+namespace Mcma.Api.Routing.JobAssignments
 {
     public static class JobAssignmentServiceCollectionExtensions
     {

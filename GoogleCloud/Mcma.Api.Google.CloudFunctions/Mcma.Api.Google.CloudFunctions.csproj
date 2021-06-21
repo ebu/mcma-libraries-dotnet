@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>Latest</LangVersion>
+        <PackageVersion>0.15.0</PackageVersion>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageOutputPath>bin/packages</PackageOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Base\Mcma.Api\Mcma.Api.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Google.Cloud.Functions.Framework" Version="1.0.0-beta02" />
+    </ItemGroup>
+</Project>

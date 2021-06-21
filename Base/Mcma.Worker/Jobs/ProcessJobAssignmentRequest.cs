@@ -1,4 +1,4 @@
-namespace Mcma.Worker
+namespace Mcma.Worker.Jobs
 {
     public class ProcessJobAssignmentRequest
     {

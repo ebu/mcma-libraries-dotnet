@@ -3,10 +3,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Mcma.Client.Auth;
+using Mcma.Model;
 using Mcma.Serialization;
 using Mcma.Utility;
 
-namespace Mcma.Client
+namespace Mcma.Client.Http
 {
     public class McmaHttpClient
     {

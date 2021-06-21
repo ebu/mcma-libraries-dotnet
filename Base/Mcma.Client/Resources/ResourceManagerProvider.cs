@@ -1,8 +1,10 @@
 using System;
 using System.Net.Http;
+using Mcma.Client.Auth;
+using Mcma.Model;
 using Microsoft.Extensions.Options;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     public class ResourceManagerProvider : IResourceManagerProvider
     {

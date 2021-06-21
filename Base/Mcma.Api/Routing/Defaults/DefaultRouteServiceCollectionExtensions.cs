@@ -1,7 +1,9 @@
 ﻿using System;
+using Mcma.Api.Http;
+using Mcma.Model;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults
 {
     public static class DefaultRouteServiceCollectionExtensions
     {

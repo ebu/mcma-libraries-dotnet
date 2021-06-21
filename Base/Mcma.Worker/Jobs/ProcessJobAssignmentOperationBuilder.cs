@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mcma.Model.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Worker
+namespace Mcma.Worker.Jobs
 {
     public class ProcessJobAssignmentOperationBuilder<TJob> where TJob : Job
     {

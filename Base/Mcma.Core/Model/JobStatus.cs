@@ -1,4 +1,4 @@
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Enumeration of all the possible statuses an MCMA job might have

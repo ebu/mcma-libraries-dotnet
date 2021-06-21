@@ -1,6 +1,6 @@
 ﻿using Mcma.Utility;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public static class McmaApiEnvironmentVariables
     {

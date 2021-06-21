@@ -1,4 +1,4 @@
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents a defined parameter on a job profile

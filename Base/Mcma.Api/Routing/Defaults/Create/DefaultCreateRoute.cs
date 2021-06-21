@@ -1,11 +1,12 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Mcma.Api.Routes;
-using Mcma.Data;
+using Mcma.Api.Http;
+using Mcma.Data.DocumentDatabase;
+using Mcma.Model;
 using Microsoft.Extensions.Options;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults.Create
 {
     public class DefaultCreateRoute<TResource> : McmaApiRoute, IDefaultCreateRoute<TResource> where TResource : McmaResource
     {

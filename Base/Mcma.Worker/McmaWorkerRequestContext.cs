@@ -1,5 +1,6 @@
 ﻿using System;
 using Mcma.Logging;
+using Mcma.Model;
 using Mcma.Serialization;
 using Mcma.Worker.Common;
 using Newtonsoft.Json.Linq;

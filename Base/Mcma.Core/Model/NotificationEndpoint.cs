@@ -1,4 +1,4 @@
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents an endpoint that receives notifications about MCMA resources

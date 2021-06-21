@@ -1,6 +1,6 @@
 ﻿using Mcma.Utility;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     public static class McmaResourceManagerEnvironmentVariables
     {

@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Mcma;
+﻿using System.Threading.Tasks;
+using Mcma.Model.Jobs;
 
-namespace Mcma.Worker
+namespace Mcma.Worker.Jobs
 {
     public interface IJobProfile<TJob> where TJob : Job
     {

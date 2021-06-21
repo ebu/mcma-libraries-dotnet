@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Mcma.Data
+namespace Mcma.Data.DocumentDatabase
 {
     public interface IDocumentDatabaseMutex
     {

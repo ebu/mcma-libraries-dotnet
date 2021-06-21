@@ -1,7 +1,7 @@
 using Mcma.Serialization;
 using Newtonsoft.Json;
 
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// An MCMA object that's strongly-typed, i.e it specifies a "Type" property

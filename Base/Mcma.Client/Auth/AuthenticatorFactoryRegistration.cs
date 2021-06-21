@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mcma.Client
+namespace Mcma.Client.Auth
 {
     internal class AuthenticatorFactoryRegistration<TAuthenticator> : IAuthenticatorFactoryRegistration
     {

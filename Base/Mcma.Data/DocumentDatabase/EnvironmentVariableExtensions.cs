@@ -1,6 +1,6 @@
 ﻿using Mcma.Utility;
 
-namespace Mcma.Data
+namespace Mcma.Data.DocumentDatabase
 {
     public class DocumentDatabaseTableOptions
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Mcma.Client
+namespace Mcma.Client.Resources
 {
     public class ResourceManagerOptions
     {

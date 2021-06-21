@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Mcma.Model.Jobs;
 
-namespace Mcma.Worker
+namespace Mcma.Worker.Jobs
 {
     internal class DelegateJobProfile<TJob> : IJobProfile<TJob> where TJob : Job
     {

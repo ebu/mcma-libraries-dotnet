@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Mcma.Api.Http;
+using Mcma.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults.Query
 {
     public class DefaultQueryRouteBuilder<TResource> where TResource : McmaResource
     {

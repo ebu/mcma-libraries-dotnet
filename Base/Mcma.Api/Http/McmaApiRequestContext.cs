@@ -3,12 +3,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using Mcma.Client.Http;
 using Mcma.Logging;
+using Mcma.Model;
+using Mcma.Model.Jobs;
 using Mcma.Serialization;
-using Mcma.Client;
 using Newtonsoft.Json.Linq;
 
-namespace Mcma.Api
+namespace Mcma.Api.Http
 {
     public class McmaApiRequestContext
     {

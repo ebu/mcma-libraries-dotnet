@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Mcma.Model;
 
 namespace Mcma.Logging
 {

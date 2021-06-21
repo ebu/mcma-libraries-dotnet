@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Mcma.Api.Routes;
+﻿using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults.Routes
+namespace Mcma.Api.Routing.Defaults.Update
 {
     public interface IDefaultUpdateRoute<TResource> : IMcmaApiRoute where TResource : McmaResource
     {

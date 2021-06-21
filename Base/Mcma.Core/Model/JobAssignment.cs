@@ -1,4 +1,4 @@
-namespace Mcma
+namespace Mcma.Model
 {
     /// <summary>
     /// Represents an assignment of a job to a service for processing

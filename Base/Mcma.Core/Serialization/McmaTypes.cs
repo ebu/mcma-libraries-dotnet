@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Mcma.Logging;
+using Mcma.Model;
 
 namespace Mcma.Serialization
 {
