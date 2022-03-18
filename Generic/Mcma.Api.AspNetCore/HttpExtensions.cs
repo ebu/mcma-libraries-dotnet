@@ -32,11 +32,14 @@ namespace Mcma.Api.AspNetCore
             httpResponse.StatusCode = mcmaResponse.StatusCode;
 
             if (mcmaResponse.Headers != null)
-                foreach (var header in mcmaResponse.Headers)
-                    httpResponse.Headers[header.Key] = header.Value;
+                foreach (var (key, value) in mcmaResponse.Headers)
+                    httpResponse.Headers[key] = value;
 
             if (mcmaResponse.Body != null)
+            {
+                httpResponse.ContentLength = mcmaResponse.Body.Length;
                 await httpResponse.Body.WriteAsync(mcmaResponse.Body, 0, mcmaResponse.Body.Length);
+            }
         }
     }
 }
