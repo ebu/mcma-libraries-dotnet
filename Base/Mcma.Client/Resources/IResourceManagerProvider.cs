@@ -1,10 +1,9 @@
 
 using Mcma.Model;
 
-namespace Mcma.Client.Resources
+namespace Mcma.Client.Resources;
+
+public interface IResourceManagerProvider
 {
-    public interface IResourceManagerProvider
-    {
-        IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null);
-    }
-} 
+    IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null);
+}

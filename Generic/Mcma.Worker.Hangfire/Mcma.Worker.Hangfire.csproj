@@ -9,12 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hangfire.NetCore" Version="1.7.22" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.9" />
+    <ProjectReference Include="..\..\Base\Mcma.Worker\Mcma.Worker.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Base\Mcma.Worker\Mcma.Worker.csproj" />
+    <PackageReference Include="Hangfire.NetCore" Version="1.7.31" />
   </ItemGroup>
 
 </Project>

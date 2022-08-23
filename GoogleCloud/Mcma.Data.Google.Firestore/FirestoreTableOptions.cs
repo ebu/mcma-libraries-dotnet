@@ -1,9 +1,7 @@
-﻿using Mcma.Data;
-using Mcma.Data.DocumentDatabase;
+﻿using Mcma.Data.DocumentDatabase;
 
-namespace Mcma.Data.Google.Firestore
+namespace Mcma.Data.Google.Firestore;
+
+public class FirestoreTableOptions : DocumentDatabaseTableOptions
 {
-    public class FirestoreTableOptions : DocumentDatabaseTableOptions
-    {
-    }
 }

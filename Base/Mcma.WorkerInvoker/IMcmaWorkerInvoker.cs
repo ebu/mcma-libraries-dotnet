@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Mcma.Model;
 
-namespace Mcma.WorkerInvoker
+namespace Mcma.WorkerInvoker;
+
+public interface IMcmaWorkerInvoker
 {
-    public interface IMcmaWorkerInvoker
-    {
-        Task InvokeAsync(string operationName, object input, McmaTracker tracker = null);
-    }
+    Task InvokeAsync(string operationName, object input, McmaTracker tracker = null);
 }

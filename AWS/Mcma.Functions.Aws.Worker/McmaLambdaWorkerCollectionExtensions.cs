@@ -9,40 +9,39 @@ using Mcma.Worker;
 using Mcma.Worker.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Functions.Aws.Worker
+namespace Mcma.Functions.Aws.Worker;
+
+public static class McmaLambdaWorkerCollectionExtensions
 {
-    public static class McmaLambdaWorkerCollectionExtensions
-    {
-        static McmaLambdaWorkerCollectionExtensions() => S3LocatorHelper.AddTypes();
+    static McmaLambdaWorkerCollectionExtensions() => S3LocatorHelper.AddTypes();
 
-        public static IServiceCollection AddMcmaAwsLambdaWorker(this IServiceCollection services,
-                                                                string applicationName,
-                                                                Action<McmaWorkerBuilder> buildWorker,
-                                                                string logGroupName = null,
-                                                                Action<DynamoDbTableOptions> configureDynamoDb = null,
-                                                                Action<S3StorageClientOptions> configureS3Client = null)
-            => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
-                       .AddMcmaDynamoDb(configureDynamoDb)
-                       .AddMcmaS3StorageClient(configureS3Client)
-                       .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
-                       .AddMcmaWorker(buildWorker);
+    public static IServiceCollection AddMcmaAwsLambdaWorker(this IServiceCollection services,
+                                                            string applicationName,
+                                                            Action<McmaWorkerBuilder> buildWorker,
+                                                            string logGroupName = null,
+                                                            Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                            Action<S3StorageClientOptions> configureS3Client = null)
+        => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
+                   .AddMcmaDynamoDb(configureDynamoDb)
+                   .AddMcmaS3StorageClient(configureS3Client)
+                   .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
+                   .AddMcmaWorker(buildWorker);
 
-        public static IServiceCollection AddMcmaAwsLambdaJobAssignmentWorker<TJob>(this IServiceCollection services,
-                                                                                   string applicationName,
-                                                                                   Action<ProcessJobAssignmentOperationBuilder<TJob>> addProfiles,
-                                                                                   string logGroupName = null,
-                                                                                   Action<DynamoDbTableOptions> configureDynamoDb = null,
-                                                                                   Action<S3StorageClientOptions> configureS3Client = null,
-                                                                                   Action<McmaWorkerBuilder> addAdditionalOperations = null)
-            where TJob : Job
-            => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
-                       .AddMcmaDynamoDb(configureDynamoDb)
-                       .AddMcmaS3StorageClient(configureS3Client)
-                       .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
-                       .AddMcmaWorker(workerBuilder =>
-                       {
-                           workerBuilder.AddProcessJobAssignmentOperation(addProfiles);
-                           addAdditionalOperations?.Invoke(workerBuilder);
-                       });
-    }
+    public static IServiceCollection AddMcmaAwsLambdaJobAssignmentWorker<TJob>(this IServiceCollection services,
+                                                                               string applicationName,
+                                                                               Action<ProcessJobAssignmentOperationBuilder<TJob>> addProfiles,
+                                                                               string logGroupName = null,
+                                                                               Action<DynamoDbTableOptions> configureDynamoDb = null,
+                                                                               Action<S3StorageClientOptions> configureS3Client = null,
+                                                                               Action<McmaWorkerBuilder> addAdditionalOperations = null)
+        where TJob : Job
+        => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
+                   .AddMcmaDynamoDb(configureDynamoDb)
+                   .AddMcmaS3StorageClient(configureS3Client)
+                   .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAws4Auth())
+                   .AddMcmaWorker(workerBuilder =>
+                   {
+                       workerBuilder.AddProcessJobAssignmentOperation(addProfiles);
+                       addAdditionalOperations?.Invoke(workerBuilder);
+                   });
 }

@@ -2,10 +2,9 @@
 using Mcma.Api.Http;
 using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults.Update
+namespace Mcma.Api.Routing.Defaults.Update;
+
+public interface IDefaultUpdateRouteStartedHandler<TResource> where TResource : McmaResource
 {
-    public interface IDefaultUpdateRouteStartedHandler<TResource> where TResource : McmaResource
-    {
-        Task<bool> OnStartedAsync(McmaApiRequestContext requestContext);
-    }
+    Task<bool> OnStartedAsync(McmaApiRequestContext requestContext);
 }

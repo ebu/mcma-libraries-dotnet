@@ -9,12 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
     <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.5.2.1" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.9.42" />
   </ItemGroup>
 
 </Project>

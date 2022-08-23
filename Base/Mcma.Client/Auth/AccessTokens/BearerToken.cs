@@ -1,11 +1,10 @@
 using System;
 
-namespace Mcma.Client.Auth.AccessTokens
-{
-    public class BearerToken
-    {
-        public string Token { get; set; }
+namespace Mcma.Client.Auth.AccessTokens;
 
-        public DateTimeOffset? ExpiresOn { get; set; }
-    }
+public class BearerToken
+{
+    public string Token { get; set; }
+
+    public DateTimeOffset? ExpiresOn { get; set; }
 }

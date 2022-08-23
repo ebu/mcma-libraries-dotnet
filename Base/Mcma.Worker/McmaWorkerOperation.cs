@@ -1,34 +1,32 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mcma.Logging;
 
-namespace Mcma.Worker
-{
-    public abstract class McmaWorkerOperation<T> : IMcmaWorkerOperation
-    {   
-        public abstract string Name { get; }
+namespace Mcma.Worker;
 
-        public Type InputType => typeof(T);
+public abstract class McmaWorkerOperation<T> : IMcmaWorkerOperation
+{   
+    public abstract string Name { get; }
 
-        private bool IsValidRequest(McmaWorkerRequestContext reqCtx)
-            => Name.Equals(reqCtx.OperationName, StringComparison.OrdinalIgnoreCase) && reqCtx.TryGetInputAs<T>(out _);
+    public Type InputType => typeof(T);
 
-        bool IMcmaWorkerOperation.Accepts(McmaWorkerRequestContext reqCtx) => IsValidRequest(reqCtx) && Accepts(reqCtx);
+    private bool IsValidRequest(McmaWorkerRequestContext reqCtx)
+        => Name.Equals(reqCtx.OperationName, StringComparison.OrdinalIgnoreCase) && reqCtx.TryGetInputAs<T>(out _);
 
-        protected virtual bool Accepts(McmaWorkerRequestContext reqCtx) => true;
+    bool IMcmaWorkerOperation.Accepts(McmaWorkerRequestContext reqCtx) => IsValidRequest(reqCtx) && Accepts(reqCtx);
 
-        Task IMcmaWorkerOperation.ExecuteAsync(McmaWorkerRequestContext requestContext)
-        {
-            if (requestContext == null)
-                throw new ArgumentNullException(nameof(requestContext));
+    protected virtual bool Accepts(McmaWorkerRequestContext reqCtx) => true;
 
-            var input = requestContext.GetInputAs<T>();
+    Task IMcmaWorkerOperation.ExecuteAsync(McmaWorkerRequestContext requestContext)
+    {
+        if (requestContext == null)
+            throw new ArgumentNullException(nameof(requestContext));
 
-            requestContext.Logger.Debug("Got input of type '" + typeof(T).Name + "' from worker request.");
+        var input = requestContext.GetInputAs<T>();
+
+        requestContext.Logger.Debug("Got input of type '" + typeof(T).Name + "' from worker request.");
             
-            return ExecuteAsync(requestContext, input);
-        }
-
-        protected abstract Task ExecuteAsync(McmaWorkerRequestContext requestContext, T requestInput);
+        return ExecuteAsync(requestContext, input);
     }
+
+    protected abstract Task ExecuteAsync(McmaWorkerRequestContext requestContext, T requestInput);
 }

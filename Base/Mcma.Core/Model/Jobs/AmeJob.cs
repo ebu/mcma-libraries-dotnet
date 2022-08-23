@@ -1,7 +1,6 @@
-namespace Mcma.Model.Jobs
-{
-    public class AmeJob : Job
-    {
+namespace Mcma.Model.Jobs;
 
-    }
+public class AmeJob : Job
+{
+
 }

@@ -9,12 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
       <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Google.Cloud.Storage.V1" Version="3.3.0" />
+        <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
     </ItemGroup>
 
 </Project>

@@ -9,12 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.6.0" />
+    <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
-    <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
   </ItemGroup>
 
 </Project>

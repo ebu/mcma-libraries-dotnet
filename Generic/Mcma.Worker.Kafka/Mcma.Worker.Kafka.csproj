@@ -9,14 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="1.7.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="2.1.0" />
+        <ProjectReference Include="..\..\Base\Mcma.Worker.Common\Mcma.Worker.Common.csproj" />
+        <ProjectReference Include="..\Mcma.Kafka\Mcma.Kafka.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
-      <ProjectReference Include="..\..\Base\Mcma.Worker.Common\Mcma.Worker.Common.csproj" />
-      <ProjectReference Include="..\Mcma.Kafka\Mcma.Kafka.csproj" />
+      <PackageReference Include="Confluent.Kafka" Version="1.9.2" />
     </ItemGroup>
 
 </Project>

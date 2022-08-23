@@ -1,15 +1,14 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Client.Auth
+namespace Mcma.Client.Auth;
+
+public static class AuthenticationServiceCollectionExtensions
 {
-    public static class AuthenticationServiceCollectionExtensions
+    public static IServiceCollection AddMcmaAuthentication(this IServiceCollection services, Action<AuthenticatorRegistry> addAuthenticators)
     {
-        public static IServiceCollection AddMcmaAuthentication(this IServiceCollection services, Action<AuthenticatorRegistry> addAuthenticators)
-        {
-            services.AddSingleton<IAuthProvider, AuthProvider>();
-            addAuthenticators?.Invoke(new AuthenticatorRegistry(services));
-            return services;
-        }
+        services.AddSingleton<IAuthProvider, AuthProvider>();
+        addAuthenticators?.Invoke(new AuthenticatorRegistry(services));
+        return services;
     }
 }

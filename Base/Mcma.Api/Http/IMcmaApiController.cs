@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Mcma.Api.Http
+namespace Mcma.Api.Http;
+
+public interface IMcmaApiController
 {
-    public interface IMcmaApiController
-    {
-        Task HandleRequestAsync(McmaApiRequestContext requestContext);
-    }
+    Task HandleRequestAsync(McmaApiRequestContext requestContext);
 }

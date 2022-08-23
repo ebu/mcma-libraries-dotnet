@@ -1,31 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Mcma.Api;
 using Mcma.Api.Http;
 using Mcma.Logging;
 using Microsoft.AspNetCore.Http;
 
-namespace Mcma.Api.Google.CloudFunctions
+namespace Mcma.Api.Google.CloudFunctions;
+
+public class HttpFunctionApiController : IHttpFunctionApiController
 {
-    public class HttpFunctionApiController : IHttpFunctionApiController
+    public HttpFunctionApiController(IMcmaApiController controller, ILoggerProvider loggerProvider)
     {
-        public HttpFunctionApiController(IMcmaApiController controller, ILoggerProvider loggerProvider)
-        {
-            Controller = controller ?? throw new ArgumentNullException(nameof(controller));
-            LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
-        }
+        Controller = controller ?? throw new ArgumentNullException(nameof(controller));
+        LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+    }
 
-        private IMcmaApiController Controller { get; }
+    private IMcmaApiController Controller { get; }
 
-        private ILoggerProvider LoggerProvider { get; }
+    private ILoggerProvider LoggerProvider { get; }
 
-        public async Task HandleRequestAsync(HttpContext httpContext)
-        {
-            var requestContext = new McmaApiRequestContext(LoggerProvider, await httpContext.GetMcmaApiRequestAsync());
+    public async Task HandleRequestAsync(HttpContext httpContext)
+    {
+        var requestContext = new McmaApiRequestContext(LoggerProvider, await httpContext.GetMcmaApiRequestAsync());
 
-            await Controller.HandleRequestAsync(requestContext);
+        await Controller.HandleRequestAsync(requestContext);
 
-            await httpContext.SetHttpResponseAsync(requestContext.Response);
-        }
+        await httpContext.SetHttpResponseAsync(requestContext.Response);
     }
 }

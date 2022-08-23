@@ -4,30 +4,28 @@ using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
 using Mcma.Serialization;
 using Mcma.Worker.Common;
-using Mcma.WorkerInvoker;
 using Microsoft.Extensions.Options;
 
-namespace Mcma.WorkerInvoker.Google.PubSub
+namespace Mcma.WorkerInvoker.Google.PubSub;
+
+public class PubSubMcmaWorkerInvoker : McmaWorkerInvoker
 {
-    public class PubSubMcmaWorkerInvoker : McmaWorkerInvoker
+    public PubSubMcmaWorkerInvoker(IOptions<PubSubWorkerInvokerOptions> options)
     {
-        public PubSubMcmaWorkerInvoker(IOptions<PubSubWorkerInvokerOptions> options)
-        {
-            PublisherClientTask =
-                new Lazy<Task<PublisherClient>>(
-                    () =>
-                        PublisherClient.CreateAsync(TopicName.Parse(options.Value.WorkerTopicName),
-                                                    options.Value.PublisherClientCreationSettings,
-                                                    options.Value.PublisherClientSettings));
-        }
+        PublisherClientTask =
+            new Lazy<Task<PublisherClient>>(
+                () =>
+                    PublisherClient.CreateAsync(TopicName.Parse(options.Value.WorkerTopicName),
+                                                options.Value.PublisherClientCreationSettings,
+                                                options.Value.PublisherClientSettings));
+    }
 
-        private Lazy<Task<PublisherClient>> PublisherClientTask { get; }
+    private Lazy<Task<PublisherClient>> PublisherClientTask { get; }
 
-        protected override async Task InvokeAsync(McmaWorkerRequest workerRequest)
-        {
-            var publisherClient = await PublisherClientTask.Value;
+    protected override async Task InvokeAsync(McmaWorkerRequest workerRequest)
+    {
+        var publisherClient = await PublisherClientTask.Value;
 
-            await publisherClient.PublishAsync(ByteString.CopyFromUtf8(workerRequest.ToMcmaJson().ToString()));
-        }
+        await publisherClient.PublishAsync(ByteString.CopyFromUtf8(workerRequest.ToMcmaJson().ToString()));
     }
 }

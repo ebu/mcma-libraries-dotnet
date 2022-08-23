@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Mcma.Api.Google.CloudFunctions
+namespace Mcma.Api.Google.CloudFunctions;
+
+public interface IHttpFunctionApiController
 {
-    public interface IHttpFunctionApiController
-    {
-        Task HandleRequestAsync(HttpContext httpContext);
-    }
+    Task HandleRequestAsync(HttpContext httpContext);
 }

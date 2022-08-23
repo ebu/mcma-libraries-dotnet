@@ -4,87 +4,86 @@ using System.Threading.Tasks;
 using Google.Api;
 using Mcma.Common.Google.Metadata;
 
-namespace Mcma.Common.Google.Resources
+namespace Mcma.Common.Google.Resources;
+
+internal class MonitoredResourceProvider : IMonitoredResourceProvider
 {
-    internal class MonitoredResourceProvider : IMonitoredResourceProvider
+    private const string KubernetesNamespaceIdPath = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
+        
+    public MonitoredResourceProvider(IMetadataService metadataService)
     {
-        private const string KubernetesNamespaceIdPath = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
+        MetadataService = metadataService ?? throw new ArgumentNullException(nameof(metadataService));
+        CurrentResourceTask = new Lazy<Task<MonitoredResource>>(InternalGetCurrentResourceAsync);
+    }
         
-        public MonitoredResourceProvider(IMetadataService metadataService)
+    private IMetadataService MetadataService { get; }
+        
+    private Lazy<Task<MonitoredResource>> CurrentResourceTask { get; }
+        
+    private MonitoredResource GlobalResource { get; } = new() { Type = "global" };
+
+    private MonitoredResource GetCloudFunctionResource()
+        => new()
         {
-            MetadataService = metadataService ?? throw new ArgumentNullException(nameof(metadataService));
-            CurrentResourceTask = new Lazy<Task<MonitoredResource>>(InternalGetCurrentResourceAsync);
-        }
-        
-        private IMetadataService MetadataService { get; }
-        
-        private Lazy<Task<MonitoredResource>> CurrentResourceTask { get; }
-        
-        private MonitoredResource GlobalResource { get; } = new MonitoredResource { Type = "global" };
-
-        private MonitoredResource GetCloudFunctionResource()
-            => new MonitoredResource
+            Type = "cloud_function",
+            Labels =
             {
-                Type = "cloud_function",
-                Labels =
-                {
-                    ["function_name"] = CloudEnvironmentVariableHelper.CloudFunctionName,
-                    ["region"] = CloudEnvironmentVariableHelper.CloudFunctionRegion
-                }
-            };
+                ["function_name"] = CloudEnvironmentVariableHelper.CloudFunctionName,
+                ["region"] = CloudEnvironmentVariableHelper.CloudFunctionRegion
+            }
+        };
 
-        private async Task<MonitoredResource> GetAppEngineResourceAsync()
-            => new MonitoredResource
-            {
-                Type = "gae_app",
-                Labels =
-                {
-                    ["module_id"] = CloudEnvironmentVariableHelper.AppEngineModuleId,
-                    ["version_id"] = CloudEnvironmentVariableHelper.AppEngineVersionId,
-                    ["zone"] = await MetadataService.GetInstanceZoneAsync()
-                }
-            };
-
-        private async Task<MonitoredResource> GetKubernetesEngineResourceAsync()
-            => new MonitoredResource
-            {
-                Type = "k8s_container",
-                Labels =
-                {
-                    ["cluster_name"] = await MetadataService.GetKubernetesClusterNameAsync(),
-                    ["namespace_name"] = File.ReadAllText(KubernetesNamespaceIdPath)
-                }
-            };
-
-        private async Task<MonitoredResource> GetComputeEngineResourceAsync()
-            => new MonitoredResource
-            {
-                Type = "gce_instance",
-                Labels =
-                {
-                    ["instance_id"] = await MetadataService.GetInstanceIdAsync(),
-                    ["zone"] = await MetadataService.GetInstanceZoneAsync()
-                }
-            };
-
-        public Task<MonitoredResource> GetCurrentResourceAsync()
-            => CurrentResourceTask.Value;
-        
-        private async Task<MonitoredResource> InternalGetCurrentResourceAsync()
+    private async Task<MonitoredResource> GetAppEngineResourceAsync()
+        => new()
         {
-            if (!await MetadataService.IsAvailableAsync())
-                return GlobalResource;
+            Type = "gae_app",
+            Labels =
+            {
+                ["module_id"] = CloudEnvironmentVariableHelper.AppEngineModuleId,
+                ["version_id"] = CloudEnvironmentVariableHelper.AppEngineVersionId,
+                ["zone"] = await MetadataService.GetInstanceZoneAsync()
+            }
+        };
 
-            if (CloudEnvironmentVariableHelper.IsAppEngine)
-                return await GetAppEngineResourceAsync();
-            
-            if (CloudEnvironmentVariableHelper.IsCloudFunction)
-                return GetCloudFunctionResource();
+    private async Task<MonitoredResource> GetKubernetesEngineResourceAsync()
+        => new()
+        {
+            Type = "k8s_container",
+            Labels =
+            {
+                ["cluster_name"] = await MetadataService.GetKubernetesClusterNameAsync(),
+                ["namespace_name"] = File.ReadAllText(KubernetesNamespaceIdPath)
+            }
+        };
 
-            if (await MetadataService.IsOnKubernetesClusterAsync())
-                return await GetKubernetesEngineResourceAsync();
+    private async Task<MonitoredResource> GetComputeEngineResourceAsync()
+        => new()
+        {
+            Type = "gce_instance",
+            Labels =
+            {
+                ["instance_id"] = await MetadataService.GetInstanceIdAsync(),
+                ["zone"] = await MetadataService.GetInstanceZoneAsync()
+            }
+        };
+
+    public Task<MonitoredResource> GetCurrentResourceAsync()
+        => CurrentResourceTask.Value;
+        
+    private async Task<MonitoredResource> InternalGetCurrentResourceAsync()
+    {
+        if (!await MetadataService.IsAvailableAsync())
+            return GlobalResource;
+
+        if (CloudEnvironmentVariableHelper.IsAppEngine)
+            return await GetAppEngineResourceAsync();
             
-            return await GetComputeEngineResourceAsync();
-        }
+        if (CloudEnvironmentVariableHelper.IsCloudFunction)
+            return GetCloudFunctionResource();
+
+        if (await MetadataService.IsOnKubernetesClusterAsync())
+            return await GetKubernetesEngineResourceAsync();
+            
+        return await GetComputeEngineResourceAsync();
     }
 }

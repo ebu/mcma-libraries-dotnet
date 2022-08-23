@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Mcma.Client.Auth
+namespace Mcma.Client.Auth;
+
+internal interface IAuthenticatorFactory
 {
-    internal interface IAuthenticatorFactory
-    {
-        Type ContextType { get; }
+    Type ContextType { get; }
         
-        Task<IAuthenticator> GetAsync(object authContext);
-    }
+    Task<IAuthenticator> GetAsync(object authContext);
 }
