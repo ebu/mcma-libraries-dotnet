@@ -1,8 +1,7 @@
 ﻿using Mcma.Model;
 
-namespace Mcma.Api.Routing.Defaults.Create
+namespace Mcma.Api.Routing.Defaults.Create;
+
+public interface IDefaultCreateRoute<TResource> : IMcmaApiRoute where TResource : McmaResource
 {
-    public interface IDefaultCreateRoute<TResource> : IMcmaApiRoute where TResource : McmaResource
-    {
-    }
 }

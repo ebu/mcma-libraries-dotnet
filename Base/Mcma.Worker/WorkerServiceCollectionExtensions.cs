@@ -2,16 +2,15 @@
 using Mcma.Worker.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Worker
+namespace Mcma.Worker;
+
+public static class WorkerServiceCollectionExtensions
 {
-    public static class WorkerServiceCollectionExtensions
+    public static IServiceCollection AddMcmaWorker(this IServiceCollection services, Action<McmaWorkerBuilder> buildWorker)
     {
-        public static IServiceCollection AddMcmaWorker(this IServiceCollection services, Action<McmaWorkerBuilder> buildWorker)
-        {
-            var builder = new McmaWorkerBuilder(services);
-            buildWorker(builder);
+        var builder = new McmaWorkerBuilder(services);
+        buildWorker(builder);
             
-            return services.AddSingleton<IMcmaWorker, McmaWorker>();
-        }
+        return services.AddSingleton<IMcmaWorker, McmaWorker>();
     }
 }

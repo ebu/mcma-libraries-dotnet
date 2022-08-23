@@ -9,13 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
     <ProjectReference Include="..\..\Base\Mcma.WorkerInvoker\Mcma.WorkerInvoker.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Lambda" Version="3.5.0.23" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="AWSSDK.Lambda" Version="3.7.14.2" />
   </ItemGroup>
 
 </Project>

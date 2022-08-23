@@ -1,7 +1,6 @@
-﻿namespace Mcma.Client.Google
+﻿namespace Mcma.Client.Google;
+
+public class GoogleAuthContext
 {
-    public class GoogleAuthContext
-    {
-        public string Audience { get; set; }
-    }
+    public string Audience { get; set; }
 }

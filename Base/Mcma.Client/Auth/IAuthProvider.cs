@@ -1,9 +1,8 @@
 using System.Threading.Tasks;
 
-namespace Mcma.Client.Auth
+namespace Mcma.Client.Auth;
+
+public interface IAuthProvider
 {
-    public interface IAuthProvider
-    {
-        Task<IAuthenticator> GetAsync(string authType, object authContext);
-    }
+    Task<IAuthenticator> GetAsync(string authType, object authContext);
 }

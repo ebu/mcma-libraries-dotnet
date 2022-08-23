@@ -1,6 +1,5 @@
-﻿namespace Mcma.Data.DocumentDatabase.Queries
+﻿namespace Mcma.Data.DocumentDatabase.Queries;
+
+public interface IFilterExpression<TDoc>
 {
-    public interface IFilterExpression<TDoc>
-    {
-    }
 }

@@ -5,43 +5,42 @@ using System.Threading.Tasks;
 using Mcma.Logging;
 using Mcma.Worker.Common;
 
-namespace Mcma.Worker
+namespace Mcma.Worker;
+
+public class McmaWorker : IMcmaWorker
 {
-    public class McmaWorker : IMcmaWorker
+    public McmaWorker(ILoggerProvider loggerProvider, IEnumerable<IMcmaWorkerOperation> operations)
     {
-        public McmaWorker(ILoggerProvider loggerProvider, IEnumerable<IMcmaWorkerOperation> operations)
-        {
-            LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
-            Operations = operations?.ToArray() ?? throw new McmaException("No operations registered for worker.");
-        }
+        LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+        Operations = operations?.ToArray() ?? throw new McmaException("No operations registered for worker.");
+    }
         
-        private ILoggerProvider LoggerProvider { get; }
+    private ILoggerProvider LoggerProvider { get; }
 
-        private IMcmaWorkerOperation[] Operations { get; }
+    private IMcmaWorkerOperation[] Operations { get; }
 
-        public async Task DoWorkAsync(McmaWorkerRequest request, string requestId)
+    public async Task DoWorkAsync(McmaWorkerRequest request, string requestId)
+    {
+        if (request == null)
+            throw new ArgumentNullException(nameof(request));
+
+        var requestContext = new McmaWorkerRequestContext(request, requestId);
+        requestContext.SetLogger(LoggerProvider);
+            
+        var operation = Operations.FirstOrDefault(op => op.Accepts(requestContext));
+        if (operation == null)
+            throw new McmaException($"No handler found for '{requestContext.OperationName}' that can handle this request.");
+
+        requestContext.Logger.Debug("Handling worker operation '" + requestContext.OperationName + "' with handler of type '" + operation.GetType().Name + "'");
+            
+        try
         {
-            if (request == null)
-                throw new ArgumentNullException(nameof(request));
-
-            var requestContext = new McmaWorkerRequestContext(request, requestId);
-            requestContext.SetLogger(LoggerProvider);
-            
-            var operation = Operations.FirstOrDefault(op => op.Accepts(requestContext));
-            if (operation == null)
-                throw new McmaException($"No handler found for '{requestContext.OperationName}' that can handle this request.");
-
-            requestContext.Logger.Debug("Handling worker operation '" + requestContext.OperationName + "' with handler of type '" + operation.GetType().Name + "'");
-            
-            try
-            {
-                await operation.ExecuteAsync(requestContext);
-            }
-            catch (Exception ex)
-            {
-                requestContext.Logger.Error($"Failed to process worker operation '{requestContext.OperationName}'. Exception: {ex}");
-                throw;
-            }
+            await operation.ExecuteAsync(requestContext);
+        }
+        catch (Exception ex)
+        {
+            requestContext.Logger.Error($"Failed to process worker operation '{requestContext.OperationName}'. Exception: {ex}");
+            throw;
         }
     }
 }

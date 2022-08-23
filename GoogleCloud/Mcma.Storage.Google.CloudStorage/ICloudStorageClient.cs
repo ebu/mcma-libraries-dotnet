@@ -1,7 +1,6 @@
-﻿namespace Mcma.Storage.Google.CloudStorage
+﻿namespace Mcma.Storage.Google.CloudStorage;
+
+public interface ICloudStorageClient : IStorageClient
 {
-    public interface ICloudStorageClient : IStorageClient
-    {
         
-    }
 }

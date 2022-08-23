@@ -1,9 +1,8 @@
-﻿namespace Mcma.Client.Resources
-{
-    public interface IServiceClient
-    {
-        bool HasResourceEndpointClient<T>();
+﻿namespace Mcma.Client.Resources;
 
-        IResourceEndpointClient GetResourceEndpointClient<T>();
-    }
+public interface IServiceClient
+{
+    bool HasResourceEndpointClient<T>();
+
+    IResourceEndpointClient GetResourceEndpointClient<T>();
 }

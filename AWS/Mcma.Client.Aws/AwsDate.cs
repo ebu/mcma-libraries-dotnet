@@ -1,14 +1,13 @@
 
 using System;
 
-namespace Mcma.Client.Aws
+namespace Mcma.Client.Aws;
+
+public class AwsDate
 {
-    public class AwsDate
-    {
-        private DateTimeOffset UtcNow { get; } = DateTimeOffset.UtcNow;
+    private DateTimeOffset UtcNow { get; } = DateTimeOffset.UtcNow;
 
-        public string DateString => UtcNow.ToString("yyyyMMdd");
+    public string DateString => UtcNow.ToString("yyyyMMdd");
 
-        public string DateTimeString => UtcNow.ToString("yyyyMMddTHHmmssZ");
-    }
+    public string DateTimeString => UtcNow.ToString("yyyyMMddTHHmmssZ");
 }

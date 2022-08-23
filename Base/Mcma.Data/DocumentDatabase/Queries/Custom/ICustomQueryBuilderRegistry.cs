@@ -1,7 +1,6 @@
-﻿namespace Mcma.Data.DocumentDatabase.Queries.Custom
+﻿namespace Mcma.Data.DocumentDatabase.Queries.Custom;
+
+public interface ICustomQueryBuilderRegistry<out TProviderQuery>
 {
-    public interface ICustomQueryBuilderRegistry<out TProviderQuery>
-    {
-        ICustomQueryBuilder<TParameters, TProviderQuery> Get<TParameters>(string name);
-    }
+    ICustomQueryBuilder<TParameters, TProviderQuery> Get<TParameters>(string name);
 }

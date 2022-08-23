@@ -4,79 +4,78 @@ using Amazon.Lambda.Core;
 using Mcma.Storage.Aws.S3;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Functions.Aws
+namespace Mcma.Functions.Aws;
+
+public abstract class McmaLambdaFunction<TFunctionHandler, TInput, TOutput>
+    where TFunctionHandler : class, IMcmaLambdaFunctionHandler<TInput, TOutput>
 {
-    public abstract class McmaLambdaFunction<TFunctionHandler, TInput, TOutput>
-        where TFunctionHandler : class, IMcmaLambdaFunctionHandler<TInput, TOutput>
-    {
-        static McmaLambdaFunction() => S3LocatorHelper.AddTypes();
+    static McmaLambdaFunction() => S3LocatorHelper.AddTypes();
         
-        private Lazy<IServiceProvider> ServiceProvider { get; }
+    private Lazy<IServiceProvider> ServiceProvider { get; }
 
-        protected McmaLambdaFunction()
-        {
-            ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
-        }
+    protected McmaLambdaFunction()
+    {
+        ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
+    }
 
-        private IServiceProvider BuildServiceProvider()
-        {
-            var services = new ServiceCollection();
-            Configure(services);
-            services.AddSingleton<TFunctionHandler>();
-            return services.BuildServiceProvider();
-        }
+    private IServiceProvider BuildServiceProvider()
+    {
+        var services = new ServiceCollection();
+        Configure(services);
+        services.AddSingleton<TFunctionHandler>();
+        return services.BuildServiceProvider();
+    }
 
-        protected abstract void Configure(IServiceCollection services);
+    protected abstract void Configure(IServiceCollection services);
         
-        public Task<TOutput> ExecuteAsync(TInput request, ILambdaContext context)
-                => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
-    }
+    public Task<TOutput> ExecuteAsync(TInput request, ILambdaContext context)
+        => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
+}
     
-    public abstract class McmaLambdaFunction<TFunctionHandler, TInput>
-        where TFunctionHandler : class, IMcmaLambdaFunctionHandler<TInput>
+public abstract class McmaLambdaFunction<TFunctionHandler, TInput>
+    where TFunctionHandler : class, IMcmaLambdaFunctionHandler<TInput>
+{
+    private Lazy<IServiceProvider> ServiceProvider { get; }
+
+    protected McmaLambdaFunction()
     {
-        private Lazy<IServiceProvider> ServiceProvider { get; }
-
-        protected McmaLambdaFunction()
-        {
-            ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
-        }
-
-        private IServiceProvider BuildServiceProvider()
-        {
-            var services = new ServiceCollection();
-            Configure(services);
-            services.AddSingleton<TFunctionHandler>();
-            return services.BuildServiceProvider();
-        }
-
-        protected abstract void Configure(IServiceCollection services);
-
-        public Task ExecuteAsync(TInput request, ILambdaContext context)
-            => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
+        ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
     }
+
+    private IServiceProvider BuildServiceProvider()
+    {
+        var services = new ServiceCollection();
+        Configure(services);
+        services.AddSingleton<TFunctionHandler>();
+        return services.BuildServiceProvider();
+    }
+
+    protected abstract void Configure(IServiceCollection services);
+
+    public Task ExecuteAsync(TInput request, ILambdaContext context)
+        => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(request, context);
+}
     
-    public abstract class McmaLambdaFunction<TFunctionHandler>
-        where TFunctionHandler : class, IMcmaLambdaFunctionHandler
+public abstract class McmaLambdaFunction<TFunctionHandler>
+    where TFunctionHandler : class, IMcmaLambdaFunctionHandler
+{
+    private Lazy<IServiceProvider> ServiceProvider { get; }
+
+    protected McmaLambdaFunction()
     {
-        private Lazy<IServiceProvider> ServiceProvider { get; }
-
-        protected McmaLambdaFunction()
-        {
-            ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
-        }
-
-        private IServiceProvider BuildServiceProvider()
-        {
-            var services = new ServiceCollection();
-            Configure(services);
-            services.AddSingleton<TFunctionHandler>();
-            return services.BuildServiceProvider();
-        }
-
-        protected abstract void Configure(IServiceCollection services);
-
-        public Task ExecuteAsync(ILambdaContext context)
-            => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(context);
+        ServiceProvider = new Lazy<IServiceProvider>(BuildServiceProvider);
     }
+
+    private IServiceProvider BuildServiceProvider()
+    {
+        var services = new ServiceCollection();
+        Configure(services);
+        services.AddSingleton<TFunctionHandler>();
+        return services.BuildServiceProvider();
+    }
+
+    protected abstract void Configure(IServiceCollection services);
+
+    public Task ExecuteAsync(ILambdaContext context)
+        => ServiceProvider.Value.GetRequiredService<TFunctionHandler>().ExecuteAsync(context);
 }

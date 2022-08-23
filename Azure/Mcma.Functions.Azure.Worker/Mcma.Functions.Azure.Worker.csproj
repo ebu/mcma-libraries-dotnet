@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <LangVersion>latest</LangVersion>
         <PackageVersion>0.14.1</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -10,10 +10,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Base\Mcma.Worker\Mcma.Worker.csproj" />
-        <ProjectReference Include="..\Mcma.Storage.Azure.BlobStorage\Mcma.Storage.Azure.BlobStorage.csproj" />
         <ProjectReference Include="..\Mcma.Client.Azure\Mcma.Client.Azure.csproj" />
         <ProjectReference Include="..\Mcma.Data.Azure.CosmosDb\Mcma.Data.Azure.CosmosDb.csproj" />
         <ProjectReference Include="..\Mcma.Logging.Azure.ApplicationInsights\Mcma.Logging.Azure.ApplicationInsights.csproj" />
+        <ProjectReference Include="..\Mcma.Storage.Azure.BlobStorage\Mcma.Storage.Azure.BlobStorage.csproj" />
     </ItemGroup>
 
 </Project>

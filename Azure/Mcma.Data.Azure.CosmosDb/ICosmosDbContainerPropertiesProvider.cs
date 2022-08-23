@@ -1,12 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 
-namespace Mcma.Data.Azure.CosmosDb
+namespace Mcma.Data.Azure.CosmosDb;
+
+public interface ICosmosDbContainerProvider
 {
-    public interface ICosmosDbContainerProvider
-    {
-        Task<ContainerProperties> GetPropertiesAsync();
+    Task<ContainerProperties> GetPropertiesAsync();
         
-        Task<Container> GetAsync();
-    }
+    Task<Container> GetAsync();
 }

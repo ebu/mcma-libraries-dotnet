@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Mcma.Data.DocumentDatabase.Queries.Custom
+namespace Mcma.Data.DocumentDatabase.Queries.Custom;
+
+public abstract class CustomQueryBuilder<TParameters, TProviderQuery> : ICustomQueryBuilder<TParameters, TProviderQuery>
 {
-    public abstract class CustomQueryBuilder<TParameters, TProviderQuery> : ICustomQueryBuilder<TParameters, TProviderQuery>
-    {
-        public abstract string Name { get; }
+    public abstract string Name { get; }
 
-        Type ICustomQueryBuilder.ParameterType => typeof(TParameters);
+    Type ICustomQueryBuilder.ParameterType => typeof(TParameters);
 
-        public abstract TProviderQuery Build(CustomQuery<TParameters> customQuery);
-    }
+    public abstract TProviderQuery Build(CustomQuery<TParameters> customQuery);
 }

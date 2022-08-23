@@ -9,16 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
     <ProjectReference Include="..\..\Base\Mcma.Api\Mcma.Api.csproj" />
-    <ProjectReference Include="..\..\Base\Mcma.Data\Mcma.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.2.0" />
-    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Amazon.Lambda.APIGatewayEvents" Version="2.5.0" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

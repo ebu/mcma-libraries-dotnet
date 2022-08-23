@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Google.Api;
 
-namespace Mcma.Common.Google.Resources
+namespace Mcma.Common.Google.Resources;
+
+public interface IMonitoredResourceProvider
 {
-    public interface IMonitoredResourceProvider
-    {
-        Task<MonitoredResource> GetCurrentResourceAsync();
-    }
+    Task<MonitoredResource> GetCurrentResourceAsync();
 }

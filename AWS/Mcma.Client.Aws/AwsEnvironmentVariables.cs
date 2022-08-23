@@ -1,15 +1,14 @@
 using System;
 
-namespace Mcma.Client.Aws
+namespace Mcma.Client.Aws;
+
+public static class AwsEnvironmentVariables
 {
-    public static class AwsEnvironmentVariables
-    {
-        public static string AccessKey => Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
+    public static string AccessKey => Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID");
 
-        public static string SecretKey => Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
+    public static string SecretKey => Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY");
 
-        public static string SessionToken => Environment.GetEnvironmentVariable("AWS_SESSION_TOKEN");
+    public static string SessionToken => Environment.GetEnvironmentVariable("AWS_SESSION_TOKEN");
 
-        public static string Region => Environment.GetEnvironmentVariable("AWS_REGION") ?? Environment.GetEnvironmentVariable("AWS_DEFAULT_REGION");
-    }
+    public static string Region => Environment.GetEnvironmentVariable("AWS_REGION") ?? Environment.GetEnvironmentVariable("AWS_DEFAULT_REGION");
 }

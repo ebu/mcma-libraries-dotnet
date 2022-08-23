@@ -1,7 +1,6 @@
-﻿namespace Mcma.Client.Aws
+﻿namespace Mcma.Client.Aws;
+
+public class Aws4AuthenticatorFactoryOptions
 {
-    public class Aws4AuthenticatorFactoryOptions
-    {
-        public Aws4AuthContext DefaultAuthContext { get; set; } = Aws4AuthContext.Global;
-    }
+    public Aws4AuthContext DefaultAuthContext { get; set; } = Aws4AuthContext.Global;
 }

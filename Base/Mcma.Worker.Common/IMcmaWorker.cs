@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Mcma.Worker.Common
+namespace Mcma.Worker.Common;
+
+public interface IMcmaWorker
 {
-    public interface IMcmaWorker
-    {
-        Task DoWorkAsync(McmaWorkerRequest request, string requestId);
-    }
+    Task DoWorkAsync(McmaWorkerRequest request, string requestId);
 }

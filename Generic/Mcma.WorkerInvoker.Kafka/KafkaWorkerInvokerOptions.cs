@@ -1,7 +1,6 @@
-﻿namespace Mcma.WorkerInvoker.Kafka
+﻿namespace Mcma.WorkerInvoker.Kafka;
+
+public class KafkaWorkerInvokerOptions
 {
-    public class KafkaWorkerInvokerOptions
-    {
-        public string WorkerTopic { get; set; } = KafkaWorkerInvokerEnvironmentVariables.WorkerTopic;
-    }
+    public string WorkerTopic { get; set; } = KafkaWorkerInvokerEnvironmentVariables.WorkerTopic;
 }

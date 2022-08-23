@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Mcma.Kafka
+namespace Mcma.Kafka;
+
+public interface IKafkaConsumerMessageProcessor
 {
-    public interface IKafkaConsumerMessageProcessor
-    {
-        Task ProcessAsync(string requestId, string message);
-    }
+    Task ProcessAsync(string requestId, string message);
 }

@@ -5,64 +5,62 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 
-namespace Mcma.Data.Aws.DynamoDb.TableDescription
+namespace Mcma.Data.Aws.DynamoDb.TableDescription;
+
+public class TableDescriptionProvider : ITableDescriptionProvider
 {
-    public class TableDescriptionProvider : ITableDescriptionProvider
+    private Dictionary<string, DynamoDbTableDescription> TableDescriptions { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+    private SemaphoreSlim TableDescriptionsSemaphore { get; } = new(1, 1);
+
+    public async Task<DynamoDbTableDescription> GetTableDescriptionAsync(IAmazonDynamoDB dynamoDb, string tableName)
     {
-        private Dictionary<string, DynamoDbTableDescription> TableDescriptions { get; } =
-            new Dictionary<string, DynamoDbTableDescription>(StringComparer.OrdinalIgnoreCase);
+        await TableDescriptionsSemaphore.WaitAsync();
 
-        private SemaphoreSlim TableDescriptionsSemaphore { get; } = new SemaphoreSlim(1, 1);
-
-        public async Task<DynamoDbTableDescription> GetTableDescriptionAsync(IAmazonDynamoDB dynamoDb, string tableName)
+        try
         {
-            await TableDescriptionsSemaphore.WaitAsync();
-
-            try
-            {
-                if (TableDescriptions.ContainsKey(tableName))
-                    return TableDescriptions[tableName];
-                
-                var data = await dynamoDb.DescribeTableAsync(tableName);
-
-                string partitionKeyName = null;
-                string sortKeyName = null;
-                foreach (var key in data.Table.KeySchema)
-                {
-                    if (key.KeyType == KeyType.HASH)
-                        partitionKeyName = key.AttributeName;
-                    else if (key.KeyType == KeyType.RANGE)
-                        sortKeyName = key.AttributeName;
-                }
-
-                var localSecondaryIndexes =
-                    data.Table.LocalSecondaryIndexes
-                        .Select(
-                            lsi =>
-                                new LocalSecondaryIndexDescription(
-                                    lsi.IndexName,
-                                    lsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.RANGE)?.AttributeName))
-                        .ToArray();
-
-                var globalSecondaryIndexes =
-                    data.Table.GlobalSecondaryIndexes
-                        .Select(
-                            gsi =>
-                                new GlobalSecondaryIndexDescription(
-                                    gsi.IndexName,
-                                    gsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.HASH)?.AttributeName,
-                                    gsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.RANGE)?.AttributeName))
-                        .ToArray();
-
-                TableDescriptions[tableName] =
-                    new DynamoDbTableDescription(tableName, partitionKeyName, sortKeyName, localSecondaryIndexes, globalSecondaryIndexes);
-
+            if (TableDescriptions.ContainsKey(tableName))
                 return TableDescriptions[tableName];
-            }
-            finally
+                
+            var data = await dynamoDb.DescribeTableAsync(tableName);
+
+            string partitionKeyName = null;
+            string sortKeyName = null;
+            foreach (var key in data.Table.KeySchema)
             {
-                TableDescriptionsSemaphore.Release();
+                if (key.KeyType == KeyType.HASH)
+                    partitionKeyName = key.AttributeName;
+                else if (key.KeyType == KeyType.RANGE)
+                    sortKeyName = key.AttributeName;
             }
+
+            var localSecondaryIndexes =
+                data.Table.LocalSecondaryIndexes
+                    .Select(
+                        lsi =>
+                            new LocalSecondaryIndexDescription(
+                                lsi.IndexName,
+                                lsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.RANGE)?.AttributeName))
+                    .ToArray();
+
+            var globalSecondaryIndexes =
+                data.Table.GlobalSecondaryIndexes
+                    .Select(
+                        gsi =>
+                            new GlobalSecondaryIndexDescription(
+                                gsi.IndexName,
+                                gsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.HASH)?.AttributeName,
+                                gsi.KeySchema.FirstOrDefault(k => k.KeyType == KeyType.RANGE)?.AttributeName))
+                    .ToArray();
+
+            TableDescriptions[tableName] =
+                new DynamoDbTableDescription(tableName, partitionKeyName, sortKeyName, localSecondaryIndexes, globalSecondaryIndexes);
+
+            return TableDescriptions[tableName];
+        }
+        finally
+        {
+            TableDescriptionsSemaphore.Release();
         }
     }
 }

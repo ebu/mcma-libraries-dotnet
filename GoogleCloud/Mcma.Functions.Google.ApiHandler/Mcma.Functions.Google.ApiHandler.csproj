@@ -9,15 +9,15 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\Mcma.Data.Google.Firestore\Mcma.Data.Google.Firestore.csproj" />
         <ProjectReference Include="..\Mcma.Api.Google.CloudFunctions\Mcma.Api.Google.CloudFunctions.csproj" />
+        <ProjectReference Include="..\Mcma.Data.Google.Firestore\Mcma.Data.Google.Firestore.csproj" />
         <ProjectReference Include="..\Mcma.Logging.Google.CloudLogging\Mcma.Logging.Google.CloudLogging.csproj" />
-        <ProjectReference Include="..\Mcma.WorkerInvoker.Google.PubSub\Mcma.WorkerInvoker.Google.PubSub.csproj" />
         <ProjectReference Include="..\Mcma.Storage.Google.CloudStorage\Mcma.Storage.Google.CloudStorage.csproj" />
+        <ProjectReference Include="..\Mcma.WorkerInvoker.Google.PubSub\Mcma.WorkerInvoker.Google.PubSub.csproj" />
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Google.Cloud.Functions.Hosting" Version="1.0.0-beta02" />
+        <PackageReference Include="Google.Cloud.Functions.Hosting" Version="1.0.0" />
     </ItemGroup>
 
 </Project>

@@ -1,15 +1,14 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Mcma.Api.Http
+namespace Mcma.Api.Http;
+
+public static class McmaApiServiceCollectionExtensions
 {
-    public static class McmaApiServiceCollectionExtensions
+    public static IServiceCollection AddMcmaApi(this IServiceCollection services, Action<McmaApiBuilder> build)
     {
-        public static IServiceCollection AddMcmaApi(this IServiceCollection services, Action<McmaApiBuilder> build)
-        {
-            var builder = new McmaApiBuilder(services);
-            build(builder);
-            return services;
-        }
+        var builder = new McmaApiBuilder(services);
+        build(builder);
+        return services;
     }
 }

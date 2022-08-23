@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Mcma.Client.Azure.FunctionKeys;
 
-namespace Mcma.Client.Azure.FunctionKeys
+public class AzureFunctionKeyAuthenticatorOptions
 {
-    public class AzureFunctionKeyAuthenticatorOptions
-    {
-        public string DecryptionKey { get; set; }
-    }
+    public string DecryptionKey { get; set; }
 }

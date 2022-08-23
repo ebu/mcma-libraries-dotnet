@@ -1,20 +1,19 @@
 using Mcma.Model;
 
-namespace Mcma.Client.Resources
+namespace Mcma.Client.Resources;
+
+public static class ResourceManagerProviderExtensions
 {
-    public static class ResourceManagerProviderExtensions
-    {
-        public static IResourceManager Get(this IResourceManagerProvider resourceManagerProvider,
-                                           string servicesUrl,
-                                           string servicesAuthType = null,
-                                           string servicesAuthContext = null,
-                                           McmaTracker tracker = null)
-            => resourceManagerProvider.Get(tracker,
-                                           new ResourceManagerOptions
-                                           {
-                                               ServicesUrl = servicesUrl,
-                                               ServicesAuthType = servicesAuthType,
-                                               ServicesAuthContext = servicesAuthContext
-                                           });
-    }
-} 
+    public static IResourceManager Get(this IResourceManagerProvider resourceManagerProvider,
+                                       string servicesUrl,
+                                       string servicesAuthType = null,
+                                       string servicesAuthContext = null,
+                                       McmaTracker tracker = null)
+        => resourceManagerProvider.Get(tracker,
+                                       new ResourceManagerOptions
+                                       {
+                                           ServicesUrl = servicesUrl,
+                                           ServicesAuthType = servicesAuthType,
+                                           ServicesAuthContext = servicesAuthContext
+                                       });
+}

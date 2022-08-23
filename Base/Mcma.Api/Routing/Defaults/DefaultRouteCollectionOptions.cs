@@ -1,27 +1,26 @@
 ﻿using Mcma.Model;
 using Mcma.Utility;
 
-namespace Mcma.Api.Routing.Defaults
-{
-    public class DefaultRouteCollectionOptions<TResource> where TResource : McmaResource
-    {
-        public DefaultRouteCollectionOptions()
-        {
-            Root = typeof(TResource).Name.CamelCaseToKebabCase().PluralizeKebabCase();
-        }
-        
-        private string _root;
+namespace Mcma.Api.Routing.Defaults;
 
-        public string Root
+public class DefaultRouteCollectionOptions<TResource> where TResource : McmaResource
+{
+    public DefaultRouteCollectionOptions()
+    {
+        Root = typeof(TResource).Name.CamelCaseToKebabCase().PluralizeKebabCase();
+    }
+        
+    private string _root;
+
+    public string Root
+    {
+        get => _root;
+        set
         {
-            get => _root;
-            set
-            {
-                value ??= string.Empty;
-                if (!value.StartsWith("/"))
-                    value = "/" + value;
-                _root = value;
-            }
+            value ??= string.Empty;
+            if (!value.StartsWith("/"))
+                value = "/" + value;
+            _root = value;
         }
     }
 }

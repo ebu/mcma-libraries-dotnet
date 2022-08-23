@@ -5,74 +5,73 @@ using Mcma.Serialization;
 using Mcma.Worker.Common;
 using Newtonsoft.Json.Linq;
 
-namespace Mcma.Worker
+namespace Mcma.Worker;
+
+public class McmaWorkerRequestContext
 {
-    public class McmaWorkerRequestContext
+    public McmaWorkerRequestContext(McmaWorkerRequest request, string requestId)
     {
-        public McmaWorkerRequestContext(McmaWorkerRequest request, string requestId)
-        {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+        if (request == null) throw new ArgumentNullException(nameof(request));
             
-            OperationName = !string.IsNullOrWhiteSpace(request.OperationName)
-                                ? request.OperationName
-                                : throw new McmaException("OperationName must be a non-empty string");
+        OperationName = !string.IsNullOrWhiteSpace(request.OperationName)
+                            ? request.OperationName
+                            : throw new McmaException("OperationName must be a non-empty string");
             
-            Input = request.Input;
-            Tracker = request.Tracker;
-            RequestId = requestId;
-        }
+        Input = request.Input;
+        Tracker = request.Tracker;
+        RequestId = requestId;
+    }
 
-        public string OperationName { get; }
+    public string OperationName { get; }
 
-        public JObject Input { get;  }
+    public JObject Input { get;  }
         
-        public McmaTracker Tracker { get; }
+    public McmaTracker Tracker { get; }
 
-        public string RequestId { get; }
+    public string RequestId { get; }
         
-        public ILogger Logger { get; private set; }
+    public ILogger Logger { get; private set; }
 
-        internal void SetLogger(ILoggerProvider loggerProvider) => Logger = loggerProvider.Get(RequestId, Tracker);
+    internal void SetLogger(ILoggerProvider loggerProvider) => Logger = loggerProvider.Get(RequestId, Tracker);
 
-        public object GetInputAs(Type type)
+    public object GetInputAs(Type type)
+    {
+        try
         {
-            try
-            {
-                return Input?.ToMcmaObject(type);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(
-                    $"Worker request input could not be deserialized to type {type.Name}. See inner exception for details.", ex);
-            }
+            return Input?.ToMcmaObject(type);
         }
-
-        public T GetInputAs<T>() => (T)GetInputAs(typeof(T));
-
-        public bool TryGetInputAs(Type type, out object dataObject)
+        catch (Exception ex)
         {
-            dataObject = null;
-            try
-            {
-                dataObject = GetInputAs(type);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            throw new Exception(
+                $"Worker request input could not be deserialized to type {type.Name}. See inner exception for details.", ex);
         }
+    }
 
-        public bool TryGetInputAs<T>(out T dataObject)
+    public T GetInputAs<T>() => (T)GetInputAs(typeof(T));
+
+    public bool TryGetInputAs(Type type, out object dataObject)
+    {
+        dataObject = null;
+        try
         {
-            dataObject = default;
+            dataObject = GetInputAs(type);
 
-            var result = TryGetInputAs(typeof(T), out var obj);
-            if (result)
-                dataObject = (T)obj;
-
-            return result;
+            return true;
         }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public bool TryGetInputAs<T>(out T dataObject)
+    {
+        dataObject = default;
+
+        var result = TryGetInputAs(typeof(T), out var obj);
+        if (result)
+            dataObject = (T)obj;
+
+        return result;
     }
 }

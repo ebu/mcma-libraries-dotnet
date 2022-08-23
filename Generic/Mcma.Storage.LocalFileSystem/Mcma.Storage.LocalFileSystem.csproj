@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Base\Mcma.Core\Mcma.Core.csproj" />
       <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
     </ItemGroup>
 

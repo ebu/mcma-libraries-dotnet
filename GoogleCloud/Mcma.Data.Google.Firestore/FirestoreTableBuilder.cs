@@ -6,36 +6,35 @@ using Mcma.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Mcma.Data.Google.Firestore
+namespace Mcma.Data.Google.Firestore;
+
+public class FirestoreTableBuilder
 {
-    public class FirestoreTableBuilder
+    public FirestoreTableBuilder(IServiceCollection services)
     {
-        public FirestoreTableBuilder(IServiceCollection services)
-        {
-            Services = services;
-        }
+        Services = services;
+    }
 
-        public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; }
         
-        public FirestoreDbBuilder Firestore { get; } = new();
+    public FirestoreDbBuilder Firestore { get; } = new();
 
-        public FirestoreTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
-            where TCustomQueryBuilder : class, ICustomQueryBuilder<TParameters, Query>
-        {
-            Services.AddCustomQueryBuilder<TParameters, Query, TCustomQueryBuilder>();
-            return this;
-        }
+    public FirestoreTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()
+        where TCustomQueryBuilder : class, ICustomQueryBuilder<TParameters, Query>
+    {
+        Services.AddCustomQueryBuilder<TParameters, Query, TCustomQueryBuilder>();
+        return this;
+    }
 
-        internal void AddDefaults()
+    internal void AddDefaults()
+    {
+        Services.TryAddSingleton<IFirestoreConverter<McmaObject>, FirestoreMcmaConverter>();
+        Services.TryAddSingleton(provider =>
         {
-            Services.TryAddSingleton<IFirestoreConverter<McmaObject>, FirestoreMcmaConverter>();
-            Services.TryAddSingleton(provider =>
-            {
-                if (!Firestore.ConverterRegistry.OfType<IFirestoreConverter<McmaObject>>().Any())
-                    Firestore.ConverterRegistry.Add(provider.GetRequiredService<IFirestoreConverter<McmaObject>>());
+            if (!Firestore.ConverterRegistry.OfType<IFirestoreConverter<McmaObject>>().Any())
+                Firestore.ConverterRegistry.Add(provider.GetRequiredService<IFirestoreConverter<McmaObject>>());
                 
-                return Firestore.Build();
-            });
-        }
+            return Firestore.Build();
+        });
     }
 }

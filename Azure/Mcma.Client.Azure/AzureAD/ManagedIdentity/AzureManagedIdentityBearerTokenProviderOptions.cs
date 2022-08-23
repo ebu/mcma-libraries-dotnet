@@ -1,9 +1,8 @@
-﻿namespace Mcma.Client.Azure.AzureAD.ManagedIdentity
+﻿namespace Mcma.Client.Azure.AzureAD.ManagedIdentity;
+
+public class AzureManagedIdentityBearerTokenProviderOptions
 {
-    public class AzureManagedIdentityBearerTokenProviderOptions
-    {
-        public string ConnectionString { get; set; }
+    public string ConnectionString { get; set; }
         
-        public string AzureAdInstance { get; set; }
-    }
+    public string AzureAdInstance { get; set; }
 }

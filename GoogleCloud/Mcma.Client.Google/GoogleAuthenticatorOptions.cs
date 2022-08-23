@@ -1,7 +1,6 @@
-﻿namespace Mcma.Client.Google
+﻿namespace Mcma.Client.Google;
+
+public class GoogleAuthenticatorOptions
 {
-    public class GoogleAuthenticatorOptions
-    {
-        public string KeyFile { get; set; }
-    }
+    public string KeyFile { get; set; }
 }

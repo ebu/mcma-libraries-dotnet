@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Mcma.Client.Auth
-{
-    internal interface IAuthenticatorFactoryRegistration
-    {
-        string AuthType { get; }
+namespace Mcma.Client.Auth;
 
-        Type FactoryType { get; }
-    }
+internal interface IAuthenticatorFactoryRegistration
+{
+    string AuthType { get; }
+
+    Type FactoryType { get; }
 }

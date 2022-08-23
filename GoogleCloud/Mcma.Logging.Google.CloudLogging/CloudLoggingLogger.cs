@@ -1,21 +1,19 @@
 ﻿using System;
-using Mcma.Logging;
 using Mcma.Model;
 
-namespace Mcma.Logging.Google.CloudLogging
+namespace Mcma.Logging.Google.CloudLogging;
+
+public class CloudLoggingLogger : Logging.Logger
 {
-    public class CloudLoggingLogger : Logging.Logger
+    public CloudLoggingLogger(CloudLoggingLoggerProvider loggerProvider, string source, string requestId, McmaTracker tracker)
+        : base(source, requestId, tracker)
     {
-        public CloudLoggingLogger(CloudLoggingLoggerProvider loggerProvider, string source, string requestId, McmaTracker tracker)
-            : base(source, requestId, tracker)
-        {
-            LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
-        }
+        LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
+    }
         
-        private CloudLoggingLoggerProvider LoggerProvider { get; }
+    private CloudLoggingLoggerProvider LoggerProvider { get; }
         
-        protected override void WriteLogEvent(LogEvent logEvent)
-        {
-        }
+    protected override void WriteLogEvent(LogEvent logEvent)
+    {
     }
 }

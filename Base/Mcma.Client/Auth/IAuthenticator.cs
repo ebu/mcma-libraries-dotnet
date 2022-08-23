@@ -2,10 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Mcma.Client.Auth
+namespace Mcma.Client.Auth;
+
+public interface IAuthenticator
 {
-    public interface IAuthenticator
-    {
-        Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
-    }
+    Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
 }

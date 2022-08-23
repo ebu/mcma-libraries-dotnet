@@ -1,7 +1,6 @@
-﻿namespace Mcma.Client.Google
+﻿namespace Mcma.Client.Google;
+
+public static class GoogleConstants
 {
-    public static class GoogleConstants
-    {
-        public const string AuthType = "Google";
-    }
+    public const string AuthType = "Google";
 }

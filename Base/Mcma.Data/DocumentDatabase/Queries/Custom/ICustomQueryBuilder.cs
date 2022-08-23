@@ -1,16 +1,15 @@
 ﻿using System;
 
-namespace Mcma.Data.DocumentDatabase.Queries.Custom
+namespace Mcma.Data.DocumentDatabase.Queries.Custom;
+
+public interface ICustomQueryBuilder<TParameters, out TProviderQuery> : ICustomQueryBuilder
 {
-    public interface ICustomQueryBuilder<TParameters, out TProviderQuery> : ICustomQueryBuilder
-    {
-        TProviderQuery Build(CustomQuery<TParameters> customQuery);
-    }
+    TProviderQuery Build(CustomQuery<TParameters> customQuery);
+}
 
-    public interface ICustomQueryBuilder
-    {
-        string Name { get; }
+public interface ICustomQueryBuilder
+{
+    string Name { get; }
 
-        Type ParameterType { get; }
-    }
+    Type ParameterType { get; }
 }

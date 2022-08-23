@@ -1,9 +1,8 @@
-﻿namespace Mcma.Storage
+﻿namespace Mcma.Storage;
+
+public enum PresignedUrlAccessType
 {
-    public enum PresignedUrlAccessType
-    {
-        Read,
-        Write,
-        Delete
-    }
+    Read,
+    Write,
+    Delete
 }
