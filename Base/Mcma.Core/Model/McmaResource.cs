@@ -1,5 +1,3 @@
-using System;
-
 namespace Mcma.Model;
 
 /// <summary>
@@ -10,7 +8,7 @@ public abstract class McmaResource : McmaObject
     /// <summary>
     /// Gets or sets the ID of the resource
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or set the date and time at which the resource was created

@@ -2,27 +2,49 @@
 using Mcma.Client.Auth;
 using Mcma.Client.Auth.AccessTokens;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Client.Azure.AzureAD.ManagedIdentity;
 
 public static class AzureADManagedIdentityAuthRegistryExtensions
 {
     public static AuthenticatorRegistry AddAzureADManagedIdentityAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                      Action<AzureManagedIdentityBearerTokenProviderOptions> configureOptions = null)
+                                                                      Action<AzureADManagedIdentityOptions> configureOptions = null,
+                                                                      string serviceName = "",
+                                                                      string resourceType = "")
     {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
+        var key = new AuthenticatorKey(AzureConstants.AzureAdAuthType, serviceName, resourceType);
 
-        return authenticatorRegistry.AddBearerTokens<AzureADAuthContext, AzureManagedIdentityBearerTokenProvider>(AzureConstants.AzureAdAuthType);
+        authenticatorRegistry.Services.Configure(key.ToString(), configureOptions ?? (_ => { }));
+
+        return authenticatorRegistry.AddBearerTokens(
+            key,
+            svcProvider =>
+                new AzureADManagedIdentityBearerTokenProvider(
+                    key,
+                    svcProvider.GetRequiredService<IOptionsSnapshot<AzureADManagedIdentityOptions>>()));
     }
 
-    public static AuthenticatorRegistry TryAddAzureADManagedIdentityAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                         Action<AzureManagedIdentityBearerTokenProviderOptions> configureOptions = null)
+    public static bool TryAddAzureADManagedIdentityAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                        Action<AzureADManagedIdentityOptions> configureOptions = null,
+                                                        string serviceName = "",
+                                                        string resourceType = "")
     {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
+        var key = new AuthenticatorKey(AzureConstants.AzureAdAuthType, serviceName, resourceType);
 
-        return authenticatorRegistry.TryAddBearerTokens<AzureADAuthContext, AzureManagedIdentityBearerTokenProvider>(
-            AzureConstants.AzureAdAuthType);
+        var added =
+            authenticatorRegistry.TryAddBearerTokens(
+                key,
+                svcProvider =>
+                    new AzureADManagedIdentityBearerTokenProvider(
+                        key,
+                        svcProvider.GetRequiredService<IOptionsSnapshot<AzureADManagedIdentityOptions>>()));
+
+        if (!added)
+            return false;
+
+        authenticatorRegistry.Services.Configure(key.ToString(), configureOptions ?? (_ => { }));
+
+        return true;
     }
 }

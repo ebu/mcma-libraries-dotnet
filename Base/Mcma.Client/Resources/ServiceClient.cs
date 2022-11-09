@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using Mcma.Client.Auth;
 using Mcma.Model;
 
@@ -11,6 +7,7 @@ internal class ServiceClient : IServiceClient
 {
     internal ServiceClient(IAuthProvider authProvider, HttpClient httpClient, Service service, McmaTracker tracker)
     {
+        Service = service;
         Tracker = tracker;
 
         ResourcesByType =
@@ -19,18 +16,21 @@ internal class ServiceClient : IServiceClient
                                                  r =>
                                                      new ResourceEndpointClient(authProvider,
                                                                                 httpClient,
+                                                                                service,
                                                                                 r,
-                                                                                service.AuthType,
-                                                                                service.AuthContext,
                                                                                 Tracker))
                 : new Dictionary<string, ResourceEndpointClient>();
     }
+    
+    private Service Service { get; }
 
     private McmaTracker Tracker { get; }
 
     private IDictionary<string, ResourceEndpointClient> ResourcesByType { get; }
 
     internal IEnumerable<ResourceEndpointClient> Resources => ResourcesByType.Values;
+
+    public string Name => Service?.Name;
 
     internal bool HasResourceEndpointClient(string resourceType)
         => ResourcesByType.ContainsKey(resourceType);

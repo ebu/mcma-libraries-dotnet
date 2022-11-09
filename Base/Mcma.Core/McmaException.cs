@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.Serialization;
 using Mcma.Serialization;
 
@@ -16,7 +15,7 @@ public sealed class McmaException : Exception
     /// <param name="message">The error message</param>
     /// <param name="cause">The root cause of the error (i.e. inner exception)</param>
     /// <param name="context">An arbitrary object that will be serialized to json and added to the <see cref="Exception.Data"/> property, if provided</param>
-    public McmaException(string message, Exception cause = null, object context = null)
+    public McmaException(string message, Exception? cause = null, object? context = null)
         : base(message, cause)
     {
         if (context != null)

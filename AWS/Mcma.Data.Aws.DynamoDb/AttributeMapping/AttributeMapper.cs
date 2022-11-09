@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Mcma.Data.Aws.DynamoDb.AttributeMapping;
@@ -7,7 +8,7 @@ public class AttributeMapper : IAttributeMapper
 {
     public AttributeMapper(IEnumerable<IAttributeMapping> mappings)
     {
-        Mappings = mappings?.ToArray() ?? new IAttributeMapping[0];
+        Mappings = mappings?.ToArray() ?? Array.Empty<IAttributeMapping>();
     }
         
     private IAttributeMapping[] Mappings { get; }

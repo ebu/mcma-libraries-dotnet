@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Mcma.Api.Http;
@@ -11,7 +12,7 @@ internal class DefaultRouteQueryExecutor<TResource> : IDefaultRouteQueryExecutor
 {
     public DefaultRouteQueryExecutor(IEnumerable<IMcmaApiCustomQuery<TResource>> customQueries)
     {
-        CustomQueries = customQueries?.ToArray() ?? new IMcmaApiCustomQuery<TResource>[0];
+        CustomQueries = customQueries?.ToArray() ?? Array.Empty<IMcmaApiCustomQuery<TResource>>();
     }
 
     private IMcmaApiCustomQuery<TResource>[] CustomQueries { get; }

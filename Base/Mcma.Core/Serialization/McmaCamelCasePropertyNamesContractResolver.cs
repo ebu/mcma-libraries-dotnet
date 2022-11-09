@@ -1,4 +1,3 @@
-using System;
 using Newtonsoft.Json.Serialization;
 
 namespace Mcma.Serialization;

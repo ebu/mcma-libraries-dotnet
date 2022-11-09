@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Mcma.Client.Auth;
 
@@ -13,33 +11,59 @@ public class AuthenticatorRegistry
         
     public IServiceCollection Services { get; }
         
-    private Dictionary<(string, Type), Type> Registrations { get; } = new();
+    private List<AuthenticatorKey> RegisteredKeys { get; } = new();
 
-    private AuthenticatorRegistry InternalAdd<TAuthContext, TAuthHandlerFactory>(string authType)
-        where TAuthHandlerFactory : AuthenticatorFactory<TAuthContext>
+    private AuthenticatorRegistry InternalAdd<TAuthenticator>(AuthenticatorKey key, Action<IServiceCollection> addAuthenticatorService)
+        where TAuthenticator : class, IAuthenticator
     {
-        Services.AddSingleton<IAuthenticatorFactoryRegistration>(new AuthenticatorFactoryRegistration<TAuthHandlerFactory>(authType)); 
-        Services.AddSingleton<IAuthenticatorFactory, TAuthHandlerFactory>();
-        Registrations[(authType, typeof(TAuthContext))] = typeof(TAuthHandlerFactory);
+        addAuthenticatorService(Services);
+        Services.AddSingleton(svcProvider => new AuthenticatorRegistration(key, svcProvider.GetRequiredService<TAuthenticator>()));
+        RegisteredKeys.Add(key);
         return this;
     }
 
-    public AuthenticatorRegistry Add<TAuthContext, TAuthHandlerFactory>(string authType)
-        where TAuthHandlerFactory : AuthenticatorFactory<TAuthContext>
+    private static McmaException GetAlreadyRegisteredException(AuthenticatorKey key)
     {
-        if (Registrations.ContainsKey((authType, typeof(TAuthContext))))
-            throw new McmaException(
-                $"An authentication handler for auth type '{authType}' and auth context type '{typeof(TAuthContext)}' has already been registered. " +
-                "If you wish to register a default in the case that no handler was previously registered, please use TryAdd.");
+        var keyInfo = $"auth type '{key.AuthType}'";
+        if (!string.IsNullOrWhiteSpace(key.ServiceName))
+            keyInfo += $" and service '{key.ServiceName}'";
+        if (!string.IsNullOrWhiteSpace(key.ResourceType))
+            keyInfo += $" and resource type '{key.ResourceType}'";
             
-        return InternalAdd<TAuthContext, TAuthHandlerFactory>(authType);
+        return new McmaException(
+            $"An authentication handler for {keyInfo} has already been registered. " +
+            "If you wish to register a default in the case that no handler was previously registered, please use TryAdd.");
     }
 
-    public AuthenticatorRegistry TryAdd<TAuthContext, TAuthHandlerFactory>(string authType)
-        where TAuthHandlerFactory : AuthenticatorFactory<TAuthContext>
+    public AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key)
+        where TAuthenticator : class, IAuthenticator
+        =>
+            RegisteredKeys.All(k => k != key)
+                ? InternalAdd<TAuthenticator>(key, services => services.AddSingleton<TAuthenticator>())
+               : throw GetAlreadyRegisteredException(key);
+
+    public AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
+        where TAuthenticator : class, IAuthenticator
+        => 
+            RegisteredKeys.All(k => k != key)
+               ? InternalAdd<TAuthenticator>(key, services => services.AddSingleton(serviceFactory))
+               : throw GetAlreadyRegisteredException(key);
+
+    public bool TryAdd<TAuthenticator>(AuthenticatorKey key)
+        where TAuthenticator : class, IAuthenticator
     {
-        return !Registrations.ContainsKey((authType, typeof(TAuthContext)))
-                   ? InternalAdd<TAuthContext, TAuthHandlerFactory>(authType)
-                   : this;
+        var exists = RegisteredKeys.Any(k => k == key);
+        if (!exists)
+            Add<TAuthenticator>(key);
+        return !exists;
+    }
+
+    public bool TryAdd<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
+        where TAuthenticator : class, IAuthenticator
+    {
+        var exists = RegisteredKeys.Any(k => k == key);
+        if (!exists)
+            Add(key, serviceFactory);
+        return !exists;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Mcma.Client.Auth;
+﻿using Mcma.Client.Auth;
 using Mcma.Client.Resources;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,13 +38,13 @@ public class McmaClientBuilder
         return this;
     }
 
-    public McmaClientBuilder ConfigureDefaults(string servicesUrl = null, string servicesAuthType = null, string servicesAuthContext = null)
+    public McmaClientBuilder ConfigureDefaults(string serviceRegistryUrl = null, string serviceRegistryAuthType = null, string serviceRegistryAuthContext = null)
     {
-        servicesUrl ??= McmaResourceManagerEnvironmentVariables.ServicesUrl;
+        serviceRegistryUrl ??= McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl;
             
         Services.Configure<ResourceManagerProviderOptions>(
             opts =>
-                opts.DefaultOptions = new ResourceManagerOptions(servicesUrl, servicesAuthType, servicesAuthContext));
+                opts.DefaultOptions = new ResourceManagerOptions(serviceRegistryUrl, serviceRegistryAuthType, serviceRegistryAuthContext));
 
         return this;
     }

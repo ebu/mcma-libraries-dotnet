@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Mcma.Logging;
+﻿using Mcma.Logging;
 using Mcma.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,15 +26,15 @@ public class McmaObjectConverter : JsonConverter
     /// <param name="serializer">The json serializer</param>
     /// <returns>A <see cref="McmaExpandoObject"/></returns>
     /// <exception cref="McmaException">An wrapping exception thrown when deserialization fails, containing the original exception and the type that had a problem deserializing</exception>
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
-        Type serializedType = null;
+        Type? serializedType = null;
         try
         {
             var jObj = JObject.Load(reader);
 
             serializedType = McmaJson.GetSerializedType(jObj, objectType);
-            var dynamicObj = (IDictionary<string, object>)Activator.CreateInstance(serializedType);
+            var dynamicObj = (IDictionary<string, object?>)Activator.CreateInstance(serializedType);
                 
             if (dynamicObj is McmaObject mcmaObj && serializedType == typeof(McmaObject))
                 mcmaObj.Type = jObj[McmaJson.TypePropertyName]?.Value<string>();
@@ -60,16 +57,19 @@ public class McmaObjectConverter : JsonConverter
     /// <param name="writer">The writer used to write the json</param>
     /// <param name="value">The <see cref="McmaExpandoObject"/> to be written</param>
     /// <param name="serializer">The json serializer</param>
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         writer.WriteStartObject();
 
         writer.WritePropertyName(McmaJson.TypePropertyName);
-        writer.WriteValue(((McmaObject)value).Type);
+        writer.WriteValue((value as McmaObject)?.Type);
 
-        McmaJson.WriteProperties(writer, serializer, McmaJson.GetPropertyDictionary(value), false);
+        if (value != null)
+        {
+            McmaJson.WriteProperties(writer, serializer, McmaJson.GetPropertyDictionary(value), false);
 
-        McmaJson.WriteProperties(writer, serializer, (IDictionary<string, object>)value, false);
+            McmaJson.WriteProperties(writer, serializer, (IDictionary<string, object?>)value, false);
+        }
 
         writer.WriteEndObject();
     }

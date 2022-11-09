@@ -2,19 +2,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Client.Auth;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Client.Aws;
 
 public class Aws4Authenticator : IAuthenticator
 {
-    public Aws4Authenticator(Aws4AuthContext authContext)
+    public Aws4Authenticator(AuthenticatorKey key, IOptionsSnapshot<Aws4AuthOptions> authOptions)
     {
-        Signer =
-            new Aws4Signer(
-                authContext.AccessKey,
-                authContext.SecretKey,
-                authContext.Region,
-                authContext.SessionToken);
+        var opts = authOptions.Get(key.ToString());
+        
+        Signer = new Aws4Signer(opts.AccessKey, opts.SecretKey, opts.Region, opts.SessionToken);
     }
 
     private Aws4Signer Signer { get; }

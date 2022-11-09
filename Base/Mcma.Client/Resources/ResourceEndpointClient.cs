@@ -1,8 +1,3 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Mcma.Client.Auth;
 using Mcma.Client.Http;
 using Mcma.Model;
@@ -13,17 +8,16 @@ internal class ResourceEndpointClient : IResourceEndpointClient
 {
     internal ResourceEndpointClient(IAuthProvider authProvider,
                                     HttpClient httpClient,
+                                    Service service,
                                     ResourceEndpoint resourceEndpoint,
-                                    string serviceAuthType,
-                                    object serviceAuthContext,
                                     McmaTracker tracker)
     {
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        HttpEndpoint = resourceEndpoint?.HttpEndpoint ?? throw new ArgumentNullException(nameof(resourceEndpoint));
+        Service = service ?? throw new ArgumentNullException(nameof(service));
+        ResourceEndpoint = resourceEndpoint ?? throw new ArgumentNullException(nameof(resourceEndpoint));
 
-        AuthType = !string.IsNullOrWhiteSpace(resourceEndpoint.AuthType) ? resourceEndpoint.AuthType : serviceAuthType;
-        AuthContext = resourceEndpoint.AuthContext ?? serviceAuthContext;
+        AuthType = !string.IsNullOrWhiteSpace(resourceEndpoint.AuthType) ? resourceEndpoint.AuthType : service.AuthType;
         Tracker = tracker;
     }
 
@@ -32,23 +26,26 @@ internal class ResourceEndpointClient : IResourceEndpointClient
     private McmaTracker Tracker { get; }
 
     private IAuthProvider AuthProvider { get; }
+    
+    private Service Service { get; }
+
+    private ResourceEndpoint ResourceEndpoint { get; }
 
     private string AuthType { get; }
-
-    private object AuthContext { get; }
-
-    public string HttpEndpoint { get; }
         
     private McmaHttpClient McmaHttpClient { get; set; }
 
-    private async Task<McmaHttpClient> GetMcmaHttpClient()
+    public string HttpEndpoint => ResourceEndpoint.HttpEndpoint;
+
+    private McmaHttpClient GetMcmaHttpClient()
     {
         if (McmaHttpClient != null)
             return McmaHttpClient;
 
-        var authenticator = AuthProvider != null && !string.IsNullOrWhiteSpace(AuthType)
-                                ? await AuthProvider.GetAsync(AuthType, AuthContext)
-                                : null;
+        var authenticator =
+            AuthProvider != null && !string.IsNullOrWhiteSpace(AuthType)
+                ? AuthProvider.Get(AuthType, Service.Name, ResourceEndpoint.ResourceType)
+                : null;
 
         McmaHttpClient = new McmaHttpClient(HttpClient, authenticator, Tracker);
 
@@ -81,7 +78,7 @@ internal class ResourceEndpointClient : IResourceEndpointClient
                                                      params (string Key, string Value)[] queryParameters)
         where T : McmaObject
     {
-        var mcmaHttpClient = await GetMcmaHttpClient();
+        var mcmaHttpClient = GetMcmaHttpClient();
             
         url = GetFullUrl(url);
         if (queryParameters != null && queryParameters.Any())
@@ -90,9 +87,9 @@ internal class ResourceEndpointClient : IResourceEndpointClient
         return await mcmaHttpClient.GetAsync<QueryResults<T>>(url, cancellationToken: cancellationToken);
     }
 
-    private async Task ExecuteAsync(Func<McmaHttpClient, Task> executeAsync) => await executeAsync(await GetMcmaHttpClient());
+    private async Task ExecuteAsync(Func<McmaHttpClient, Task> executeAsync) => await executeAsync(GetMcmaHttpClient());
 
-    private async Task<T> ExecuteAsync<T>(Func<McmaHttpClient, Task<T>> executeAsync) => await executeAsync(await GetMcmaHttpClient());
+    private async Task<T> ExecuteAsync<T>(Func<McmaHttpClient, Task<T>> executeAsync) => await executeAsync(GetMcmaHttpClient());
 
     public Task PostAsync(object body, string url = null, CancellationToken cancellationToken = default)
         => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.PostAsync(GetFullUrl(url), body, cancellationToken));

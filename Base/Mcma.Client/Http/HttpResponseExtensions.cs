@@ -1,6 +1,3 @@
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Mcma.Serialization;
 using Newtonsoft.Json;
 
@@ -30,7 +27,7 @@ public static class HttpResponseExtensions
                 // in the case that the response body is json, try to parse it to a JToken so we can better format it in the exception
                 try
                 {
-                    errorBody = McmaJson.Parse(errorBody).ToString(Formatting.Indented);
+                    errorBody = McmaJson.Parse(errorBody)?.ToString(Formatting.Indented);
                 }
                 catch
                 {

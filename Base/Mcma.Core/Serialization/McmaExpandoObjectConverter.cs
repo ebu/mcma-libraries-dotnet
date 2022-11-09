@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Mcma.Model;
+﻿using Mcma.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -26,11 +24,11 @@ public class McmaExpandoObjectConverter : JsonConverter
     /// <param name="existingValue">The existing value (not used)</param>
     /// <param name="serializer">The json serializer</param>
     /// <returns>A <see cref="McmaExpandoObject"/></returns>
-    public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+    public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         var jObj = JObject.Load(reader);
 
-        IDictionary<string, object> expando = new McmaExpandoObject();
+        IDictionary<string, object?> expando = new McmaExpandoObject();
 
         foreach (var jsonProp in jObj.Properties())
             expando[jsonProp.Name] = McmaJson.ConvertJsonToClr(jsonProp.Value, serializer);
@@ -44,11 +42,12 @@ public class McmaExpandoObjectConverter : JsonConverter
     /// <param name="writer">The writer used to write the json</param>
     /// <param name="value">The <see cref="McmaExpandoObject"/> to be written</param>
     /// <param name="serializer">The json serializer</param>
-    public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
     {
         writer.WriteStartObject();
 
-        McmaJson.WriteProperties(writer, serializer, (IDictionary<string, object>)value, true);
+        if (value != null)
+            McmaJson.WriteProperties(writer, serializer, (IDictionary<string, object?>)value, true);
 
         writer.WriteEndObject();
     }

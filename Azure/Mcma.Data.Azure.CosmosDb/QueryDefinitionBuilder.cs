@@ -33,7 +33,7 @@ public class QueryDefinitionBuilder : IQueryDefinitionBuilder
 
         var filterClause =
             query.FilterExpression != null
-                ? AddFilterExpression(sqlQuery, query.FilterExpression)
+                ? AddFilterExpression<T>(sqlQuery, query.FilterExpression)
                 : null;
 
         if (partitionKeyClause != null && filterClause != null)
@@ -51,19 +51,19 @@ public class QueryDefinitionBuilder : IQueryDefinitionBuilder
                            (q, p) => q.WithParameter(p.Name, p.Value));
     }
 
-    private static string AddFilterExpression<T>(SqlQuery sqlQuery, IFilterExpression<T> filterExpression)
+    private static string AddFilterExpression<T>(SqlQuery sqlQuery, IFilterExpression filterExpression)
         => filterExpression switch
         {
-            FilterCriteriaGroup<T> filterCriteriaGroup => AddFilterCriteriaGroup(sqlQuery, filterCriteriaGroup),
+            FilterCriteriaGroup filterCriteriaGroup => AddFilterCriteriaGroup<T>(sqlQuery, filterCriteriaGroup),
             FilterCriteria<T> filterCriteria => AddFilterCriteria(sqlQuery, filterCriteria),
             _ => throw new McmaException($"Filter expression with type '{filterExpression.GetType().Name} is not supported.")
         };
 
-    private static string AddFilterCriteriaGroup<T>(SqlQuery sqlQuery, FilterCriteriaGroup<T> filterCriteriaGroup)
+    private static string AddFilterCriteriaGroup<T>(SqlQuery sqlQuery, FilterCriteriaGroup filterCriteriaGroup)
         =>
             "(" +
             string.Join($" {(filterCriteriaGroup.LogicalOperator == LogicalOperator.And ? "and" : "or")} ",
-                        filterCriteriaGroup.Children.Select(x => AddFilterExpression(sqlQuery, x))) +
+                        filterCriteriaGroup.Children.Select(x => AddFilterExpression<T>(sqlQuery, x))) +
             ")";
 
     private static string AddFilterCriteria<T>(SqlQuery sqlQuery, FilterCriteria<T> filterCriteria)

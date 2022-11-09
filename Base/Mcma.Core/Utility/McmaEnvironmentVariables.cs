@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Mcma.Utility;
+﻿namespace Mcma.Utility;
 
 /// <summary>
 /// Utility for accessing MCMA-specific environment variables
@@ -19,7 +17,7 @@ public static class McmaEnvironmentVariables
     /// <param name="required">Flag indicating if an exception should be thrown if the environment variable is not found. Defaults to true.</param>
     /// <returns>The value of the environment variable, if found</returns>
     /// <exception cref="McmaException">Thrown if <see cref="required"/> is true and no environment variable with the given key is found.</exception>
-    public static string Get(string key, bool required = true)
+    public static string? Get(string key, bool required = true)
     {
         var value = Environment.GetEnvironmentVariable(Prefix + key);
             

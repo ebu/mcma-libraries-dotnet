@@ -12,8 +12,8 @@ public class DynamoDbTableDescription
     {
         TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         KeyNames = new KeyNames(partitionKeyName, sortKeyName);
-        LocalSecondaryIndexes = localSecondaryIndexes ?? new LocalSecondaryIndexDescription[0];
-        GlobalSecondaryIndexes = globalSecondaryIndexes ?? new GlobalSecondaryIndexDescription[0];
+        LocalSecondaryIndexes = localSecondaryIndexes ?? Array.Empty<LocalSecondaryIndexDescription>();
+        GlobalSecondaryIndexes = globalSecondaryIndexes ?? Array.Empty<GlobalSecondaryIndexDescription>();
     }
         
     public string TableName { get; }

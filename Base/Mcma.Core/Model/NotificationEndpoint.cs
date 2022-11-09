@@ -8,5 +8,5 @@ public class NotificationEndpoint : McmaResource
     /// <summary>
     /// Gets or sets the HTTP url at which notifications are expected
     /// </summary>
-    public string HttpEndpoint { get; set; }
+    public string HttpEndpoint { get; set; } = string.Empty;
 }

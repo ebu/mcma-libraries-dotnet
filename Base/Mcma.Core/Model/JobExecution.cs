@@ -1,5 +1,3 @@
-using System;
-
 namespace Mcma.Model;
 
 /// <summary>
@@ -11,7 +9,7 @@ public class JobExecution : JobBase
     /// <summary>
     /// Gets or sets the job assignment ID, if any. If a job has not been assigned to a service for processing, this will not be set.
     /// </summary>
-    public string JobAssignmentId { get; set; }
+    public string? JobAssignmentId { get; set; }
         
     /// <summary>
     /// Gets or sets the date and time that processing of the job actually began (as opposed to when it was requested or scheduled)

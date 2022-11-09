@@ -8,5 +8,5 @@ public interface INotifiable
     /// <summary>
     /// Gets the notification endpoint to which notifications related to this resource should be sent
     /// </summary>
-    NotificationEndpoint NotificationEndpoint { get; }
+    NotificationEndpoint? NotificationEndpoint { get; }
 }

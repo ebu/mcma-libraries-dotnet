@@ -10,7 +10,7 @@ public class DynamoDbCustomQueryBuilderRegistry : ICustomQueryBuilderRegistry<Qu
 {
     public DynamoDbCustomQueryBuilderRegistry(IEnumerable<ICustomQueryBuilder> queryBuilders)
     {
-        QueryBuilders = queryBuilders?.ToArray() ?? new ICustomQueryBuilder[0];
+        QueryBuilders = queryBuilders?.ToArray() ?? Array.Empty<ICustomQueryBuilder>();
     }
 
     private ICustomQueryBuilder[] QueryBuilders { get; }

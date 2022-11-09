@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http;
 using Mcma.Client.Auth;
 using Mcma.Model;
 using Microsoft.Extensions.Options;
@@ -14,9 +12,9 @@ public class ResourceManagerProvider : IResourceManagerProvider
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
 
         if (options.Value?.DefaultOptions != null &&
-            (string.IsNullOrWhiteSpace(options.Value.DefaultOptions.ServicesUrl) ||
-             !Uri.IsWellFormedUriString(options.Value.DefaultOptions.ServicesUrl, UriKind.RelativeOrAbsolute)))
-            throw new McmaException($"Invalid services url in default resource manager options: {options.Value.DefaultOptions.ServicesUrl}");
+            (string.IsNullOrWhiteSpace(options.Value.DefaultOptions.ServiceRegistryUrl) ||
+             !Uri.IsWellFormedUriString(options.Value.DefaultOptions.ServiceRegistryUrl, UriKind.RelativeOrAbsolute)))
+            throw new McmaException($"Invalid services url in default resource manager options: {options.Value.DefaultOptions.ServiceRegistryUrl}");
 
         DefaultOptions = options.Value?.DefaultOptions;
     }

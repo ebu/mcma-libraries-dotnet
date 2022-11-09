@@ -8,22 +8,22 @@ namespace Mcma.Data.MongoDB;
 
 public class MongoDbFilterDefinitionBuilder : IMongoDbFilterDefinitionBuilder
 {   
-    public FilterDefinition<McmaResourceDocument> Build<T>(IFilterExpression<T> filterExpression)
-        => FromFilterExpression(filterExpression);
+    public FilterDefinition<McmaResourceDocument> Build<T>(IFilterExpression filterExpression)
+        => FromFilterExpression<T>(filterExpression);
         
-    private static FilterDefinition<McmaResourceDocument> FromFilterExpression<T>(IFilterExpression<T> filterExpression)
+    private static FilterDefinition<McmaResourceDocument> FromFilterExpression<T>(IFilterExpression filterExpression)
         => filterExpression switch
         {
-            FilterCriteriaGroup<T> filterCriteriaGroup => FromFilterCriteriaGroup(filterCriteriaGroup),
+            FilterCriteriaGroup filterCriteriaGroup => FromFilterCriteriaGroup<T>(filterCriteriaGroup),
             FilterCriteria<T> filterCriteria => FromFilterCriteria(filterCriteria),
             _ => throw new McmaException($"Filter expression with type '{filterExpression.GetType().Name} is not supported.")
         };
 
-    private static FilterDefinition<McmaResourceDocument> FromFilterCriteriaGroup<T>(FilterCriteriaGroup<T> filterCriteriaGroup)
+    private static FilterDefinition<McmaResourceDocument> FromFilterCriteriaGroup<T>(FilterCriteriaGroup filterCriteriaGroup)
     {
         FilterDefinition<McmaResourceDocument> groupDefinition = null;
             
-        foreach (var childDefinition in filterCriteriaGroup.Children.Select(FromFilterExpression))
+        foreach (var childDefinition in filterCriteriaGroup.Children.Select(FromFilterExpression<T>))
         {
             if (groupDefinition == null)
                 groupDefinition = childDefinition;

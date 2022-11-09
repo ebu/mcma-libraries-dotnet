@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
 using Mcma.Client.Auth;
 using Mcma.Client.Http;
 using Mcma.Logging;
@@ -23,7 +17,6 @@ internal class ResourceManager : IResourceManager
         Tracker = tracker;
 
         McmaHttpClient = new McmaHttpClient(HttpClient);
-        ServiceRegistryClient = new ServiceClient(AuthProvider, HttpClient, Options.ToServiceRegistryServiceData(), Tracker);
     }
 
     private IAuthProvider AuthProvider { get; }
@@ -36,23 +29,31 @@ internal class ResourceManager : IResourceManager
 
     private McmaHttpClient McmaHttpClient { get; }
 
-    private ServiceClient ServiceRegistryClient { get; }
+    private ServiceClient ServiceRegistryClient { get; set; }
 
     private List<ServiceClient> Services { get; } = new();
 
     public async Task InitAsync()
     {
         try
-        {
+        {   
             Services.Clear();
+            
+            var serviceRegistryClient = new ServiceClient(AuthProvider, HttpClient, Options.ToServiceRegistryServiceData(), Tracker);
 
-            Services.Add(ServiceRegistryClient);
+            Services.Add(serviceRegistryClient);
 
-            var servicesEndpoint = ServiceRegistryClient.GetResourceEndpointClient<Service>();
+            var servicesEndpoint = serviceRegistryClient.GetResourceEndpointClient<Service>();
                 
             var response = await servicesEndpoint.QueryAsync<Service>();
 
-            Services.AddRange(response.Results.Select(GetServiceClient));
+            foreach (var service in response.Results)
+            {
+                if (Services.Contains(serviceRegistryClient))
+                    Services.Remove(serviceRegistryClient);
+                
+                Services.Add(GetServiceClient(service));
+            }
         }
         catch (Exception error)
         {

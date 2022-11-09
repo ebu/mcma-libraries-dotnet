@@ -1,10 +1,4 @@
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Mcma.Utility;
 
@@ -25,7 +19,7 @@ public static class StringExtensions
     /// <param name="toJoin"></param>
     /// <param name="joinWith"></param>
     /// <returns></returns>
-    public static string Join(this IEnumerable<string> toJoin, string joinWith = null)
+    public static string Join(this IEnumerable<string>? toJoin, string? joinWith = null)
         => toJoin != null ? string.Join(joinWith ?? string.Empty, toJoin) : string.Empty;
 
     /// <summary>
@@ -79,7 +73,7 @@ public static class StringExtensions
     /// <typeparam name="T">The type to which to convert the text</typeparam>
     /// <param name="textValue">The text value to convert</param>
     /// <returns>The resulting converted value</returns>
-    public static T Parse<T>(this string textValue) => (T)textValue.Parse(typeof(T));
+    public static T? Parse<T>(this string textValue) => (T?)textValue.Parse(typeof(T));
 
     /// <summary>
     /// Tries to parse a text value to a value of a given type, using a default value if parsing fails
@@ -88,7 +82,7 @@ public static class StringExtensions
     /// <param name="textValue">The text value to parse</param>
     /// <param name="defaultValue">The default value to use if parsing fails</param>
     /// <returns>The parsed value if successful; otherwise, the provided default value</returns>
-    public static T TryParse<T>(this string textValue, T defaultValue) => textValue.TryParse(out T tmp) ? tmp : defaultValue;
+    public static T? TryParse<T>(this string textValue, T? defaultValue) => textValue.TryParse(out T? tmp) ? tmp : defaultValue;
         
 
     /// <summary>
@@ -98,13 +92,13 @@ public static class StringExtensions
     /// <param name="textValue">The text value to parse</param>
     /// <param name="obj">The resulting parsed object</param>
     /// <returns>True if parsed successfully; else, false</returns>
-    public static bool TryParse<T>(this string textValue, out T obj)
+    public static bool TryParse<T>(this string textValue, out T? obj)
     {
         // try to parse
         var parsed = textValue.TryParse(typeof(T), out var tmp);
 
         // set out value
-        obj = parsed ? (T)tmp : default(T);
+        obj = parsed ? (T?)tmp : default;
 
         // return parsed flag
         return parsed;
@@ -116,7 +110,7 @@ public static class StringExtensions
     /// <param name="textValue">The text value to convert</param>
     /// <param name="type">The type to which to convert the text</param>
     /// <returns>The resulting converted value</returns>
-    public static object Parse(this string textValue, Type type)
+    public static object? Parse(this string textValue, Type type)
     {
         // try to parse
         if (textValue.TryParse(type, out var obj))
@@ -133,7 +127,7 @@ public static class StringExtensions
     /// <param name="type">The type to which to parse</param>
     /// <param name="obj">The resulting parsed object</param>
     /// <returns>True if parsed successfully; else, false</returns>
-    public static bool TryParse(this string textValue, Type type, out object obj)
+    public static bool TryParse(this string textValue, Type type, out object? obj)
     {
         // strings always return true
         if (type == typeof(string))
@@ -379,7 +373,8 @@ public static class StringExtensions
 
     public static async Task<string> ReadStringFromStreamAsync(this Stream stream)
     {
-        using (var textReader = new StreamReader(stream))
-            return await textReader.ReadToEndAsync();
+        using var textReader = new StreamReader(stream);
+        
+        return await textReader.ReadToEndAsync();
     }
 }

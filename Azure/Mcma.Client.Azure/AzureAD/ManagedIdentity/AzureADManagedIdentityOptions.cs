@@ -1,6 +1,6 @@
 ﻿namespace Mcma.Client.Azure.AzureAD.ManagedIdentity;
 
-public class AzureManagedIdentityBearerTokenProviderOptions
+public class AzureADManagedIdentityOptions
 {
     public string ConnectionString { get; set; }
         

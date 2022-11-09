@@ -4,7 +4,7 @@ public class Query<T>
 {
     public string Path { get; set; }
         
-    public IFilterExpression<T> FilterExpression { get; set; }
+    public IFilterExpression FilterExpression { get; set; }
 
     public int? PageSize { get; set; }
         
@@ -14,11 +14,11 @@ public class Query<T>
 
     public bool SortAscending { get; set; } = true;
 
-    public Query<T> AddFilterExpression(IFilterExpression<T> filterExpression)
+    public Query<T> AddFilterExpression(IFilterExpression filterExpression)
     {
         FilterExpression =
             FilterExpression != null
-                ? new FilterCriteriaGroup<T> {Children = new[] {FilterExpression, filterExpression}, LogicalOperator = LogicalOperator.And}
+                ? new FilterCriteriaGroup {Children = new[] {FilterExpression, filterExpression}, LogicalOperator = LogicalOperator.And}
                 : filterExpression;
             
         return this;

@@ -1,10 +1,14 @@
-﻿using System;
+﻿namespace Mcma.Client.Auth;
 
-namespace Mcma.Client.Auth;
-
-internal interface IAuthenticatorFactoryRegistration
+internal class AuthenticatorRegistration
 {
-    string AuthType { get; }
-
-    Type FactoryType { get; }
+    public AuthenticatorRegistration(AuthenticatorKey key, IAuthenticator authenticator)
+    {
+        Key = key;
+        Authenticator = authenticator ?? throw new ArgumentNullException(nameof(authenticator));
+    }
+    
+    public AuthenticatorKey Key { get; }
+    
+    public IAuthenticator Authenticator { get; }
 }

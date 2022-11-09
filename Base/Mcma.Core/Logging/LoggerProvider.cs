@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Mcma.Model;
 using Microsoft.Extensions.Options;
 
@@ -25,7 +24,7 @@ public abstract class LoggerProvider<T> : ILoggerProvider where T : ILogger
     protected string Source { get; }
 
     /// <inheritdoc />
-    public ILogger Get(string requestId = null, McmaTracker tracker = null) => Get(Source, requestId, tracker);
+    public ILogger Get(string? requestId = null, McmaTracker? tracker = null) => Get(Source, requestId, tracker);
 
     /// <summary>
     /// Creates a <see cref="T"/> logger with the provided source, request ID, and tracker
@@ -34,7 +33,7 @@ public abstract class LoggerProvider<T> : ILoggerProvider where T : ILogger
     /// <param name="requestId">The ID of the current request, if any. This is generally a unique ID provided by the platform on which the code is running.</param>
     /// <param name="tracker">The tracker for the current MCMA operation, if any</param>
     /// <returns>A logger of type <see cref="T"/></returns>
-    protected abstract T Get(string source, string requestId, McmaTracker tracker);
+    protected abstract T Get(string source, string? requestId, McmaTracker? tracker);
 
     /// <summary>
     /// Allow derived classes to specify how to flush the logs, if supported; if not overridden, this just returns <see cref="Task.CompletedTask"/>

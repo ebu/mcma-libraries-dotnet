@@ -11,7 +11,7 @@ internal class DelegateMcmaWorkerOperation<T> : McmaWorkerOperation<T>
     {
         Name = name;
         ExecuteAsyncFunc = executeAsync;
-        AcceptsFunc = accepts ?? (req => true);
+        AcceptsFunc = accepts ?? (_ => true);
     }
 
     public override string Name { get; }

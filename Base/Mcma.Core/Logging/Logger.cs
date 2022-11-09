@@ -1,4 +1,3 @@
-using System;
 using Mcma.Model;
 
 namespace Mcma.Logging;
@@ -14,7 +13,7 @@ public abstract class Logger : ILogger
     /// <param name="source">The source from which the log messages are coming</param>
     /// <param name="requestId">The ID of the current request, if any. This is generally a unique ID provided by the platform on which the code is running.</param>
     /// <param name="tracker">The tracker for the current MCMA operation, if any</param>
-    protected Logger(string source, string requestId, McmaTracker tracker)
+    protected Logger(string source, string? requestId, McmaTracker? tracker)
     {
         Source = source;
         RequestId = requestId ?? Guid.NewGuid().ToString();
@@ -29,12 +28,12 @@ public abstract class Logger : ILogger
     /// <summary>
     /// Gets the ID of the current request, if any
     /// </summary>
-    protected string RequestId { get; }
+    protected string? RequestId { get; }
 
     /// <summary>
     /// Gets the tracker for the current MCMA operation, if any
     /// </summary>
-    protected McmaTracker Tracker { get; }
+    protected McmaTracker? Tracker { get; }
 
     /// <summary>
     /// Gets or sets a statically-available fallback logger. Defaults to using <see cref="ConsoleLogger"/>
@@ -49,7 +48,7 @@ public abstract class Logger : ILogger
     /// <param name="message"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    protected LogEvent BuildLogEvent(int level, string type, string message, object[] args)
+    protected LogEvent BuildLogEvent(int level, string type, string? message, object[] args)
         => new(type, level, Source, RequestId, DateTimeOffset.UtcNow, message, args, Tracker);
 
     /// <summary>
@@ -58,7 +57,7 @@ public abstract class Logger : ILogger
     /// <param name="logEvent"></param>
     protected abstract void WriteLogEvent(LogEvent logEvent);
         
-    private void Log(int level, string type, string message, params object[] args)
+    private void Log(int level, string type, string? message, params object[] args)
         => WriteLogEvent(BuildLogEvent(level, type, message, args));
 
     /// <inheritdoc />

@@ -6,7 +6,7 @@ using Mcma.Utility;
 
 namespace Mcma.Data.DocumentDatabase.Queries;
 
-public class FilterCriteria<TDoc> : IFilterExpression<TDoc>
+public class FilterCriteria<TDoc> : IFilterExpression
 {
     public FilterCriteria(string propertyName, BinaryOperator @operator, object propertyValue)
     {

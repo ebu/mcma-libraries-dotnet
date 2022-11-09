@@ -1,26 +1,38 @@
 ﻿using System;
 using Mcma.Client.Auth;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Client.Aws;
 
 public static class AwsAuthenticatorRegistryExtensions
 {
     public static AuthenticatorRegistry AddAws4Auth(this AuthenticatorRegistry authenticatorRegistry,
-                                                    Action<Aws4AuthenticatorFactoryOptions> configureOptions = null)
+                                                    Action<Aws4AuthOptions> configureOptions = null,
+                                                    string serviceName = "",
+                                                    string resourceType = "")
     {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
+        var key = new AuthenticatorKey(AwsConstants.Aws4, serviceName, resourceType);
+
+        authenticatorRegistry.Services.Configure(key.ToString(), configureOptions ?? (_ => { }));
             
-        return authenticatorRegistry.Add<Aws4AuthContext, Aws4AuthenticatorFactory>(AwsConstants.Aws4);   
+        return authenticatorRegistry.Add(
+            key,
+            svcProvider => new Aws4Authenticator(key, svcProvider.GetRequiredService<IOptionsSnapshot<Aws4AuthOptions>>()));
     }
-        
-    public static AuthenticatorRegistry TryAddAws4Auth(this AuthenticatorRegistry authenticatorRegistry,
-                                                       Action<Aws4AuthenticatorFactoryOptions> configureOptions = null)
+
+    public static bool TryAddAws4Auth(this AuthenticatorRegistry authenticatorRegistry,
+                                      Action<Aws4AuthOptions> configureOptions = null,
+                                      string serviceName = "",
+                                      string resourceType = "")
     {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
-            
-        return authenticatorRegistry.TryAdd<Aws4AuthContext, Aws4AuthenticatorFactory>(AwsConstants.Aws4);   
+        var key = new AuthenticatorKey(AwsConstants.Aws4, serviceName, resourceType);
+
+        if (!authenticatorRegistry.TryAdd<Aws4Authenticator>(key))
+            return false;
+
+        authenticatorRegistry.Services.Configure(key.ToString(), configureOptions ?? (_ => { }));
+
+        return true;
     }
 }

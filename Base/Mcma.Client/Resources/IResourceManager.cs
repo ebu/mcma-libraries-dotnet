@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Mcma.Model;
+﻿using Mcma.Model;
 
 namespace Mcma.Client.Resources;
 

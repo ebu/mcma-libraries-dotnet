@@ -1,4 +1,3 @@
-using System;
 using Mcma.Model;
 using Mcma.Serialization;
 using Newtonsoft.Json.Linq;
@@ -25,11 +24,11 @@ public class LogEvent
         string type,
         int level,
         string source,
-        string requestId,
+        string? requestId,
         DateTimeOffset timestamp, 
-        string message,
-        object[] args,
-        McmaTracker tracker = null)
+        string? message,
+        object[]? args,
+        McmaTracker? tracker = null)
     {
         if (level <= 0) throw new ArgumentOutOfRangeException(nameof(level));
         Type = type ?? throw new ArgumentNullException(nameof(type));
@@ -60,7 +59,7 @@ public class LogEvent
     /// <summary>
     /// Get the ID of the request being processed that generated this log event, if any
     /// </summary>
-    public string RequestId { get; }
+    public string? RequestId { get; }
         
     /// <summary>
     /// Gets the date and time at which the log event occurred
@@ -70,17 +69,17 @@ public class LogEvent
     /// <summary>
     /// Gets the message to be logged
     /// </summary>
-    public string Message { get; }
+    public string? Message { get; }
         
     /// <summary>
     /// Gets the args associated with the event
     /// </summary>
-    public object[] Args { get; }
+    public object[]? Args { get; }
         
     /// <summary>
     /// Gets the tracker for the MCMA operation that generated this event, if any
     /// </summary>
-    public McmaTracker Tracker { get; }
+    public McmaTracker? Tracker { get; }
 
     /// <summary>
     /// Flattens the log event by creating a simple key-value pair json object 
@@ -93,22 +92,24 @@ public class LogEvent
         var trackerProperty = json.Property(nameof(Tracker), StringComparison.OrdinalIgnoreCase);
         trackerProperty?.Remove();
 
-        if (Tracker != null)
+        if (Tracker == null)
+            return json;
+        
+        json["trackerId"] = Tracker.Id;
+        json["trackerLabel"] = Tracker.Label;
+
+        if (Tracker.Custom == null)
+            return json;
+        
+        foreach (var customProperty in Tracker.Custom)
         {
-            json["trackerId"] = Tracker.Id;
-            json["trackerLabel"] = Tracker.Label;
+            var customPropertyKey =
+                nameof(Tracker.Id).Equals(customProperty.Key, StringComparison.OrdinalIgnoreCase) || 
+                nameof(Tracker.Label).Equals(customProperty.Key, StringComparison.OrdinalIgnoreCase)
+                    ? $"trackerCustom{customProperty.Key}"
+                    : $"tracker{customProperty.Key}";
 
-            if (Tracker.Custom != null)
-                foreach (var customProperty in Tracker.Custom)
-                {
-                    var customPropertyKey =
-                        nameof(Tracker.Id).Equals(customProperty.Key, StringComparison.OrdinalIgnoreCase) || 
-                        nameof(Tracker.Label).Equals(customProperty.Key, StringComparison.OrdinalIgnoreCase)
-                            ? $"trackerCustom{customProperty.Key}"
-                            : $"tracker{customProperty.Key}";
-
-                    json[customPropertyKey] = customProperty.Value;
-                }
+            json[customPropertyKey] = customProperty.Value;
         }
 
         return json;

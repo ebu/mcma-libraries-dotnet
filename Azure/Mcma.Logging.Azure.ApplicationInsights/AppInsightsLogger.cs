@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Mcma.Logging.Azure.ApplicationInsights;
 
-public class AppInsightsLogger : Logging.Logger
+public class AppInsightsLogger : Logger
 {
     public AppInsightsLogger(TelemetryClient telemetryClient, string source, string requestId = null, McmaTracker tracker = null)
         : base (source, requestId, tracker)

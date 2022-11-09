@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Mcma.Model;
 
 namespace Mcma.Logging;
@@ -14,7 +13,7 @@ public interface ILoggerProvider
     /// <param name="requestId">The ID of the current request, if any. This is generally a unique ID provided by the platform on which the code is running.</param>
     /// <param name="tracker">The tracker for the current MCMA operation, if any</param>
     /// <returns>An <see cref="ILogger"/> for the current request and tracker</returns>
-    ILogger Get(string requestId = null, McmaTracker tracker = null);
+    ILogger Get(string? requestId = null, McmaTracker? tracker = null);
 
     /// <summary>
     /// Flushes any buffering of logs that might be done on the client side. This may or may not be necessary for all loggers.

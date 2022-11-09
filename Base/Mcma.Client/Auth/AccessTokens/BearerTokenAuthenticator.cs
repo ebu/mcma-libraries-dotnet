@@ -1,22 +1,15 @@
-using System;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Mcma.Client.Auth.AccessTokens;
 
-internal class BearerTokenAuthenticator<TAuthContext> : IAuthenticator
+internal class BearerTokenAuthenticator : IAuthenticator
 {
-    public BearerTokenAuthenticator(IBearerTokenProvider<TAuthContext> bearerTokenProvider, TAuthContext authContext)
+    public BearerTokenAuthenticator(IBearerTokenProvider bearerTokenProvider)
     {
         BearerTokenProvider = bearerTokenProvider ?? throw new ArgumentNullException(nameof(bearerTokenProvider));
-        AuthContext = authContext;
     }
 
-    private IBearerTokenProvider<TAuthContext> BearerTokenProvider { get; }
-
-    private TAuthContext AuthContext { get; }
+    private IBearerTokenProvider BearerTokenProvider { get; }
 
     private BearerToken BearerToken { get; set; }
 
@@ -25,8 +18,7 @@ internal class BearerTokenAuthenticator<TAuthContext> : IAuthenticator
         if (BearerToken?.ExpiresOn != null && BearerToken.ExpiresOn >= DateTimeOffset.UtcNow)
             BearerToken = null;
 
-        if (BearerToken == null)
-            BearerToken = await BearerTokenProvider.GetAsync(AuthContext, cancellationToken);
+        BearerToken ??= await BearerTokenProvider.GetAsync(request, cancellationToken);
 
         if (BearerToken != null)
             request.Headers.Authorization = AuthenticationHeaderValue.Parse($"Bearer {BearerToken.Token}");

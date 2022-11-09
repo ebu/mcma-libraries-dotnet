@@ -10,7 +10,7 @@ public class FirestoreCustomQueryBuilderRegistry : ICustomQueryBuilderRegistry<(
 {
     public FirestoreCustomQueryBuilderRegistry(IEnumerable<ICustomQueryBuilder> queryBuilders)
     {
-        QueryBuilders = queryBuilders?.ToArray() ?? new ICustomQueryBuilder[0];
+        QueryBuilders = queryBuilders?.ToArray() ?? Array.Empty<ICustomQueryBuilder>();
     }
 
     private ICustomQueryBuilder[] QueryBuilders { get; }

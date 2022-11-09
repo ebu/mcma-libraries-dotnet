@@ -1,28 +1,37 @@
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Mcma.Client.Auth;
 using Mcma.Client.Auth.AccessTokens;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Client;
 
 namespace Mcma.Client.Azure.AzureAD.ConfidentialClient;
 
-public class AzureADConfidentialClientBearerTokenProvider : IBearerTokenProvider<AzureADAuthContext>
+public class AzureADConfidentialClientBearerTokenProvider : IBearerTokenProvider
 {
-    public AzureADConfidentialClientBearerTokenProvider(IOptions<ConfidentialClientApplicationOptions> options)
+    public AzureADConfidentialClientBearerTokenProvider(
+        AuthenticatorKey key,
+        IOptionsSnapshot<AzureADConfidentialClientApplicationOptions> optionsSnapshot)
     {
-        if (options.Value == null)
-            throw new McmaException("No Azure AD public client options provided.");
-            
-        Client = ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(options.Value).Build();
+        var options = optionsSnapshot.Get(key.ToString()); 
+        
+        Client = ConfidentialClientApplicationBuilder.CreateWithApplicationOptions(options).Build();
+        Scopes = options.Scopes;
     }
+    
     private IConfidentialClientApplication Client { get; }
+    
+    private string[] Scopes { get; }
 
-    public async Task<BearerToken> GetAsync(AzureADAuthContext authContext, CancellationToken cancellationToken = default)
+    public async Task<BearerToken> GetAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
-        authContext.ValidateScope();
-
-        var authResult = await Client.AcquireTokenForClient(new[] {authContext.Scope }).ExecuteAsync(cancellationToken);
+        var authResult = await Client.AcquireTokenForClient(Scopes).ExecuteAsync(cancellationToken);
             
-        return authResult.ToBearerToken();
+        return new BearerToken
+        {
+            Token = authResult.AccessToken,
+            ExpiresOn = authResult.ExpiresOn
+        };
     }
 }

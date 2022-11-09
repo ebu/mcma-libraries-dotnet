@@ -5,5 +5,5 @@ namespace Mcma.Data.MongoDB;
 
 public interface IMongoDbFilterDefinitionBuilder
 {
-    FilterDefinition<McmaResourceDocument> Build<T>(IFilterExpression<T> filterExpression);
+    FilterDefinition<McmaResourceDocument> Build<T>(IFilterExpression filterExpression);
 }

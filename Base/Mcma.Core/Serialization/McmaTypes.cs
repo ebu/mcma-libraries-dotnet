@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Mcma.Logging;
 using Mcma.Model;
 
@@ -56,19 +54,13 @@ public static class McmaTypes
     /// </summary>
     /// <param name="typeString">The name of the type to find. Must be an unqualified name (<see cref="Type.Name"/>), as would be found in the @type json property</param>
     /// <returns>The type with the given name, if any</returns>
-    public static Type FindType(string typeString)
+    public static Type? FindType(string? typeString)
     {
         if (typeString == null)
             return null;
 
-        // check for match in explicitly-provided type collection
-        var objectType = Types.FirstOrDefault(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase));
-        if (objectType == null)
-        {
-            // check for match in core types
-            objectType = Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeString) ?? typeString);
-        }
-
-        return objectType;
+        // check for match in explicitly-provided type collection, then check for match in core types
+        return Types.FirstOrDefault(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase))
+               ?? Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeString) ?? typeString);
     }
 }

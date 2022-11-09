@@ -18,5 +18,5 @@ public class McmaObject : McmaExpandoObject
     /// </summary>
     /// <remarks>This maps to the "@type" property in JSON. When creating a new object, it will be set automatically to the type of the object.</remarks>
     [JsonProperty(McmaJson.TypePropertyName)]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 }

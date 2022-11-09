@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Mcma.Model;
 using Mcma.Utility;
 using Newtonsoft.Json;
@@ -56,7 +51,7 @@ public static class McmaJson
 
     private static JsonSerializer PreserveCasingSerializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(true));
 
-    public static JToken Parse(string json) => JsonConvert.DeserializeObject<JToken>(json, DefaultSettings());
+    public static JToken? Parse(string json) => JsonConvert.DeserializeObject<JToken>(json, DefaultSettings());
 
     /// <summary>
     /// Gets the type of serialized object from a <see cref="JObject"/> by looking for a "@type" property and resolving it
@@ -64,7 +59,7 @@ public static class McmaJson
     /// <param name="jObj">The json object to inspect</param>
     /// <param name="objectType">The expected object type to fall back to, if any</param>
     /// <returns>The type of the serialized object</returns>
-    public static Type GetSerializedType(JObject jObj, Type objectType = null)
+    public static Type GetSerializedType(JObject? jObj, Type? objectType = null)
     {
         var typeProperty = jObj?.Property(TypePropertyName);
             
@@ -86,7 +81,7 @@ public static class McmaJson
     /// <param name="json">The json to convert</param>
     /// <typeparam name="T">The type of object to convert to</typeparam>
     /// <returns>The resulting <see cref="T"/> object</returns>
-    public static T ToMcmaObject<T>(this JToken json) => json.ToObject<T>(Serializer);
+    public static T? ToMcmaObject<T>(this JToken json) => json.ToObject<T>(Serializer);
 
     /// <summary>
     /// Converts json represented as a <see cref="JToken"/> into an object using MCMA deserialization
@@ -94,7 +89,7 @@ public static class McmaJson
     /// <param name="json">The json to convert</param>
     /// <param name="type">The type of object to convert to. If not provided, it will be derived used the "@type" property if available.</param>
     /// <returns>The resulting object</returns>
-    public static object ToMcmaObject(this JToken json, Type type) => json.ToObject(type, Serializer);
+    public static object? ToMcmaObject(this JToken json, Type type) => json.ToObject(type, Serializer);
 
     /// <summary>
     /// Converts an object to a <see cref="JToken"/> using MCMA serialization
@@ -119,8 +114,8 @@ public static class McmaJson
     /// </summary>
     /// <param name="jObj"></param>
     /// <returns></returns>
-    public static IEnumerable<KeyValuePair<string, object>> ToKeyValuePairs(this JObject jObj)
-        => jObj.Select<KeyValuePair<string, JToken>, KeyValuePair<string, object>>(x => new KeyValuePair<string, object>(x.Key, ToKeyValuePairValue(x.Value)));
+    public static IEnumerable<KeyValuePair<string, object?>> ToKeyValuePairs(this JObject jObj)
+        => jObj.Select<KeyValuePair<string, JToken?>, KeyValuePair<string, object?>>(x => new KeyValuePair<string, object?>(x.Key, ToKeyValuePairValue(x.Value)));
 
     /// <summary>
     /// Helper method for reading JSON from a stream
@@ -137,10 +132,10 @@ public static class McmaJson
     internal static bool IsMcmaObject(JObject jObj)
         => jObj.Properties().Any(p => p.Name.Equals(TypePropertyName, StringComparison.OrdinalIgnoreCase));
 
-    internal static object CreateMcmaObject(JObject jObj, JsonSerializer serializer)
+    internal static object? CreateMcmaObject(JObject jObj, JsonSerializer serializer)
         => jObj.ToObject(GetSerializedType(jObj), serializer);
 
-    internal static object ConvertJsonToClr(JToken token, JsonSerializer serializer)
+    internal static object? ConvertJsonToClr(JToken token, JsonSerializer serializer)
     {
         switch (token.Type)
         {
@@ -169,24 +164,33 @@ public static class McmaJson
             case JTokenType.Object:
                 var jObj = (JObject)token;
                 return IsMcmaObject(jObj) ? CreateMcmaObject(jObj, serializer) : jObj.ToObject<McmaExpandoObject>(serializer);
+            case JTokenType.None:
+            case JTokenType.Constructor:
+            case JTokenType.Property:
+            case JTokenType.Comment:
+            case JTokenType.Raw:
             default:
                 return token;
         }
     }
 
-    internal static IDictionary<string, object> GetPropertyDictionary(object value)
-        => value.GetType().GetProperties()
+    internal static IDictionary<string, object?>? GetPropertyDictionary(object? value)
+        => value?.GetType().GetProperties()
                 .Where(p => p.Name != nameof(McmaObject.Type) && p.CanRead && p.GetIndexParameters().Length == 0)
-                .ToDictionary(GetJsonPropertyName, p => p.GetValue(value));
+                .ToDictionary<PropertyInfo, string, object?>(GetJsonPropertyName, p => p.GetValue(value));
 
     internal static string GetJsonPropertyName(PropertyInfo propertyInfo)
     {
         var jsonPropertyAttribute = propertyInfo.GetCustomAttribute<JsonPropertyAttribute>();
-        return jsonPropertyAttribute != null ? jsonPropertyAttribute.PropertyName : propertyInfo.Name;
+        
+        return jsonPropertyAttribute?.PropertyName ?? propertyInfo.Name;
     }
 
-    internal static void WriteProperties(JsonWriter writer, JsonSerializer serializer, IDictionary<string, object> properties, bool preserveCasing)
+    internal static void WriteProperties(JsonWriter writer, JsonSerializer serializer, IDictionary<string, object?>? properties, bool preserveCasing)
     {
+        if (properties == null)
+            return;
+        
         foreach (var keyValuePair in properties)
         {
             if (keyValuePair.Value == null && serializer.NullValueHandling == NullValueHandling.Ignore)
@@ -197,12 +201,12 @@ public static class McmaJson
         }
     }
         
-    private static object ToKeyValuePairValue(JToken token)
+    private static object? ToKeyValuePairValue(JToken? token)
         => token switch
         {
             JObject jObj => jObj.ToKeyValuePairs(),
             JArray jArr => jArr.Select(ToKeyValuePairValue),
             JValue jVal => jVal.Value,
-            _ => token.ToString()
+            _ => token?.ToString()
         };
 }

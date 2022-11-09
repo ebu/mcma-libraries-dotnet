@@ -3,7 +3,7 @@ using Mcma.Model;
 
 namespace Mcma.Logging.Google.CloudLogging;
 
-public class CloudLoggingLogger : Logging.Logger
+public class CloudLoggingLogger : Logger
 {
     public CloudLoggingLogger(CloudLoggingLoggerProvider loggerProvider, string source, string requestId, McmaTracker tracker)
         : base(source, requestId, tracker)
@@ -13,7 +13,5 @@ public class CloudLoggingLogger : Logging.Logger
         
     private CloudLoggingLoggerProvider LoggerProvider { get; }
         
-    protected override void WriteLogEvent(LogEvent logEvent)
-    {
-    }
+    protected override void WriteLogEvent(LogEvent logEvent) => LoggerProvider.AddLogEvent(logEvent);
 }

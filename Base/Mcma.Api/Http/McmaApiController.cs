@@ -24,9 +24,9 @@ public class McmaApiController : IMcmaApiController
 
         Routes =
             new McmaApiRouteCollection(
-                (routeCollections ?? new IMcmaApiRouteCollection[0])
+                (routeCollections ?? Array.Empty<IMcmaApiRouteCollection>())
                 .SelectMany(rc => rc)
-                .Concat(routes ?? new IMcmaApiRoute[0]));
+                .Concat(routes ?? Array.Empty<IMcmaApiRoute>()));
     }
 
     private ILoggerProvider LoggerProvider { get; }
@@ -71,24 +71,24 @@ public class McmaApiController : IMcmaApiController
 
             foreach (var route in Routes)
             {
-                if (route.IsMatch(request.Path, out var pathVariables))
-                {
-                    pathMatched = true;
+                if (!route.IsMatch(request.Path, out var pathVariables))
+                    continue;
+                
+                pathMatched = true;
 
-                    if (methodsAllowed.Length > 0)
-                        methodsAllowed += ", ";
-                    methodsAllowed += request.HttpMethod;
+                if (methodsAllowed.Length > 0)
+                    methodsAllowed += ", ";
+                methodsAllowed += request.HttpMethod;
 
-                    if (route.HttpMethod == request.HttpMethod)
-                    {
-                        methodMatched = true;
+                if (route.HttpMethod != request.HttpMethod)
+                    continue;
+                
+                methodMatched = true;
 
-                        request.PathVariables = pathVariables;
+                request.PathVariables = pathVariables;
                             
-                        await route.HandleAsync(requestContext);
-                        break;
-                    }
-                }
+                await route.HandleAsync(requestContext);
+                break;
             }
 
             if (!pathMatched)
@@ -116,10 +116,15 @@ public class McmaApiController : IMcmaApiController
 
                     foreach (var prop in request.Headers.Keys)
                     {
-                        if (prop.ToLower() == "access-control-request-method")
-                            corsMethod = request.Headers[prop];
-                        if (prop.ToLower() == "access-control-request-headers")
-                            corsHeaders = request.Headers[prop];
+                        switch (prop.ToLower())
+                        {
+                            case "access-control-request-method":
+                                corsMethod = request.Headers[prop];
+                                break;
+                            case "access-control-request-headers":
+                                corsHeaders = request.Headers[prop];
+                                break;
+                        }
                     }
 
                     if (corsMethod != null)
