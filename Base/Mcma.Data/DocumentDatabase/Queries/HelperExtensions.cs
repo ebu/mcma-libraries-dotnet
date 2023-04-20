@@ -48,26 +48,26 @@ public static class HelperExtensions
 
         var lambdaBody =
             query.FilterExpression != null
-                ? Expression.And(pathEqualsExpr, query.FilterExpression.ToExpression<T>())
+                ? Expression.And(pathEqualsExpr, query.FilterExpression.ToExpression<T>(parameter))
                 : pathEqualsExpr;
 
         return Expression.Lambda<Func<T, bool>>(lambdaBody, parameter);
     }
 
-    private static Expression ToExpression<T>(this IFilterExpression filterExpression)
+    private static Expression ToExpression<T>(this IFilterExpression filterExpression, Expression parameter)
         =>
             filterExpression switch
             {
-                FilterCriteriaGroup criteriaGroup => criteriaGroup.ToExpression<T>(),
-                FilterCriteria<T> criteria => criteria.ToExpression<T>(),
+                FilterCriteriaGroup criteriaGroup => criteriaGroup.ToExpression<T>(parameter),
+                FilterCriteria<T> criteria => criteria.ToExpression(parameter),
                 _ => throw new ArgumentException($"Unsupported filter expression type {filterExpression?.GetType()}")
             };
 
-    private static Expression ToExpression<T>(this FilterCriteriaGroup filterCriteriaGroup)
+    private static Expression ToExpression<T>(this FilterCriteriaGroup filterCriteriaGroup, Expression parameter)
     {
         Expression groupExpr = null;
             
-        foreach (var childExpression in filterCriteriaGroup.Children.Select(c => c.ToExpression<T>()))
+        foreach (var childExpression in filterCriteriaGroup.Children.Select(c => c.ToExpression<T>(parameter)))
         {
             if (groupExpr == null)
                 groupExpr = childExpression;
@@ -97,7 +97,7 @@ public static class HelperExtensions
             var op when op == BinaryOperator.GreaterThanOrEqualTo => Expression.GreaterThanOrEqual(propertyExpr, valueExpr),
             var op when op == BinaryOperator.LessThan => Expression.LessThan(propertyExpr, valueExpr),
             var op when op == BinaryOperator.LessThanOrEqualTo => Expression.LessThanOrEqual(propertyExpr, valueExpr),
-            _ => throw new ArgumentOutOfRangeException(nameof(filterCriteria), $"Invalid binary operator '{filterCriteria.Operator}'")
+            _   => throw new ArgumentOutOfRangeException(nameof(filterCriteria), $"Invalid binary operator '{filterCriteria.Operator}'")
         };
     }
 }

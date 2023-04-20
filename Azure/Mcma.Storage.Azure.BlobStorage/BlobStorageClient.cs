@@ -23,8 +23,6 @@ internal class BlobStorageClient : IBlobStorageClient
         
     private BlobServiceClient ServiceClient { get; }
 
-    private string GetUrl(string bucket, string objectPath) => $"{Options.AccountUri.ToString().TrimEnd('/')}/{bucket}/{objectPath.TrimStart('/')}";
-
     private BlobClient GetBlobClient(BlobStorageParsedUrl parsedUrl) =>
         ServiceClient.GetBlobContainerClient(parsedUrl.Container).GetBlobClient(parsedUrl.Path);
 

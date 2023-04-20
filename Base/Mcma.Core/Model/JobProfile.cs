@@ -1,5 +1,3 @@
-using Newtonsoft.Json.Linq;
-
 namespace Mcma.Model;
 
 /// <summary>
@@ -25,10 +23,5 @@ public class JobProfile : McmaResource
     /// <summary>
     /// Gets or sets a collection of optional input parameters for the profile. The caller may or may not provide these, depending on their needs.
     /// </summary>
-    public ICollection<JobParameter> OptionalInputParameters { get; set; } = new List<JobParameter>();
-        
-    /// <summary>
-    /// Gets or sets a collection of custom properties for the profile
-    /// </summary>
-    public JObject? CustomProperties { get; set; }
+    public ICollection<JobParameter>? OptionalInputParameters { get; set; }
 }

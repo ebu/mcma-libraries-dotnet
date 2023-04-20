@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.3</PackageVersion>
+    <PackageVersion>0.14.4</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
   </PropertyGroup>
@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.CloudWatchLogs" Version="3.7.2.90" />
+    <PackageReference Include="AWSSDK.CloudWatchLogs" Version="3.7.104.57" />
   </ItemGroup>
 
 </Project>

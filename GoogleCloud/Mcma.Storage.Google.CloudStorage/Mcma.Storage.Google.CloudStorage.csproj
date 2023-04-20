@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <LangVersion>Latest</LangVersion>
-        <PackageVersion>0.14.3</PackageVersion>
+        <PackageVersion>0.14.4</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
+        <ProjectReference Include="..\..\Base\Mcma.Storage\Mcma.Storage.csproj" />
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Google.Cloud.Storage.V1" Version="3.7.0" />
+        <PackageReference Include="Google.Cloud.Storage.V1" Version="4.4.0" />
     </ItemGroup>
 
 </Project>

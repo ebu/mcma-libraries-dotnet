@@ -15,7 +15,7 @@ public abstract class LoggerProvider<T> : ILoggerProvider where T : ILogger
     /// <param name="options">Options that specify the logger's source</param>
     protected LoggerProvider(IOptions<LoggerProviderOptions> options)
     {
-        Source = options.Value?.Source ?? throw new McmaException("Source not configured for logger provider.");
+        Source = options.Value.Source ?? throw new McmaException("Source not configured for logger provider.");
     }
 
     /// <summary>

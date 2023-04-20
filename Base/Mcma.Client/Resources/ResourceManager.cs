@@ -29,8 +29,6 @@ internal class ResourceManager : IResourceManager
 
     private McmaHttpClient McmaHttpClient { get; }
 
-    private ServiceClient ServiceRegistryClient { get; set; }
-
     private List<ServiceClient> Services { get; } = new();
 
     public async Task InitAsync()

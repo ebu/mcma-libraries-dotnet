@@ -43,7 +43,7 @@ public class McmaExpandoObject : IDictionary<string, object?>, IDynamicMetaObjec
     {
         var dict = GetPropertyDictionary(caseSensitive);
         
-        return dict.ContainsKey(key) ? (T?)dict[key] : default;
+        return dict.TryGetValue(key, out var value) ? (T?)value : default;
     }
 
     /// <summary>

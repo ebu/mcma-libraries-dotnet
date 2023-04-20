@@ -1,5 +1,4 @@
-﻿using System;
-using Mcma.Client.Auth;
+﻿using Mcma.Client.Auth;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

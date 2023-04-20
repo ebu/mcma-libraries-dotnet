@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Linq;
+
 namespace Mcma.Model;
 
 /// <summary>
@@ -19,5 +21,5 @@ public class McmaTracker : McmaObject
     /// <summary>
     /// Gets or sets any custom properties that might also be useful for tracking purposes
     /// </summary>
-    public IDictionary<string, string>? Custom { get; set; }
+    public JObject? Custom { get; set; }
 }

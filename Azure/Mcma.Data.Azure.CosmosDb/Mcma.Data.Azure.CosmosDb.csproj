@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.3</PackageVersion>
+    <PackageVersion>0.14.4</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
   </PropertyGroup>
@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.30.0" />
-    <PackageReference Include="Microsoft.Azure.Cosmos.Direct" Version="3.29.1" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.32.3" />
+    <PackageReference Include="Microsoft.Azure.Cosmos.Direct" Version="3.30.20" />
   </ItemGroup>
 
 </Project>

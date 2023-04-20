@@ -4,26 +4,31 @@ namespace Mcma.Data.DocumentDatabase.Queries;
 
 public class BinaryOperator
 {
-    public static readonly BinaryOperator EqualTo = new("=", false);
-    public static readonly BinaryOperator NotEqualTo = new("!=", false);
-    public static readonly BinaryOperator LessThan = new("<", false);
-    public static readonly BinaryOperator LessThanOrEqualTo = new("<=", false);
-    public static readonly BinaryOperator GreaterThan = new(">", false);
-    public static readonly BinaryOperator GreaterThanOrEqualTo = new(">=", false);
+    public static readonly BinaryOperator EqualTo              = new("=");
+    public static readonly BinaryOperator NotEqualTo           = new("!=");
+    public static readonly BinaryOperator LessThan             = new("<");
+    public static readonly BinaryOperator LessThanOrEqualTo    = new("<=");
+    public static readonly BinaryOperator GreaterThan          = new(">");
+    public static readonly BinaryOperator GreaterThanOrEqualTo = new(">=");
         
     public static readonly string[] Operators = { EqualTo, NotEqualTo, LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo };
 
-    private BinaryOperator(string @operator, bool validate = true)
+    private BinaryOperator(string @operator)
     {
-        if (validate && Operators.All(op => op != @operator))
-            throw new McmaException($"Invalid operator '{@operator}'");
-
         Operator = @operator;
     }
 
     private string Operator { get; }
 
-    public static implicit operator BinaryOperator(string @operator) => new(@operator);
+    private static BinaryOperator CreateWithValidation(string @operator)
+    {
+        if (Operators.All(op => op != @operator))
+            throw new McmaException($"Invalid operator '{@operator}'");
+
+        return new BinaryOperator(@operator);
+    }
+
+    public static implicit operator BinaryOperator(string @operator) => CreateWithValidation(@operator);
 
     public static implicit operator string(BinaryOperator @operator) => @operator.Operator;
 

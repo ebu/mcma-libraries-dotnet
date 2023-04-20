@@ -39,7 +39,7 @@ internal class CloudStorageClient : ICloudStorageClient
             throw new McmaException("Unable to sign url because storage client is not authenticated with service account credentials.");
 
         var parsedUrl = CloudStorageParsedUrl.Parse(url);
-        var urlSigner = UrlSigner.FromServiceAccountCredential(credential);
+        var urlSigner = UrlSigner.FromCredential(credential);
 
         return urlSigner.SignAsync(parsedUrl.Bucket,
                                    parsedUrl.Name,
