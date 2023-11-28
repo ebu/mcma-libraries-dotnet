@@ -10,13 +10,7 @@ public class ResourceManagerProvider : IResourceManagerProvider
     {
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
-
-        if (options.Value?.DefaultOptions != null &&
-            (string.IsNullOrWhiteSpace(options.Value.DefaultOptions.ServiceRegistryUrl) ||
-             !Uri.IsWellFormedUriString(options.Value.DefaultOptions.ServiceRegistryUrl, UriKind.RelativeOrAbsolute)))
-            throw new McmaException($"Invalid services url in default resource manager options: {options.Value.DefaultOptions.ServiceRegistryUrl}");
-
-        DefaultOptions = options.Value?.DefaultOptions;
+        DefaultOptions = options.Value?.DefaultOptions ?? new();
     }
 
     private HttpClient HttpClient { get; }
@@ -25,10 +19,16 @@ public class ResourceManagerProvider : IResourceManagerProvider
 
     private ResourceManagerOptions DefaultOptions { get; }
 
-    public IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null)
-        => new ResourceManager(AuthProvider,
-                               HttpClient,
-                               (options ?? DefaultOptions) ??
-                               throw new McmaException("Config for resource manager not provided, and there is no default config available"),
-                               tracker);
+    public IResourceManager GetDefault(McmaTracker tracker = null)
+        => Get(DefaultOptions, tracker);
+
+    public IResourceManager Get(ResourceManagerOptions options, McmaTracker tracker = null)
+    {
+        if (options is null)
+            throw new ArgumentNullException(nameof(options));
+
+        options.Validate();
+
+        return new ResourceManager(AuthProvider, HttpClient, options, tracker);
+    }
 }

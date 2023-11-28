@@ -31,6 +31,8 @@ public class McmaApiController : IMcmaApiController
 
     private ILoggerProvider LoggerProvider { get; }
 
+    public McmaApiRouteCollection Routes { get; }
+
     private static IDictionary<string, string> GetDefaultResponseHeaders()
         => new Dictionary<string, string>
         {
@@ -38,8 +40,6 @@ public class McmaApiController : IMcmaApiController
             ["Content-Type"] = "application/json",
             ["Access-Control-Allow-Origin"] = "*"
         };
-
-    public McmaApiRouteCollection Routes { get; }
 
     public async Task HandleRequestAsync(McmaApiRequestContext requestContext)
     {

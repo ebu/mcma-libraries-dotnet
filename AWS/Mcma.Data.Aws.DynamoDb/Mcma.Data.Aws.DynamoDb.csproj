@@ -3,17 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.4</PackageVersion>
+    <PackageVersion>0.14.5</PackageVersion>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageOutputPath>bin/packages</PackageOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Base\Mcma.Data\Mcma.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDBV2" Version="3.7.102.28" />
+    <PackageReference Include="AWSSDK.DynamoDBV2" Version="3.7.300.6" />
   </ItemGroup>
 
 </Project>

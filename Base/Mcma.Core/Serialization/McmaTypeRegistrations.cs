@@ -4,7 +4,7 @@ namespace Mcma.Serialization;
 
 internal class McmaTypeRegistrations : IMcmaTypeRegistrations, IEnumerable<Type>
 {
-    private List<Type> Types { get; } = new();
+    private List<Type> Types { get; } = [];
 
     public IMcmaTypeRegistrations Add<T>() => Add(typeof(T));
 

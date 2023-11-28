@@ -19,7 +19,7 @@ internal class ServiceClient : IServiceClient
                                                                                 service,
                                                                                 r,
                                                                                 Tracker))
-                : new Dictionary<string, ResourceEndpointClient>();
+                : [];
     }
     
     private Service Service { get; }

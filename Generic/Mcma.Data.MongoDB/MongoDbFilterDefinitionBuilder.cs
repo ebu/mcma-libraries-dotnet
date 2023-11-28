@@ -44,11 +44,10 @@ public class MongoDbFilterDefinitionBuilder : IMongoDbFilterDefinitionBuilder
     {
         var buildMethod = MongoDbFilterMethodHelper.GetFilterMethod(filterCriteria.Property.PropertyType);
         return (FilterDefinition<McmaResourceDocument>)buildMethod.Invoke(null,
-                                                                          new[]
-                                                                          {
+                                                                          [
                                                                               filterCriteria.Property.Name, filterCriteria.Operator,
                                                                               filterCriteria.PropertyValue
-                                                                          });
+                                                                          ]);
     }
         
     internal static FilterDefinition<McmaResourceDocument> CreateBinaryOperationFilter<TProp>(string propertyName, BinaryOperator @operator, object value)

@@ -12,7 +12,7 @@ internal class DefaultRouteQueryExecutor<TResource> : IDefaultRouteQueryExecutor
 {
     public DefaultRouteQueryExecutor(IEnumerable<IMcmaApiCustomQuery<TResource>> customQueries)
     {
-        CustomQueries = customQueries?.ToArray() ?? Array.Empty<IMcmaApiCustomQuery<TResource>>();
+        CustomQueries = customQueries?.ToArray() ?? [];
     }
 
     private IMcmaApiCustomQuery<TResource>[] CustomQueries { get; }

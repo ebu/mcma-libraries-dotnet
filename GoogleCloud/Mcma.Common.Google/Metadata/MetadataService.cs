@@ -48,6 +48,6 @@ public class MetadataService : IMetadataService
             }
         }
 
-        return Array.Empty<string>();
+        return [];
     }
 }

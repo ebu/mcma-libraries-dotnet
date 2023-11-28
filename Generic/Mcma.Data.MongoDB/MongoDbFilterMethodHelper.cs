@@ -8,7 +8,7 @@ namespace Mcma.Data.MongoDB;
 internal static class MongoDbFilterMethodHelper
 {
     private static readonly Type[] FilterableTypes =
-    {
+    [
         typeof(bool),
         typeof(string),
         typeof(int),
@@ -21,7 +21,7 @@ internal static class MongoDbFilterMethodHelper
         typeof(DateTime),
         typeof(DateTimeOffset),
         typeof(TimeSpan)
-    };
+    ];
 
     private static Lazy<MethodInfo> OpenGenericFilterMethod { get; } =
         new(() => typeof(MongoDbFilterDefinitionBuilder).GetMethod(nameof(MongoDbFilterDefinitionBuilder.CreateBinaryOperationFilter),

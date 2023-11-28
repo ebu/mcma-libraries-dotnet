@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <PackageVersion>0.14.4</PackageVersion>
+        <PackageVersion>0.14.5</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
     </PropertyGroup>
@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Confluent.Kafka" Version="2.1.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+      <PackageReference Include="Confluent.Kafka" Version="2.3.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

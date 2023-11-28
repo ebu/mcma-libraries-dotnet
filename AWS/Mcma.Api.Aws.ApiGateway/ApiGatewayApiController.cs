@@ -29,7 +29,7 @@ public class ApiGatewayApiController : IApiGatewayApiController
                                       new McmaApiRequest
                                       {
                                           Id = context.AwsRequestId,
-                                          Path = request.RequestContext.Http.Path.Substring(request.RequestContext.Stage.Length + 1),
+                                          Path = request.RequestContext.Http.Path[(request.RequestContext.Stage.Length + 1)..],
                                           HttpMethod = new HttpMethod(request.RequestContext.Http.Method),
                                           Headers = request.Headers,
                                           PathVariables = new Dictionary<string, object>(),

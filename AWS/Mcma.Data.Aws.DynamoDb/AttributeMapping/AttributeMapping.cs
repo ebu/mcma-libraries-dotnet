@@ -9,7 +9,7 @@ public class AttributeMapping<TResource> : IAttributeMapping
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Get = get ?? throw new ArgumentNullException(nameof(get));
     }
-        
+
     public string Name { get; }
 
     private Func<string, string, TResource, object> Get { get; }

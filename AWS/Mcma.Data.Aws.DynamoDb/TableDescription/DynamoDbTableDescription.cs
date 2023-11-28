@@ -12,15 +12,15 @@ public class DynamoDbTableDescription
     {
         TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         KeyNames = new KeyNames(partitionKeyName, sortKeyName);
-        LocalSecondaryIndexes = localSecondaryIndexes ?? Array.Empty<LocalSecondaryIndexDescription>();
-        GlobalSecondaryIndexes = globalSecondaryIndexes ?? Array.Empty<GlobalSecondaryIndexDescription>();
+        LocalSecondaryIndexes = localSecondaryIndexes ?? [];
+        GlobalSecondaryIndexes = globalSecondaryIndexes ?? [];
     }
-        
+
     public string TableName { get; }
-        
-    public KeyNames KeyNames { get; } 
-        
+
+    public KeyNames KeyNames { get; }
+
     public LocalSecondaryIndexDescription[] LocalSecondaryIndexes { get; }
-        
+
     public GlobalSecondaryIndexDescription[] GlobalSecondaryIndexes { get; }
 }

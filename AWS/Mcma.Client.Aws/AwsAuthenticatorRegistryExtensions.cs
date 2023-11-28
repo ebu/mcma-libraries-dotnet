@@ -14,12 +14,19 @@ public static class AwsAuthenticatorRegistryExtensions
     {
         var key = new AuthenticatorKey(AwsConstants.Aws4, serviceName, resourceType);
 
-        authenticatorRegistry.Services.Configure(key.ToString(), configureOptions ?? (_ => { }));
-            
+        configureOptions ??= Aws4AuthOptions.ConfigureFromEnvironmentVariables;
+
+        authenticatorRegistry.Services.Configure(key, configureOptions);
+
         return authenticatorRegistry.Add(
             key,
-            svcProvider => new Aws4Authenticator(key, svcProvider.GetRequiredService<IOptionsSnapshot<Aws4AuthOptions>>()));
+            svcProvider => new Aws4Authenticator(svcProvider.GetRequiredService<IOptionsSnapshot<Aws4AuthOptions>>().Get(key)));
     }
+    public static AuthenticatorRegistry AddAws4AuthForProfile(this AuthenticatorRegistry authenticatorRegistry,
+                                                              string profileName,
+                                                              string serviceName = "",
+                                                              string resourceType = "")
+        => authenticatorRegistry.AddAws4Auth(opts => Aws4AuthOptions.ConfigureFromProfile(opts, profileName), serviceName, resourceType);
 
     public static bool TryAddAws4Auth(this AuthenticatorRegistry authenticatorRegistry,
                                       Action<Aws4AuthOptions> configureOptions = null,

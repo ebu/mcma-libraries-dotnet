@@ -12,7 +12,7 @@ public class QueryDefinitionBuilder : IQueryDefinitionBuilder
     {
         public string Text { get; set; } = "SELECT VALUE root FROM root";
             
-        public List<object> Parameters { get; } = new();
+        public List<object> Parameters { get; } = [];
 
         public string AddParameter(object parameter)
         {

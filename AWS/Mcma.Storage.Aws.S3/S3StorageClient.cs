@@ -12,9 +12,9 @@ internal class S3StorageClient : IS3StorageClient
 {
     public S3StorageClient(IOptions<S3StorageClientOptions> options)
     {
-        Options = options.Value ?? new S3StorageClientOptions();
+        Options = options.Value ?? new();
     }
-        
+
     private S3StorageClientOptions Options { get; }
 
     private static HttpVerb TranslateAccessType(PresignedUrlAccessType accessType)

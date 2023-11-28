@@ -21,7 +21,7 @@ public class GoogleBearerTokenProvider : IBearerTokenProvider
     }
 
     private GoogleAuthenticatorOptions Options { get; }
-        
+
     private OidcToken OidcToken { get; set; }
 
     private SemaphoreSlim OidcTokenSemaphoreSlim { get; } = new(1, 1);

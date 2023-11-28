@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 namespace Mcma.Logging;
 
 /// <summary>
-/// Represents a logger provider that creates loggers that write to the <see cref="System.Console"/>
+/// Represents a logger provider that creates loggers that write to the <see cref="Console"/>
 /// </summary>
 public class ConsoleLoggerProvider : LoggerProvider<ConsoleLogger>
 {

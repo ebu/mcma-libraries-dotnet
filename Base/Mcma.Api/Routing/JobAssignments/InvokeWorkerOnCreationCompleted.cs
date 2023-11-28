@@ -13,11 +13,11 @@ public class InvokeWorkerOnCreationCompleted : IDefaultCreateRouteCompletedHandl
     public InvokeWorkerOnCreationCompleted(IMcmaWorkerInvoker workerInvoker, IOptions<McmaApiOptions> options)
     {
         WorkerInvoker = workerInvoker ?? throw new ArgumentNullException(nameof(workerInvoker));
-        Options = options.Value ?? new McmaApiOptions();
+        Options = options.Value ?? new();
     }
-        
+
     private IMcmaWorkerInvoker WorkerInvoker { get; }
-        
+
     private McmaApiOptions Options { get; }
 
     public Task OnCompletedAsync(McmaApiRequestContext requestContext, JobAssignment createdResource)

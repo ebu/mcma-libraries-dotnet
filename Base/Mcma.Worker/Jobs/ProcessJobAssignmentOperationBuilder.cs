@@ -11,7 +11,7 @@ public class ProcessJobAssignmentOperationBuilder<TJob> where TJob : Job
     {
         Services = services ?? throw new ArgumentNullException(nameof(services));
     }
-        
+
     public IServiceCollection Services { get; }
 
     public ProcessJobAssignmentOperationBuilder<TJob> AddProfile<TProfile>()

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
         <LangVersion>Latest</LangVersion>
-        <PackageVersion>0.14.4</PackageVersion>
+        <PackageVersion>0.14.5</PackageVersion>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <PackageOutputPath>bin/packages</PackageOutputPath>
     </PropertyGroup>
@@ -13,6 +13,6 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Google.Cloud.Functions.Framework" Version="2.0.0" />
+        <PackageReference Include="Google.Cloud.Functions.Framework" Version="2.1.0" />
     </ItemGroup>
 </Project>

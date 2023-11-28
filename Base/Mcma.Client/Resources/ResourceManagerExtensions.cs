@@ -25,8 +25,8 @@ public static class ResourceManagerExtensions
 
     public static Task SendJobNotificationAsync<T>(this IResourceManager resourceManager,
                                                    T resource,
-                                                   NotificationEndpoint notificationEndpoint,
+                                                   NotificationEndpoint notificationEndpoint = null,
                                                    CancellationToken cancellationToken = default)
         where T : McmaResource, INotifiable
-        => resourceManager.SendNotificationAsync(resource.Id, resource, resource.NotificationEndpoint, cancellationToken);
+        => resourceManager.SendNotificationAsync(resource.Id, resource, notificationEndpoint ?? resource.NotificationEndpoint, cancellationToken);
 }

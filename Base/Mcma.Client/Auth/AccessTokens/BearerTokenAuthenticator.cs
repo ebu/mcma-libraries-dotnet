@@ -9,7 +9,7 @@ internal class BearerTokenAuthenticator : IAuthenticator
         BearerTokenProvider = bearerTokenProvider ?? throw new ArgumentNullException(nameof(bearerTokenProvider));
     }
 
-    private IBearerTokenProvider BearerTokenProvider { get; }
+    private IBearerTokenProvider BearerTokenProvider { get; } 
 
     private BearerToken BearerToken { get; set; }
 

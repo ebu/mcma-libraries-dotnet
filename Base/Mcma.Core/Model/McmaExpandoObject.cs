@@ -55,7 +55,7 @@ public class McmaExpandoObject : IDictionary<string, object?>, IDynamicMetaObjec
     /// <returns>The value of the property</returns>
     /// <exception cref="InvalidCastException">Thrown when the type of the value of the property does not match expected type T</exception>
     public T? GetOrAdd<T>(string key, bool caseSensitive = true) where T : new()
-        => TryGet<T>(key, false, out var val) ? val : Set(key, new T());
+        => TryGet<T>(key, caseSensitive, out var val) ? val : Set(key, new T());
 
     /// <summary>
     /// Tries to get the value for a given property. If the property is not found on the object, it's set to the default value for type T.

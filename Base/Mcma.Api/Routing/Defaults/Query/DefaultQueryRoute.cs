@@ -9,12 +9,11 @@ namespace Mcma.Api.Routing.Defaults.Query;
 
 internal class DefaultQueryRoute<TResource> : McmaApiRoute, IDefaultQueryRoute<TResource> where TResource : McmaResource
 {
-    public DefaultQueryRoute(
-        IDocumentDatabaseTable dbTable,
-        IDefaultQueryRouteStartedHandler<TResource> startedHandler,
-        IDefaultRouteQueryExecutor<TResource> queryExecutor,
-        IDefaultQueryRouteCompletedHandler<TResource> completedHandler,
-        IOptions<DefaultRouteCollectionOptions<TResource>> options)
+    public DefaultQueryRoute(IDocumentDatabaseTable dbTable,
+                             IDefaultQueryRouteStartedHandler<TResource> startedHandler,
+                             IDefaultRouteQueryExecutor<TResource> queryExecutor,
+                             IDefaultQueryRouteCompletedHandler<TResource> completedHandler,
+                             IOptions<DefaultRouteCollectionOptions<TResource>> options)
         : base(HttpMethod.Get, (options.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root)
     {
         StartedHandler = startedHandler;
@@ -22,8 +21,6 @@ internal class DefaultQueryRoute<TResource> : McmaApiRoute, IDefaultQueryRoute<T
         CompletedHandler = completedHandler;
         DbTable = dbTable;
     }
-        
-    public HttpMethod Method => HttpMethod.Get;
 
     private IDefaultQueryRouteStartedHandler<TResource> StartedHandler { get; }
 

@@ -9,11 +9,6 @@ public static class ResourceManagerProviderExtensions
                                        string serviceRegistryAuthType = null,
                                        string serviceRegistryAuthContext = null,
                                        McmaTracker tracker = null)
-        => resourceManagerProvider.Get(tracker,
-                                       new ResourceManagerOptions
-                                       {
-                                           ServiceRegistryUrl = serviceRegistryUrl,
-                                           ServiceRegistryAuthType = serviceRegistryAuthType,
-                                           ServiceRegistryAuthContext = serviceRegistryAuthContext
-                                       });
+        =>
+        resourceManagerProvider.Get(new(serviceRegistryUrl, serviceRegistryAuthType, serviceRegistryAuthContext), tracker);
 }

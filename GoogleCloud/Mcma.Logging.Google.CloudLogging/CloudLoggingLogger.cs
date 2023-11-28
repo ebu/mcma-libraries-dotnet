@@ -10,8 +10,8 @@ public class CloudLoggingLogger : Logger
     {
         LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
     }
-        
+
     private CloudLoggingLoggerProvider LoggerProvider { get; }
-        
+
     protected override void WriteLogEvent(LogEvent logEvent) => LoggerProvider.AddLogEvent(logEvent);
 }

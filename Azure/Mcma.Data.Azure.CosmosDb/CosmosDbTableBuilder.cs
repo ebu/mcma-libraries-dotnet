@@ -12,7 +12,7 @@ public class CosmosDbTableBuilder
     {
         Services = services ?? throw new ArgumentNullException(nameof(services));
     }
-        
+
     private IServiceCollection Services { get; }
 
     public CosmosDbTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()

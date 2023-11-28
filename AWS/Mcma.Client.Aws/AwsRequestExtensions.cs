@@ -26,9 +26,9 @@ public static class AwsRequestExtensions
                                      .Select(
                                          x =>
                                              x.Length == 2
-                                                 ? new[] {x[0], x[1]}
+                                                 ? [x[0], x[1]]
                                                  : x.Length == 1
-                                                     ? new[] {x[0], string.Empty}
+                                                     ? new[] { x[0], string.Empty }
                                                      : throw new Exception($"Invalid parameters found in query string: {request.RequestUri.Query}"))
                                      // order by the keys
                                      .OrderBy(x => x[0], StringComparer.Ordinal)
@@ -66,7 +66,7 @@ public static class AwsRequestExtensions
 
     public static string ToHashedCanonicalRequest(this HttpRequestMessage request, string hashedBody, HashAlgorithm hashAlgorithm = null)
     {
-        hashAlgorithm = hashAlgorithm ?? new SHA256Managed();
+        hashAlgorithm ??= new SHA256Managed();
 
         return hashAlgorithm.Hash(request.ToCanonicalRequest(hashedBody));
     }
@@ -79,7 +79,7 @@ public static class AwsRequestExtensions
 
     public static async Task<string> ToHashedCanonicalRequestAsync(this HttpRequestMessage request, HashAlgorithm hashAlgorithm = null)
     {
-        hashAlgorithm = hashAlgorithm ?? new SHA256Managed();
+        hashAlgorithm ??= new SHA256Managed();
             
         return hashAlgorithm.Hash(request.ToCanonicalRequest(await request.HashBodyAsync(hashAlgorithm)));
     }

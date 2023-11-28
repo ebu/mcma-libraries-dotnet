@@ -8,10 +8,10 @@ public class AuthenticatorRegistry
     {
         Services = services;
     }
-        
+
     public IServiceCollection Services { get; }
-        
-    private List<AuthenticatorKey> RegisteredKeys { get; } = new();
+
+    private List<AuthenticatorKey> RegisteredKeys { get; } = [];
 
     private AuthenticatorRegistry InternalAdd<TAuthenticator>(AuthenticatorKey key, Action<IServiceCollection> addAuthenticatorService)
         where TAuthenticator : class, IAuthenticator
@@ -29,7 +29,7 @@ public class AuthenticatorRegistry
             keyInfo += $" and service '{key.ServiceName}'";
         if (!string.IsNullOrWhiteSpace(key.ResourceType))
             keyInfo += $" and resource type '{key.ResourceType}'";
-            
+
         return new McmaException(
             $"An authentication handler for {keyInfo} has already been registered. " +
             "If you wish to register a default in the case that no handler was previously registered, please use TryAdd.");
@@ -44,7 +44,7 @@ public class AuthenticatorRegistry
 
     public AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
         where TAuthenticator : class, IAuthenticator
-        => 
+        =>
             RegisteredKeys.All(k => k != key)
                ? InternalAdd<TAuthenticator>(key, services => services.AddSingleton(serviceFactory))
                : throw GetAlreadyRegisteredException(key);

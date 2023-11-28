@@ -62,7 +62,7 @@ public class MongoDbTable : IDocumentDatabaseTable
         if (query.FilterExpression != null)
             filters.Add(FilterDefinitionBuilder.Build<T>(query.FilterExpression));
             
-        var filterDefinition = Builders<McmaResourceDocument>.Filter.And(filters.ToArray());
+        var filterDefinition = Builders<McmaResourceDocument>.Filter.And([.. filters]);
                 
         var find = Collection.Find(filterDefinition);
 

@@ -20,13 +20,13 @@ public class DefaultDeleteRoute<TResource> : McmaApiRoute, IDefaultDeleteRoute<T
         StartedHandler = startedHandler;
         CompletedHandler = completedHandler;
     }
-        
+
     private IDocumentDatabaseTable DbTable { get; }
 
     private IDefaultDeleteRouteStartedHandler<TResource> StartedHandler { get; }
 
     private IDefaultDeleteRouteCompletedHandler<TResource> CompletedHandler { get; }
-        
+
     public override async Task HandleAsync(McmaApiRequestContext requestContext)
     {
         if (StartedHandler != null && !await StartedHandler.OnStartedAsync(requestContext))

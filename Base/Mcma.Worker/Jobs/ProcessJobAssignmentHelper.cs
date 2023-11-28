@@ -11,24 +11,21 @@ namespace Mcma.Worker.Jobs;
 
 public class ProcessJobAssignmentHelper<T> where T : Job
 {
-    public ProcessJobAssignmentHelper(
-        IDocumentDatabaseTable dbTable,
-        IResourceManager resourceManager,
-        McmaWorkerRequestContext requestContext)
+    public ProcessJobAssignmentHelper(IDocumentDatabaseTable dbTable,
+                                      IResourceManager resourceManager,
+                                      McmaWorkerRequestContext requestContext)
     {
         DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
         ResourceManager = resourceManager ?? throw new ArgumentNullException(nameof(resourceManager));
         RequestContext = requestContext ?? throw new ArgumentNullException(nameof(requestContext));
-            
         JobAssignmentDatabaseId = requestContext.GetInputAs<ProcessJobAssignmentRequest>().JobAssignmentDatabaseId;
     }
 
     public IDocumentDatabaseTable DbTable { get; }
     public IResourceManager ResourceManager { get; }
-
     public McmaWorkerRequestContext RequestContext { get; }
     public string JobAssignmentDatabaseId { get; }
-        
+
     public JobAssignment JobAssignment { get; private set; }
     public T Job { get; private set; }
     public JobProfile Profile { get; private set; }
@@ -45,7 +42,7 @@ public class ProcessJobAssignmentHelper<T> where T : Job
         Job.JobOutput = new JobParameterBag();
     }
 
-    public void ValidateJob(IEnumerable<string> supportedProfiles)
+    public void ValidateJob()
     {
         if (Profile.InputParameters == null) return;
             
@@ -94,10 +91,7 @@ public class ProcessJobAssignmentHelper<T> where T : Job
 
     public async Task<JobAssignment> UpdateJobAssignmentAsync(Action<JobAssignment> update, bool sendNotification = false)
     {
-        var jobAssignment = await GetJobAssignmentAsync();
-        if (jobAssignment == null)
-            throw new McmaException("JobAssignment with id '" + JobAssignmentDatabaseId + "' not found");
-
+        var jobAssignment = await GetJobAssignmentAsync() ?? throw new McmaException("JobAssignment with id '" + JobAssignmentDatabaseId + "' not found");
         update(jobAssignment);
 
         jobAssignment.DateModified = DateTimeOffset.UtcNow;

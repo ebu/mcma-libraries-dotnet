@@ -17,7 +17,7 @@ public static class McmaTypes
         AppDomain.CurrentDomain.AssemblyLoad += (_, args) => AddTypesFromAssembly(args.LoadedAssembly);
     }
 
-    private static McmaTypeRegistrations Types { get; } = new();
+    private static McmaTypeRegistrations Types { get; } = [];
         
     private static void AddTypesFromAssembly(Assembly assembly)
     {

@@ -12,7 +12,7 @@ public class MongoDbBuilder
     {
         Services = services ?? throw new ArgumentNullException(nameof(services));
     }
-        
+
     public IServiceCollection Services { get; }
 
     public MongoDbBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()

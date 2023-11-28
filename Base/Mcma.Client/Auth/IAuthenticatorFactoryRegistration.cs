@@ -1,6 +1,6 @@
 ﻿namespace Mcma.Client.Auth;
 
-internal class AuthenticatorRegistration
+public record AuthenticatorRegistration
 {
     public AuthenticatorRegistration(AuthenticatorKey key, IAuthenticator authenticator)
     {

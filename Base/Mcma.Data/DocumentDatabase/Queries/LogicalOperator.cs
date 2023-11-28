@@ -7,7 +7,7 @@ public class LogicalOperator
     public static readonly LogicalOperator And = new("&&");
     public static readonly LogicalOperator Or  = new("||");
     
-    public static readonly string[] Operators = { And, Or };
+    public static readonly string[] Operators = [And, Or];
 
     private LogicalOperator(string @operator)
     {

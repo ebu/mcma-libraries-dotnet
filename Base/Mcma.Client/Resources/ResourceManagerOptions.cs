@@ -18,4 +18,15 @@ public class ResourceManagerOptions
     public string ServiceRegistryAuthType { get; set; }
 
     public string ServiceRegistryAuthContext { get; set; }
+
+    public void Validate()
+    {
+        if (!Uri.IsWellFormedUriString(ServiceRegistryUrl, UriKind.Absolute))
+            throw new McmaException($"Invalid services url: {ServiceRegistryUrl}");
+    }
+
+    public static ResourceManagerOptions FromEnvironmentVariables()
+        => new(McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl ?? "",
+               McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthType,
+               McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthContext);
 }

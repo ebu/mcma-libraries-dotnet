@@ -11,7 +11,7 @@ public class BinaryOperator
     public static readonly BinaryOperator GreaterThan          = new(">");
     public static readonly BinaryOperator GreaterThanOrEqualTo = new(">=");
         
-    public static readonly string[] Operators = { EqualTo, NotEqualTo, LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo };
+    public static readonly string[] Operators = [EqualTo, NotEqualTo, LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo];
 
     private BinaryOperator(string @operator)
     {

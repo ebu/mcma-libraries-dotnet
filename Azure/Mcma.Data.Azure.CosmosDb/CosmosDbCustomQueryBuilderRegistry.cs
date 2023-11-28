@@ -6,11 +6,11 @@ using Microsoft.Azure.Cosmos;
 
 namespace Mcma.Data.Azure.CosmosDb;
 
-public class CosmosDbCustomQueryBuilderRegistry : ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)>
+public class CosmosDbCustomQueryBuilderRegistry: ICustomQueryBuilderRegistry<(QueryDefinition, QueryRequestOptions)>
 {
     public CosmosDbCustomQueryBuilderRegistry(IEnumerable<ICustomQueryBuilder> queryBuilders)
     {
-        QueryBuilders = queryBuilders?.ToArray() ?? Array.Empty<ICustomQueryBuilder>();
+        QueryBuilders = queryBuilders?.ToArray() ?? [];
     }
 
     private ICustomQueryBuilder[] QueryBuilders { get; }

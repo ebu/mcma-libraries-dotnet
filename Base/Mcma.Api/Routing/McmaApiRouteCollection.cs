@@ -17,7 +17,7 @@ public class McmaApiRouteCollection : IMcmaApiRouteCollection
 
     public McmaApiRouteCollection(IEnumerable<IMcmaApiRoute> routes)
     {
-        Routes = routes?.ToList() ?? new List<IMcmaApiRoute>();
+        Routes = routes?.ToList() ?? [];
     }
 
     private List<IMcmaApiRoute> Routes { get; }

@@ -18,7 +18,7 @@ public class Query<T>
     {
         FilterExpression =
             FilterExpression != null
-                ? new FilterCriteriaGroup {Children = new[] {FilterExpression, filterExpression}, LogicalOperator = LogicalOperator.And}
+                ? new FilterCriteriaGroup {Children = [FilterExpression, filterExpression], LogicalOperator = LogicalOperator.And}
                 : filterExpression;
             
         return this;

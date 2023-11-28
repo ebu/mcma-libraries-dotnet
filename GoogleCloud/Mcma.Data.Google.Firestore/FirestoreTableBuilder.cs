@@ -16,7 +16,7 @@ public class FirestoreTableBuilder
     }
 
     public IServiceCollection Services { get; }
-        
+
     public FirestoreDbBuilder Firestore { get; } = new();
 
     public FirestoreTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()

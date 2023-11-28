@@ -39,7 +39,7 @@ public class CloudLoggingLoggerProvider : LoggerProvider<CloudLoggingLogger>
 
     private Task ProcessingTask { get; set; }
 
-    private List<LogEntry> LogEntries { get; set; } = new();
+    private List<LogEntry> LogEntries { get; set; } = [];
 
     private object LogEventsLock { get; } = new();
 
@@ -55,7 +55,7 @@ public class CloudLoggingLoggerProvider : LoggerProvider<CloudLoggingLogger>
         lock (LogEventsLock)
         {
             logEntries = LogEntries;
-            LogEntries = new List<LogEntry>();
+            LogEntries = [];
         }
         return logEntries;
     }

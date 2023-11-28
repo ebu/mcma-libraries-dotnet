@@ -17,9 +17,9 @@ internal class CloudStorageClient : ICloudStorageClient
         StorageClient = storageClient ?? throw new ArgumentNullException(nameof(storageClient));
         Options = options.Value ?? new CloudStorageClientOptions();
     }
-        
+
     private StorageClient StorageClient { get; }
-        
+
     private CloudStorageClientOptions Options { get; }
 
     private static HttpMethod TranslateAccessType(PresignedUrlAccessType accessType)
@@ -35,7 +35,7 @@ internal class CloudStorageClient : ICloudStorageClient
         
     public Task<string> GetPresignedUrlAsync(string url, PresignedUrlAccessType accessType, TimeSpan? validFor = null)
     {
-        if (!(StorageClient.Service.HttpClientInitializer is ServiceAccountCredential credential))
+        if (StorageClient.Service.HttpClientInitializer is not ServiceAccountCredential credential)
             throw new McmaException("Unable to sign url because storage client is not authenticated with service account credentials.");
 
         var parsedUrl = CloudStorageParsedUrl.Parse(url);

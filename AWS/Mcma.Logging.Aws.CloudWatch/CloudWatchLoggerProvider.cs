@@ -26,7 +26,7 @@ public class CloudWatchLoggerProvider : LoggerProvider<CloudWatchLogger>
 
     private string LogStreamName { get; }
 
-    private List<InputLogEvent> LogEvents { get; } = new();
+    private List<InputLogEvent> LogEvents { get; } = [];
 
     private object LogEventsLock { get; } = new();
 
@@ -43,7 +43,7 @@ public class CloudWatchLoggerProvider : LoggerProvider<CloudWatchLogger>
         List<InputLogEvent> logEvents;
         lock (LogEventsLock)
         {
-            logEvents = LogEvents.ToList();
+            logEvents = [.. LogEvents];
             LogEvents.Clear();
         }
         return logEvents;

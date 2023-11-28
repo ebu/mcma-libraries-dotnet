@@ -8,16 +8,16 @@ public class AttributeMapper : IAttributeMapper
 {
     public AttributeMapper(IEnumerable<IAttributeMapping> mappings)
     {
-        Mappings = mappings?.ToArray() ?? Array.Empty<IAttributeMapping>();
+        Mappings = mappings?.ToArray() ?? [];
     }
-        
+
     private IAttributeMapping[] Mappings { get; }
-        
+
     public Dictionary<string, object> GetMappedAttributes<TResource>(string partitionKey, string sortKey, TResource resource)
     {
         var mappings = Mappings.Where(x => x.ResourceType == typeof(TResource)).ToList();
         if (!mappings.Any())
-            return new Dictionary<string, object>();
+            return [];
 
         return mappings
             .ToDictionary(

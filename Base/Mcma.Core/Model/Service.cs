@@ -29,7 +29,7 @@ public class Service : McmaResource
     /// <summary>
     /// Gets or sets the collection of IDs for job profiles that this service supports
     /// </summary>
-    public string[] JobProfileIds { get; set; } = Array.Empty<string>();
+    public string[] JobProfileIds { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the collection input locations this service is aware of

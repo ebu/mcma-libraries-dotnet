@@ -12,13 +12,11 @@ namespace Mcma.Worker.Jobs;
 
 public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJobAssignmentRequest> where TJob : Job
 {
-    public ProcessJobAssignmentOperation(IDocumentDatabaseTable dbTable,
-                                         IResourceManagerProvider resourceManagerProvider,
-                                         IEnumerable<IJobProfile<TJob>> profiles)
+    public ProcessJobAssignmentOperation(IDocumentDatabaseTable dbTable, IResourceManagerProvider resourceManagerProvider, IEnumerable<IJobProfile<TJob>> profiles)
     {
         DbTable = dbTable ?? throw new ArgumentNullException(nameof(dbTable));
         ResourceManagerProvider = resourceManagerProvider ?? throw new ArgumentNullException(nameof(resourceManagerProvider));
-        Profiles = profiles?.ToList() ?? new List<IJobProfile<TJob>>();
+        Profiles = profiles?.ToList() ?? [];
     }
 
     private IDocumentDatabaseTable DbTable { get; }
@@ -44,11 +42,7 @@ public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJo
 
         var logger = requestContext.Logger;
 
-        var jobAssignmentHelper =
-            new ProcessJobAssignmentHelper<TJob>(
-                DbTable,
-                ResourceManagerProvider.Get(requestContext.Tracker),
-                requestContext);
+        var jobAssignmentHelper = new ProcessJobAssignmentHelper<TJob>(DbTable, ResourceManagerProvider.GetDefault(requestContext.Tracker), requestContext);
 
         try
         {
@@ -65,7 +59,7 @@ public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJo
                 return;
             }
                 
-            jobAssignmentHelper.ValidateJob(Profiles.Select(p => p.Name));
+            jobAssignmentHelper.ValidateJob();
 
             logger.Info($"Found handler for job profile '{matchedProfile.Name}'"); 
                 
@@ -82,7 +76,8 @@ public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJo
 
     private async Task FailJobAsync(ILogger logger, ProcessJobAssignmentHelper<TJob> jobAssignmentHelper, string message)
     {
-        try {
+        try
+        {
             await jobAssignmentHelper.FailAsync(new ProblemDetail
             {
                 Type = "uri://mcma.ebu.ch/rfc7807/generic-job-failure",

@@ -25,15 +25,20 @@ public class ConsoleLogger : Logger
     /// <param name="logEvent">The log event to write to the console</param>
     protected override void WriteLogEvent(LogEvent logEvent)
     {
-        if (logEvent.Level <= 0)
-            return;
-
-        if (logEvent.Level < 200)
-            WriteToConsole(logEvent, ConsoleColor.Red);
-        else if (logEvent.Level < 300)
-            WriteToConsole(logEvent, ConsoleColor.Yellow);
-        else
-            WriteToConsole(logEvent);
+        switch (logEvent.Level)
+        {
+            case <= 0:
+                return;
+            case < 200:
+                WriteToConsole(logEvent, ConsoleColor.Red);
+                break;
+            case < 300:
+                WriteToConsole(logEvent, ConsoleColor.Yellow);
+                break;
+            default:
+                WriteToConsole(logEvent);
+                break;
+        }
     }
 
     /// <summary>

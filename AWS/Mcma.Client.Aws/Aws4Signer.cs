@@ -3,7 +3,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Utility;
 
@@ -14,12 +13,12 @@ public class Aws4Signer
     private const string CngSuffix = "Cng";
     private const string CryptoServiceProviderSuffix = "CryptoServiceProvider";
     private const string ManagedSuffix = "Managed";
-        
+
     public Aws4Signer(string accessKey, string secretKey, string region, string sessionToken = null, string service = AwsConstants.Services.ExecuteApi)
     {
         AccessKey = accessKey ?? throw new ArgumentNullException(nameof(accessKey));
         SecretKey = secretKey ?? throw new ArgumentNullException(nameof(secretKey));
-        Region = region;
+        Region = region ?? AwsConstants.Regions.UsEast1;
         SessionToken = sessionToken;
         Service = service;
     }
@@ -34,7 +33,7 @@ public class Aws4Signer
 
     private string Service { get; }
 
-    public async Task<HttpRequestMessage> SignAsync(HttpRequestMessage request, HashAlgorithm hashAlgorithm = null, CancellationToken cancellationToken = default)
+    public async Task<HttpRequestMessage> SignAsync(HttpRequestMessage request, HashAlgorithm hashAlgorithm = null)
     {
         hashAlgorithm ??= new SHA256Managed();
 

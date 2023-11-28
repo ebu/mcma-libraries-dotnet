@@ -13,7 +13,7 @@ public class McmaLambdaApiHandler : IMcmaLambdaFunctionHandler<APIGatewayProxyRe
         LoggerProvider = loggerProvider;
         ApiController = apiGatewayApiController;
     }
-        
+
     private ILoggerProvider LoggerProvider { get; }
 
     private IApiGatewayApiController ApiController { get; }

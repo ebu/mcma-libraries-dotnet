@@ -1,13 +1,16 @@
 namespace Mcma.Client.Auth;
 
-internal class AuthProvider : IAuthProvider
+public class AuthProvider : IAuthProvider
 {
     public AuthProvider(IEnumerable<AuthenticatorRegistration> authenticatorRegistrations)
     {
-        AuthenticatorRegistrations = authenticatorRegistrations?.ToArray() ?? Array.Empty<AuthenticatorRegistration>();
+        AuthenticatorRegistrations = authenticatorRegistrations?.ToList() ?? [];
     }
 
-    private AuthenticatorRegistration[] AuthenticatorRegistrations { get; }
+    private List<AuthenticatorRegistration> AuthenticatorRegistrations { get; }
+
+    public void Add(AuthenticatorKey key, IAuthenticator authenticator)
+        => AuthenticatorRegistrations.Add(new(key, authenticator));
 
     public IAuthenticator Get(string authType, string serviceName, string resourceType)
     {
@@ -21,10 +24,7 @@ internal class AuthProvider : IAuthProvider
             ?? AuthenticatorRegistrations.FirstOrDefault(x => x.Key == authTypeAndResourceTypeKey)
             ?? AuthenticatorRegistrations.FirstOrDefault(x => x.Key == authTypeAndServiceKey)
             ?? AuthenticatorRegistrations.FirstOrDefault(x => x.Key == authTypeOnlyKey);
-        
-        if (registration == null)
-            throw new McmaException($"No authenticators registered for auth type '{authType}'");
-        
-        return registration.Authenticator;
+
+        return registration?.Authenticator ?? throw new McmaException($"No authenticators registered for auth type '{authType}'");
     }
 }

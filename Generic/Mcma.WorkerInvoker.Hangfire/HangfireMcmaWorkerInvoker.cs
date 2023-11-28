@@ -16,7 +16,7 @@ public class HangfireMcmaWorkerInvoker : McmaWorkerInvoker
     }
 
     private IBackgroundJobClient BackgroundJobClient { get; }
-        
+
     private HangfireMcmaWorkerInvokerOptions Options { get; }
 
     protected override Task InvokeAsync(McmaWorkerRequest workerRequest)

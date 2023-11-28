@@ -5,5 +5,7 @@ namespace Mcma.Client.Resources;
 
 public interface IResourceManagerProvider
 {
-    IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null);
+    IResourceManager GetDefault(McmaTracker tracker = null);
+    
+    IResourceManager Get(ResourceManagerOptions options, McmaTracker tracker = null);
 }

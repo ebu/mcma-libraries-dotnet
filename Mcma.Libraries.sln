@@ -1,105 +1,110 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Core", "Base\Mcma.Core\Mcma.Core.csproj", "{81FCC0AC-ABBB-4CEB-BB98-90466B656B79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Core", "Base\Mcma.Core\Mcma.Core.csproj", "{81FCC0AC-ABBB-4CEB-BB98-90466B656B79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Worker", "Base\Mcma.Worker\Mcma.Worker.csproj", "{0D8F516C-B629-4A0B-96A0-B25CF32761B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Worker", "Base\Mcma.Worker\Mcma.Worker.csproj", "{0D8F516C-B629-4A0B-96A0-B25CF32761B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Api", "Base\Mcma.Api\Mcma.Api.csproj", "{FF6C5ED4-A7D4-496D-91CF-8212B86B0027}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Api", "Base\Mcma.Api\Mcma.Api.csproj", "{FF6C5ED4-A7D4-496D-91CF-8212B86B0027}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{6C63836C-5CA4-4ADD-A16F-2881FD161E00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Client", "Base\Mcma.Client\Mcma.Client.csproj", "{06704473-C3D8-4828-A43B-2B5A8107CFFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Client", "Base\Mcma.Client\Mcma.Client.csproj", "{06704473-C3D8-4828-A43B-2B5A8107CFFF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AWS", "AWS", "{37C583C4-C959-4CC1-BEB2-DC0904254931}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Client.Aws", "AWS\Mcma.Client.Aws\Mcma.Client.Aws.csproj", "{924DE0CA-93C1-4FE5-A218-E58913AC20EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Client.Aws", "AWS\Mcma.Client.Aws\Mcma.Client.Aws.csproj", "{924DE0CA-93C1-4FE5-A218-E58913AC20EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Api.Aws.ApiGateway", "AWS\Mcma.Api.Aws.ApiGateway\Mcma.Api.Aws.ApiGateway.csproj", "{293D6608-36B6-4BC5-AD1C-E65785D31410}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Api.Aws.ApiGateway", "AWS\Mcma.Api.Aws.ApiGateway\Mcma.Api.Aws.ApiGateway.csproj", "{293D6608-36B6-4BC5-AD1C-E65785D31410}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Logging.Aws.CloudWatch", "AWS\Mcma.Logging.Aws.CloudWatch\Mcma.Logging.Aws.CloudWatch.csproj", "{D1C3F5DE-F47C-4238-92EB-860C59ACBA8C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Logging.Aws.CloudWatch", "AWS\Mcma.Logging.Aws.CloudWatch\Mcma.Logging.Aws.CloudWatch.csproj", "{D1C3F5DE-F47C-4238-92EB-860C59ACBA8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.WorkerInvoker.Aws.Lambda", "AWS\Mcma.WorkerInvoker.Aws.Lambda\Mcma.WorkerInvoker.Aws.Lambda.csproj", "{B245C709-124E-4290-9492-784AB2C243A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.WorkerInvoker.Aws.Lambda", "AWS\Mcma.WorkerInvoker.Aws.Lambda\Mcma.WorkerInvoker.Aws.Lambda.csproj", "{B245C709-124E-4290-9492-784AB2C243A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Storage.Aws.S3", "AWS\Mcma.Storage.Aws.S3\Mcma.Storage.Aws.S3.csproj", "{7226B458-8007-4F2A-8D89-5CB5E6A6346A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Storage.Aws.S3", "AWS\Mcma.Storage.Aws.S3\Mcma.Storage.Aws.S3.csproj", "{7226B458-8007-4F2A-8D89-5CB5E6A6346A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure", "Azure", "{F5980A90-70CE-4FF9-8244-72C3FBD8805E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Data.Azure.CosmosDb", "Azure\Mcma.Data.Azure.CosmosDb\Mcma.Data.Azure.CosmosDb.csproj", "{3FA14B8F-9357-460D-B661-9F139320FC01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Data.Azure.CosmosDb", "Azure\Mcma.Data.Azure.CosmosDb\Mcma.Data.Azure.CosmosDb.csproj", "{3FA14B8F-9357-460D-B661-9F139320FC01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Data.Aws.DynamoDb", "AWS\Mcma.Data.Aws.DynamoDb\Mcma.Data.Aws.DynamoDb.csproj", "{25F07526-CA81-4116-A4AD-DCA4AC4DDF9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Data.Aws.DynamoDb", "AWS\Mcma.Data.Aws.DynamoDb\Mcma.Data.Aws.DynamoDb.csproj", "{25F07526-CA81-4116-A4AD-DCA4AC4DDF9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Client.Azure", "Azure\Mcma.Client.Azure\Mcma.Client.Azure.csproj", "{3E1B8ECC-9F1E-4D53-9B84-F686FA4E2E0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Client.Azure", "Azure\Mcma.Client.Azure\Mcma.Client.Azure.csproj", "{3E1B8ECC-9F1E-4D53-9B84-F686FA4E2E0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Api.Azure.FunctionApp", "Azure\Mcma.Api.Azure.FunctionApp\Mcma.Api.Azure.FunctionApp.csproj", "{04E712B4-E5B3-47FF-BC29-126E1AAB27AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Api.Azure.FunctionApp", "Azure\Mcma.Api.Azure.FunctionApp\Mcma.Api.Azure.FunctionApp.csproj", "{04E712B4-E5B3-47FF-BC29-126E1AAB27AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Logging.Azure.ApplicationInsights", "Azure\Mcma.Logging.Azure.ApplicationInsights\Mcma.Logging.Azure.ApplicationInsights.csproj", "{DD314B7D-2FC4-4CC5-80D4-5E587EE6B505}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Logging.Azure.ApplicationInsights", "Azure\Mcma.Logging.Azure.ApplicationInsights\Mcma.Logging.Azure.ApplicationInsights.csproj", "{DD314B7D-2FC4-4CC5-80D4-5E587EE6B505}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Storage.Azure.BlobStorage", "Azure\Mcma.Storage.Azure.BlobStorage\Mcma.Storage.Azure.BlobStorage.csproj", "{531147C0-B0EC-4E10-B885-468302120AFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Storage.Azure.BlobStorage", "Azure\Mcma.Storage.Azure.BlobStorage\Mcma.Storage.Azure.BlobStorage.csproj", "{531147C0-B0EC-4E10-B885-468302120AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Serialization.Aws", "AWS\Mcma.Serialization.Aws\Mcma.Serialization.Aws.csproj", "{3CC2FBB2-7E03-4AF4-8BE7-9C7C648BAD03}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Serialization.Aws", "AWS\Mcma.Serialization.Aws\Mcma.Serialization.Aws.csproj", "{3CC2FBB2-7E03-4AF4-8BE7-9C7C648BAD03}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Data", "Base\Mcma.Data\Mcma.Data.csproj", "{43B40974-4B31-4418-9C33-37458B66AE89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Data", "Base\Mcma.Data\Mcma.Data.csproj", "{43B40974-4B31-4418-9C33-37458B66AE89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.WorkerInvoker", "Base\Mcma.WorkerInvoker\Mcma.WorkerInvoker.csproj", "{2A3BD75A-4478-4425-804A-BA9C3E5AF336}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.WorkerInvoker", "Base\Mcma.WorkerInvoker\Mcma.WorkerInvoker.csproj", "{2A3BD75A-4478-4425-804A-BA9C3E5AF336}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.WorkerInvoker.Azure.QueueStorage", "Azure\Mcma.WorkerInvoker.Azure.QueueStorage\Mcma.WorkerInvoker.Azure.QueueStorage.csproj", "{3E9D1C58-99E0-4900-9E45-C436D2314ABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.WorkerInvoker.Azure.QueueStorage", "Azure\Mcma.WorkerInvoker.Azure.QueueStorage\Mcma.WorkerInvoker.Azure.QueueStorage.csproj", "{3E9D1C58-99E0-4900-9E45-C436D2314ABC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Aws.ApiHandler", "AWS\Mcma.Functions.Aws.ApiHandler\Mcma.Functions.Aws.ApiHandler.csproj", "{BFCD78BF-F4A0-4E37-9A8A-43636E9A590E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Aws.ApiHandler", "AWS\Mcma.Functions.Aws.ApiHandler\Mcma.Functions.Aws.ApiHandler.csproj", "{BFCD78BF-F4A0-4E37-9A8A-43636E9A590E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Aws", "AWS\Mcma.Functions.Aws\Mcma.Functions.Aws.csproj", "{CA00DE86-8628-4453-BC5C-70ECCABE04DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Aws", "AWS\Mcma.Functions.Aws\Mcma.Functions.Aws.csproj", "{CA00DE86-8628-4453-BC5C-70ECCABE04DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Aws.Worker", "AWS\Mcma.Functions.Aws.Worker\Mcma.Functions.Aws.Worker.csproj", "{72FAA372-0AB1-44F5-976F-2CB67B286970}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Aws.Worker", "AWS\Mcma.Functions.Aws.Worker\Mcma.Functions.Aws.Worker.csproj", "{72FAA372-0AB1-44F5-976F-2CB67B286970}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Azure.ApiHandler", "Azure\Mcma.Functions.Azure.ApiHandler\Mcma.Functions.Azure.ApiHandler.csproj", "{E34B9378-BA4B-4CFD-9F6D-B2CB8A02D52D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Azure.ApiHandler", "Azure\Mcma.Functions.Azure.ApiHandler\Mcma.Functions.Azure.ApiHandler.csproj", "{E34B9378-BA4B-4CFD-9F6D-B2CB8A02D52D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Azure.Worker", "Azure\Mcma.Functions.Azure.Worker\Mcma.Functions.Azure.Worker.csproj", "{8440BE55-0550-431E-9832-C9D402E100F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Azure.Worker", "Azure\Mcma.Functions.Azure.Worker\Mcma.Functions.Azure.Worker.csproj", "{8440BE55-0550-431E-9832-C9D402E100F9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GoogleCloud", "GoogleCloud", "{E2378BD4-7769-4697-9019-22FED3DD78DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Client.Google", "GoogleCloud\Mcma.Client.Google\Mcma.Client.Google.csproj", "{C9174D60-5BD3-4789-9C79-947E701745D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Client.Google", "GoogleCloud\Mcma.Client.Google\Mcma.Client.Google.csproj", "{C9174D60-5BD3-4789-9C79-947E701745D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Logging.Google.CloudLogging", "GoogleCloud\Mcma.Logging.Google.CloudLogging\Mcma.Logging.Google.CloudLogging.csproj", "{D0C2F65B-CB6C-47C6-95F1-539F242606B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Logging.Google.CloudLogging", "GoogleCloud\Mcma.Logging.Google.CloudLogging\Mcma.Logging.Google.CloudLogging.csproj", "{D0C2F65B-CB6C-47C6-95F1-539F242606B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Common.Google", "GoogleCloud\Mcma.Common.Google\Mcma.Common.Google.csproj", "{932EFC50-03C7-414A-9562-9E08D592BBB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Common.Google", "GoogleCloud\Mcma.Common.Google\Mcma.Common.Google.csproj", "{932EFC50-03C7-414A-9562-9E08D592BBB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Data.Google.Firestore", "GoogleCloud\Mcma.Data.Google.Firestore\Mcma.Data.Google.Firestore.csproj", "{09EFE553-6D4C-4523-B3D6-7B75F050F299}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Data.Google.Firestore", "GoogleCloud\Mcma.Data.Google.Firestore\Mcma.Data.Google.Firestore.csproj", "{09EFE553-6D4C-4523-B3D6-7B75F050F299}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Storage.Google.CloudStorage", "GoogleCloud\Mcma.Storage.Google.CloudStorage\Mcma.Storage.Google.CloudStorage.csproj", "{E87003A2-4061-4F10-A861-0ED9E4FB96D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Storage.Google.CloudStorage", "GoogleCloud\Mcma.Storage.Google.CloudStorage\Mcma.Storage.Google.CloudStorage.csproj", "{E87003A2-4061-4F10-A861-0ED9E4FB96D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.WorkerInvoker.Google.PubSub", "GoogleCloud\Mcma.WorkerInvoker.Google.PubSub\Mcma.WorkerInvoker.Google.PubSub.csproj", "{3A564901-699D-438C-8A4D-0E40D8D23368}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.WorkerInvoker.Google.PubSub", "GoogleCloud\Mcma.WorkerInvoker.Google.PubSub\Mcma.WorkerInvoker.Google.PubSub.csproj", "{3A564901-699D-438C-8A4D-0E40D8D23368}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Api.Google.CloudFunctions", "GoogleCloud\Mcma.Api.Google.CloudFunctions\Mcma.Api.Google.CloudFunctions.csproj", "{F1A3038E-C8ED-49BB-951E-0673D0ACB2A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Api.Google.CloudFunctions", "GoogleCloud\Mcma.Api.Google.CloudFunctions\Mcma.Api.Google.CloudFunctions.csproj", "{F1A3038E-C8ED-49BB-951E-0673D0ACB2A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Google.ApiHandler", "GoogleCloud\Mcma.Functions.Google.ApiHandler\Mcma.Functions.Google.ApiHandler.csproj", "{9CF5CC84-86AF-448F-9E48-9237E249577D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Google.ApiHandler", "GoogleCloud\Mcma.Functions.Google.ApiHandler\Mcma.Functions.Google.ApiHandler.csproj", "{9CF5CC84-86AF-448F-9E48-9237E249577D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Functions.Google.Worker", "GoogleCloud\Mcma.Functions.Google.Worker\Mcma.Functions.Google.Worker.csproj", "{57CE41CD-D029-4FBE-BFCB-5FC8DA9A04A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Functions.Google.Worker", "GoogleCloud\Mcma.Functions.Google.Worker\Mcma.Functions.Google.Worker.csproj", "{57CE41CD-D029-4FBE-BFCB-5FC8DA9A04A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Storage", "Base\Mcma.Storage\Mcma.Storage.csproj", "{ADFF8D1A-0D97-4BB3-8823-1A885B9B8D20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Storage", "Base\Mcma.Storage\Mcma.Storage.csproj", "{ADFF8D1A-0D97-4BB3-8823-1A885B9B8D20}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generic", "Generic", "{C2EF2C3A-976E-4C15-8EDF-11667E28879B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Api.AspNetCore", "Generic\Mcma.Api.AspNetCore\Mcma.Api.AspNetCore.csproj", "{A7153F2C-D5D6-4D35-972D-624B3E9FBC2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Api.AspNetCore", "Generic\Mcma.Api.AspNetCore\Mcma.Api.AspNetCore.csproj", "{A7153F2C-D5D6-4D35-972D-624B3E9FBC2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Data.MongoDB", "Generic\Mcma.Data.MongoDB\Mcma.Data.MongoDB.csproj", "{5799E1BB-7D39-433B-8656-0E15D367D894}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Data.MongoDB", "Generic\Mcma.Data.MongoDB\Mcma.Data.MongoDB.csproj", "{5799E1BB-7D39-433B-8656-0E15D367D894}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Logging.Serilog", "Generic\Mcma.Logging.Serilog\Mcma.Logging.Serilog.csproj", "{D134B71D-1511-4EE3-BB89-6094DAA78740}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Logging.Serilog", "Generic\Mcma.Logging.Serilog\Mcma.Logging.Serilog.csproj", "{D134B71D-1511-4EE3-BB89-6094DAA78740}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.WorkerInvoker.Hangfire", "Generic\Mcma.WorkerInvoker.Hangfire\Mcma.WorkerInvoker.Hangfire.csproj", "{E716940A-48E3-45D3-80E8-10CC758EC9A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.WorkerInvoker.Hangfire", "Generic\Mcma.WorkerInvoker.Hangfire\Mcma.WorkerInvoker.Hangfire.csproj", "{E716940A-48E3-45D3-80E8-10CC758EC9A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Storage.LocalFileSystem", "Generic\Mcma.Storage.LocalFileSystem\Mcma.Storage.LocalFileSystem.csproj", "{E9FE92BE-9656-4A75-8726-58757D691A1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Storage.LocalFileSystem", "Generic\Mcma.Storage.LocalFileSystem\Mcma.Storage.LocalFileSystem.csproj", "{E9FE92BE-9656-4A75-8726-58757D691A1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Worker.Common", "Base\Mcma.Worker.Common\Mcma.Worker.Common.csproj", "{37135394-4DA3-4D38-942E-FBCA4097DB58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Worker.Common", "Base\Mcma.Worker.Common\Mcma.Worker.Common.csproj", "{37135394-4DA3-4D38-942E-FBCA4097DB58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Worker.Hangfire", "Generic\Mcma.Worker.Hangfire\Mcma.Worker.Hangfire.csproj", "{507E1310-ADF7-4CEB-ADDE-E6F6E8B457DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Worker.Hangfire", "Generic\Mcma.Worker.Hangfire\Mcma.Worker.Hangfire.csproj", "{507E1310-ADF7-4CEB-ADDE-E6F6E8B457DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.WorkerInvoker.Kafka", "Generic\Mcma.WorkerInvoker.Kafka\Mcma.WorkerInvoker.Kafka.csproj", "{6A2F2F2B-A0DF-49B3-B341-811206D28174}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.WorkerInvoker.Kafka", "Generic\Mcma.WorkerInvoker.Kafka\Mcma.WorkerInvoker.Kafka.csproj", "{6A2F2F2B-A0DF-49B3-B341-811206D28174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Worker.Kafka", "Generic\Mcma.Worker.Kafka\Mcma.Worker.Kafka.csproj", "{0671AE0F-575A-4976-B17C-24A7D84B0323}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Worker.Kafka", "Generic\Mcma.Worker.Kafka\Mcma.Worker.Kafka.csproj", "{0671AE0F-575A-4976-B17C-24A7D84B0323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcma.Kafka", "Generic\Mcma.Kafka\Mcma.Kafka.csproj", "{483A69D1-BB4D-41F7-9A30-BA3DB9EDB29B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mcma.Kafka", "Generic\Mcma.Kafka\Mcma.Kafka.csproj", "{483A69D1-BB4D-41F7-9A30-BA3DB9EDB29B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EAD8CF8C-839E-4097-AEF1-1C0F398D489C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,9 +114,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{81FCC0AC-ABBB-4CEB-BB98-90466B656B79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -643,7 +645,13 @@ Global
 		{483A69D1-BB4D-41F7-9A30-BA3DB9EDB29B}.Release|x86.ActiveCfg = Release|Any CPU
 		{483A69D1-BB4D-41F7-9A30-BA3DB9EDB29B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{81FCC0AC-ABBB-4CEB-BB98-90466B656B79} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
+		{0D8F516C-B629-4A0B-96A0-B25CF32761B9} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
+		{FF6C5ED4-A7D4-496D-91CF-8212B86B0027} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
 		{06704473-C3D8-4828-A43B-2B5A8107CFFF} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
 		{924DE0CA-93C1-4FE5-A218-E58913AC20EA} = {37C583C4-C959-4CC1-BEB2-DC0904254931}
 		{293D6608-36B6-4BC5-AD1C-E65785D31410} = {37C583C4-C959-4CC1-BEB2-DC0904254931}
@@ -657,9 +665,6 @@ Global
 		{DD314B7D-2FC4-4CC5-80D4-5E587EE6B505} = {F5980A90-70CE-4FF9-8244-72C3FBD8805E}
 		{531147C0-B0EC-4E10-B885-468302120AFF} = {F5980A90-70CE-4FF9-8244-72C3FBD8805E}
 		{3CC2FBB2-7E03-4AF4-8BE7-9C7C648BAD03} = {37C583C4-C959-4CC1-BEB2-DC0904254931}
-		{81FCC0AC-ABBB-4CEB-BB98-90466B656B79} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
-		{FF6C5ED4-A7D4-496D-91CF-8212B86B0027} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
-		{0D8F516C-B629-4A0B-96A0-B25CF32761B9} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
 		{43B40974-4B31-4418-9C33-37458B66AE89} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
 		{2A3BD75A-4478-4425-804A-BA9C3E5AF336} = {6C63836C-5CA4-4ADD-A16F-2881FD161E00}
 		{3E9D1C58-99E0-4900-9E45-C436D2314ABC} = {F5980A90-70CE-4FF9-8244-72C3FBD8805E}

@@ -13,7 +13,7 @@ public class McmaClientBuilder
 
         Services.AddOptions()
                 .AddSingleton<IAuthProvider, AuthProvider>()
-                .AddSingleton(provider => provider.GetRequiredService<IResourceManagerProvider>().Get())
+                .AddSingleton(provider => provider.GetRequiredService<IResourceManagerProvider>().GetDefault())
                 .AddHttpClient<IResourceManagerProvider, ResourceManagerProvider>();
     }
         

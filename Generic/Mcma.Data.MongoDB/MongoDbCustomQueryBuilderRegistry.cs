@@ -10,7 +10,7 @@ public class MongoDbCustomQueryBuilderRegistry : ICustomQueryBuilderRegistry<Fil
 {
     public MongoDbCustomQueryBuilderRegistry(IEnumerable<ICustomQueryBuilder> queryBuilders)
     {
-        QueryBuilders = queryBuilders?.ToArray() ?? Array.Empty<ICustomQueryBuilder>();
+        QueryBuilders = queryBuilders?.ToArray() ?? [];
     }
 
     private ICustomQueryBuilder[] QueryBuilders { get; }
