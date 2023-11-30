@@ -10,6 +10,8 @@ public static class McmaEnvironmentVariables
     /// </summary>
     public const string Prefix = "MCMA_";
 
+    public static string GetKey(string key) => Prefix + key;
+
     /// <summary>
     /// Gets the value for an "MCMA_" prefixed environment variable
     /// </summary>

@@ -30,7 +30,7 @@ public class Aws4AuthOptions
             throw new McmaException($"The following properties are not set in the AWS4 auth options: {string.Join(", ", missingFields)}");
     }
 
-    public static void ConfigureFromEnvironmentVariables(Aws4AuthOptions options)
+    public static void ConfigureFromEnvVars(Aws4AuthOptions options)
     {
         options.AccessKey = AwsEnvironmentVariables.AccessKey;
         options.SecretKey = AwsEnvironmentVariables.SecretKey;
@@ -57,7 +57,7 @@ public class Aws4AuthOptions
     {
         var opts = new Aws4AuthOptions();
 
-        ConfigureFromEnvironmentVariables(opts);
+        ConfigureFromEnvVars(opts);
 
         return opts;
     }

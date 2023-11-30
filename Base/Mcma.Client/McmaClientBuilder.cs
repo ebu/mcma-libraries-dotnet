@@ -27,7 +27,7 @@ public class McmaClientBuilder
         return this;
     }
 
-    public McmaClientBuilder ConfigureDefaults(Action<ResourceManagerOptions> configureDefaults)
+    public McmaClientBuilder ConfigureResourceManagerDefaults(Action<ResourceManagerOptions> configureDefaults)
     {
         Services.Configure<ResourceManagerProviderOptions>(opts =>
         {
@@ -38,14 +38,16 @@ public class McmaClientBuilder
         return this;
     }
 
-    public McmaClientBuilder ConfigureDefaults(string serviceRegistryUrl = null, string serviceRegistryAuthType = null, string serviceRegistryAuthContext = null)
+    public McmaClientBuilder ConfigureResourceManagerDefaults(string serviceRegistryUrl, string serviceRegistryAuthType = null, string serviceRegistryAuthContext = null)
     {
-        serviceRegistryUrl ??= McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl;
-            
-        Services.Configure<ResourceManagerProviderOptions>(
-            opts =>
-                opts.DefaultOptions = new ResourceManagerOptions(serviceRegistryUrl, serviceRegistryAuthType, serviceRegistryAuthContext));
+        if (string.IsNullOrWhiteSpace(serviceRegistryUrl))
+            throw new ArgumentException($"'{nameof(serviceRegistryUrl)}' cannot be null or whitespace.", nameof(serviceRegistryUrl));
 
-        return this;
+        return ConfigureResourceManagerDefaults(o =>
+        {
+            o.ServiceRegistryUrl = serviceRegistryUrl;
+            o.ServiceRegistryAuthType = serviceRegistryAuthType;
+            o.ServiceRegistryAuthContext = serviceRegistryAuthContext;
+        });
     }
 }

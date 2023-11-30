@@ -1,17 +1,25 @@
 ﻿
 namespace Mcma.Client.Auth;
 
-public readonly struct AuthenticatorKey(string AuthType, string ServiceName = null, string ResourceType = null)
+public class AuthenticatorKey
 {
     public const string Wildcard = "*";
 
-    public string AuthType { get; } = AuthType ?? throw new ArgumentNullException(nameof(AuthType));
+    public AuthenticatorKey(string authType, string serviceName = null, string resourceType = null)
+    {
+        AuthType = authType ?? throw new ArgumentNullException(nameof(authType));
+        ServiceName = !string.IsNullOrWhiteSpace(serviceName) ? serviceName : Wildcard;
+        ResourceType = !string.IsNullOrWhiteSpace(resourceType) ? resourceType : Wildcard;
+        Key = $"{AuthType}/{ServiceName}/{ResourceType}";
+    }
 
-    public string ServiceName { get; } = ServiceName ?? Wildcard;
+    public string AuthType { get; }
 
-    public string ResourceType { get; } = ResourceType ?? Wildcard;
+    public string ServiceName { get; }
 
-    public string Key { get; } = $"{AuthType}/{ServiceName ?? Wildcard}/{ResourceType ?? Wildcard}";
+    public string ResourceType { get; }
+
+    public string Key { get; }
 
     public static implicit operator string(AuthenticatorKey key) => key.Key;
 

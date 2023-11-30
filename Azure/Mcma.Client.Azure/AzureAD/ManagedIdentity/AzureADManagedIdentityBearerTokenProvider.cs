@@ -1,21 +1,15 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Mcma.Client.Auth;
 using Mcma.Client.Auth.AccessTokens;
 using Microsoft.Azure.Services.AppAuthentication;
-using Microsoft.Extensions.Options;
 
 namespace Mcma.Client.Azure.AzureAD.ManagedIdentity;
 
 public class AzureADManagedIdentityBearerTokenProvider : IBearerTokenProvider
 {
-    public AzureADManagedIdentityBearerTokenProvider(
-        AuthenticatorKey key,
-        IOptionsSnapshot<AzureADManagedIdentityOptions> managedIdentityOptionsSnapshot)
-    {
-        var managedIdentityOptions = managedIdentityOptionsSnapshot.Get(key.ToString());
-        
+    public AzureADManagedIdentityBearerTokenProvider(AzureADManagedIdentityOptions managedIdentityOptions)
+    {   
         AzureServiceTokenProvider =
             managedIdentityOptions.AzureAdInstance != null
                 ? new AzureServiceTokenProvider(managedIdentityOptions.ConnectionString, managedIdentityOptions.AzureAdInstance)

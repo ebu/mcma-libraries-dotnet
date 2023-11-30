@@ -2,16 +2,13 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Mcma.Client.Auth;
-using Microsoft.Extensions.Options;
 
 namespace Mcma.Client.Azure.FunctionKeys;
 
 public class AzureFunctionKeyAuthenticator : IAuthenticator
 {
-    public AzureFunctionKeyAuthenticator(AuthenticatorKey key, IOptionsSnapshot<AzureFunctionKeyOptions> optionsSnapshot)
+    public AzureFunctionKeyAuthenticator(AzureFunctionKeyOptions options)
     {
-        var options = optionsSnapshot.Get(key.ToString());
-
         FunctionKey = options.FunctionKey;
     }
 

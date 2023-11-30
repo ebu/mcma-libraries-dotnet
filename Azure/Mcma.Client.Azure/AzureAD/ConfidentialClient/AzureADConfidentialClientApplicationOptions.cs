@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Identity.Client;
 
 namespace Mcma.Client.Azure.AzureAD.ConfidentialClient;
