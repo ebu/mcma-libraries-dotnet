@@ -4,10 +4,11 @@ namespace Mcma.Client;
 
 public static class McmaClientServiceCollectionExtensions
 {
-    public static IServiceCollection AddMcmaClient(this IServiceCollection services, Action<McmaClientBuilder> build = null)
+    public static IServiceCollection AddMcmaClient(this IServiceCollection services, Action<McmaClientBuilder> configure = null)
     {
         var builder = new McmaClientBuilder(services);
-        build?.Invoke(builder);
+        configure ??= x => x.AddDefaultResourceManagerFromEnvVars();
+        configure(builder);
         return services;
     }
 }

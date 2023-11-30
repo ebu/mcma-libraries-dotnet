@@ -1,6 +1,7 @@
 ﻿using Mcma.Client.Auth;
 using Mcma.Client.Resources;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Client;
 
@@ -11,43 +12,42 @@ public class McmaClientBuilder
         Services = services ?? throw new ArgumentNullException(nameof(services));
         Auth = new AuthenticatorRegistry(services);
 
-        Services.AddOptions()
+        services.AddOptions()
                 .AddSingleton<IAuthProvider, AuthProvider>()
-                .AddSingleton(provider => provider.GetRequiredService<IResourceManagerProvider>().GetDefault())
-                .AddHttpClient<IResourceManagerProvider, ResourceManagerProvider>();
+                .AddSingleton(provider => provider.GetRequiredService<IResourceManagerProvider>().Get())
+                .AddSingleton<IResourceManagerProvider, ResourceManagerProvider>();
     }
-        
-    public IServiceCollection Services { get; }
-        
-    public AuthenticatorRegistry Auth { get; }
 
-    public McmaClientBuilder Configure(Action<ResourceManagerProviderOptions> configure)
+    private IServiceCollection Services { get; }
+
+    private AuthenticatorRegistry Auth { get; }
+
+    internal bool IsDefaultResourceManagerConfigured { get; private set; }
+
+    public McmaClientBuilder AddAuth(Action<AuthenticatorRegistry> addAuth)
     {
-        Services.Configure(configure);
+        if (addAuth is null)
+            throw new ArgumentNullException(nameof(addAuth));
+
+        addAuth(Auth);
         return this;
     }
 
-    public McmaClientBuilder ConfigureResourceManagerDefaults(Action<ResourceManagerOptions> configureDefaults)
+    public McmaClientBuilder AddResourceManager(string name, Action<ResourceManagerBuilder> configure)
     {
-        Services.Configure<ResourceManagerProviderOptions>(opts =>
-        {
-            opts.DefaultOptions = new ResourceManagerOptions();
-            configureDefaults(opts.DefaultOptions);
-        });
+        if (configure is null)
+            throw new ArgumentNullException(nameof(configure));
 
+        configure(new ResourceManagerBuilder(Services, name));
         return this;
     }
 
-    public McmaClientBuilder ConfigureResourceManagerDefaults(string serviceRegistryUrl, string serviceRegistryAuthType = null, string serviceRegistryAuthContext = null)
+    public McmaClientBuilder AddDefaultResourceManager(Action<ResourceManagerBuilder> configure)
     {
-        if (string.IsNullOrWhiteSpace(serviceRegistryUrl))
-            throw new ArgumentException($"'{nameof(serviceRegistryUrl)}' cannot be null or whitespace.", nameof(serviceRegistryUrl));
-
-        return ConfigureResourceManagerDefaults(o =>
-        {
-            o.ServiceRegistryUrl = serviceRegistryUrl;
-            o.ServiceRegistryAuthType = serviceRegistryAuthType;
-            o.ServiceRegistryAuthContext = serviceRegistryAuthContext;
-        });
+        IsDefaultResourceManagerConfigured = true;
+        return AddResourceManager(Options.DefaultName, configure);
     }
+
+    public McmaClientBuilder AddDefaultResourceManagerFromEnvVars()
+        => AddDefaultResourceManager(x => x.Options.Configure(ResourceManagerOptions.ConfigureFromEnvVars));
 }

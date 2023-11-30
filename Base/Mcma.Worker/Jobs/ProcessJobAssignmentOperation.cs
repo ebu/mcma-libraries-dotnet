@@ -42,7 +42,7 @@ public class ProcessJobAssignmentOperation<TJob> : McmaWorkerOperation<ProcessJo
 
         var logger = requestContext.Logger;
 
-        var jobAssignmentHelper = new ProcessJobAssignmentHelper<TJob>(DbTable, ResourceManagerProvider.GetDefault(requestContext.Tracker), requestContext);
+        var jobAssignmentHelper = new ProcessJobAssignmentHelper<TJob>(DbTable, ResourceManagerProvider.Get(requestContext.Tracker), requestContext);
 
         try
         {

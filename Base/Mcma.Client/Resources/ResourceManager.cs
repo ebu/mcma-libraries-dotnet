@@ -7,9 +7,9 @@ using Mcma.Serialization;
 
 namespace Mcma.Client.Resources;
 
-internal class ResourceManager : IResourceManager
+public class ResourceManager : IResourceManager
 {
-    internal ResourceManager(IAuthProvider authProvider, HttpClient httpClient, ResourceManagerOptions options, McmaTracker tracker)
+    public ResourceManager(IAuthProvider authProvider, HttpClient httpClient, ResourceManagerOptions options, McmaTracker tracker = null)
     {
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));

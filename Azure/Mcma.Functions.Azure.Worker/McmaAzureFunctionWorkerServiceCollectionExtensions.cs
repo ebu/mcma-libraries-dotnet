@@ -24,7 +24,7 @@ public static class McmaAzureFunctionWorkerServiceCollectionExtensions
             services.AddMcmaAppInsightsLogging(applicationName)
                     .AddMcmaCosmosDb(configureCosmosDb)
                     .AddMcmaBlobStorageClient(configureBlobStorageClient)
-                    .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAzureADManagedIdentityAuth())
+                    .AddMcmaClient(clientBuilder => clientBuilder.AddAuth(x => x.TryAddAzureADManagedIdentityAuth()))
                     .AddMcmaWorker(buildWorker);
 
     public static IServiceCollection AddMcmaAzureFunctionJobAssignmentWorker<TJob>(this IServiceCollection services,
@@ -37,7 +37,7 @@ public static class McmaAzureFunctionWorkerServiceCollectionExtensions
         => services.AddMcmaAppInsightsLogging(applicationName)
                    .AddMcmaCosmosDb(configureCosmosDb)
                    .AddMcmaBlobStorageClient(configureBlobStorageClient)
-                   .AddMcmaClient(clientBuilder => clientBuilder.Auth.TryAddAzureADManagedIdentityAuth())
+                   .AddMcmaClient(clientBuilder => clientBuilder.AddAuth(x => x.TryAddAzureADManagedIdentityAuth()))
                    .AddMcmaWorker(workerBuilder =>
                    {
                        workerBuilder.AddProcessJobAssignmentOperation(addProfiles);

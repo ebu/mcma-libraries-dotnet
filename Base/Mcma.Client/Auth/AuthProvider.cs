@@ -9,17 +9,14 @@ public class AuthProvider : IAuthProvider
 
     private List<AuthenticatorRegistration> AuthenticatorRegistrations { get; }
 
-    //public AuthProvider Add<T>(IAuthenticator authenticator) where T : AuthenticatorKey, new()
-    //    => Add(new T(), authenticator);
+    public AuthProvider Add<T>(IAuthenticator authenticator) where T : AuthenticatorKey, new()
+        => Add(new T(), authenticator);
 
-    //public AuthProvider Add(AuthenticatorKey key, IAuthenticator authenticator)
-    //{
-    //    AuthenticatorRegistrations.Add(new(key, authenticator));
-    //    return this;
-    //}
-
-    public void Add(AuthenticatorKey key, IAuthenticator authenticator)
-        => AuthenticatorRegistrations.Add(new(key, authenticator));
+    public AuthProvider Add(AuthenticatorKey key, IAuthenticator authenticator)
+    {
+        AuthenticatorRegistrations.Add(new(key, authenticator));
+        return this;
+    }
 
     public IAuthenticator Get(string authType, string serviceName, string resourceType)
     {

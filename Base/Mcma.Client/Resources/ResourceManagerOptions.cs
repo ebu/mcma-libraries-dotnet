@@ -12,7 +12,7 @@ public class ResourceManagerOptions
         ServiceRegistryAuthType = serviceRegistryAuthType;
         ServiceRegistryAuthContext = serviceRegistryAuthContext;
     }
-        
+
     public string ServiceRegistryUrl { get; set;  }
 
     public string ServiceRegistryAuthType { get; set; }
@@ -25,8 +25,10 @@ public class ResourceManagerOptions
             throw new McmaException($"Invalid services url: {ServiceRegistryUrl}");
     }
 
-    public static ResourceManagerOptions FromEnvironmentVariables()
-        => new(McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl ?? "",
-               McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthType,
-               McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthContext);
+    public static void ConfigureFromEnvVars(ResourceManagerOptions options)
+    {
+        options.ServiceRegistryUrl = McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl ?? "";
+        options.ServiceRegistryAuthType = McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthType;
+        options.ServiceRegistryAuthContext = McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthContext;
+    }
 }
