@@ -5,6 +5,14 @@ namespace Mcma.Storage.Aws.S3;
 
 public class S3Locator : Locator
 {
+    private S3Locator(S3ParsedUrl parsedUrl)
+    {
+        ParsedUrl = new Lazy<S3ParsedUrl>(() => parsedUrl);
+    }
+
+    /// <summary>
+    /// Instantiates a new <see cref="S3Locator"/>
+    /// </summary>
     public S3Locator()
     {
         ParsedUrl = new Lazy<S3ParsedUrl>(() => S3ParsedUrl.Parse(Url));
@@ -33,4 +41,17 @@ public class S3Locator : Locator
     /// <param name="url"></param>
     /// <returns></returns>
     public static bool IsValidUrl(string url) => S3ParsedUrl.TryParse(url, out _);
+
+    /// <summary>
+    /// Tries to create a <see cref="S3Locator" /> from a url
+    /// </summary>
+    /// <param name="url">The url to try parsing</param>
+    /// <param name="locator">The newly-created <see cref="S3Locator"/> if the url was parsed successfully, or null if it was not</param>
+    /// <returns>True if the url was parsed and a <see cref="S3Locator"/> was created successfully; otherwise, false</returns>
+    public static bool TryCreate(string url, out S3Locator locator)
+    {
+        var parsed = S3ParsedUrl.TryParse(url, out var parsedUrl);
+        locator = parsed ? new(parsedUrl) : default;
+        return parsed;
+    }
 }

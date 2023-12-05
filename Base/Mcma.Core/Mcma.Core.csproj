@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.13</PackageVersion>
+    <PackageVersion>0.14.14</PackageVersion>
     <Title>MCMA Core (.NET)</Title>
     <Description>Library containing type definitions and helper utilities for the MCMA framework</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
