@@ -15,4 +15,6 @@ public class CloudStorageLocator : Locator
     public string Bucket => ParsedUrl.Value.Bucket;
         
     public string Name => ParsedUrl.Value.Name;
+
+    public static bool IsValidUrl(string url) => CloudStorageParsedUrl.TryParse(url, out _);
 }

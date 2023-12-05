@@ -28,4 +28,11 @@ public class BlobStorageLocator : Locator
     /// </summary>
     /// <returns></returns>
     public string Path => ParsedUrl.Value.Path;
+
+    /// <summary>
+    /// Checks if the provided url is a valid Blob Storage url by trying to parse it
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public static bool IsValidUrl(string url) => BlobStorageParsedUrl.TryParse(url, out _);
 }

@@ -26,4 +26,11 @@ public class S3Locator : Locator
     /// Gets the region of the bucket in which the S3 object resides
     /// </summary>
     public string Region => ParsedUrl.Value.Region;
+
+    /// <summary>
+    /// Checks if the provided url is a valid S3 url by trying to parse it
+    /// </summary>
+    /// <param name="url"></param>
+    /// <returns></returns>
+    public static bool IsValidUrl(string url) => S3ParsedUrl.TryParse(url, out _);
 }
