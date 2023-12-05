@@ -65,8 +65,12 @@ public static class McmaJson
             
         if (typeProperty == null)
             return objectType ?? typeof(McmaExpandoObject);
-            
+
         var typeString = typeProperty.Value.Value<string>();
+
+        // if the provided type name matches the type from the json, just use that
+        if (objectType != null && string.Equals(typeString, objectType.Name, StringComparison.OrdinalIgnoreCase))
+            return objectType;
 
         objectType = McmaTypes.FindType(typeString) ?? typeof(McmaObject);
             

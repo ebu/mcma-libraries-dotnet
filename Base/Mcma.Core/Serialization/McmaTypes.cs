@@ -60,7 +60,14 @@ public static class McmaTypes
             return null;
 
         // check for match in explicitly-provided type collection, then check for match in core types
-        return Types.FirstOrDefault(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase))
-               ?? Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeString) ?? typeString);
+        var matchingRegisteredTypes = Types.Where(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase)).ToArray();
+
+        return matchingRegisteredTypes.Length switch
+        {
+            0 => Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeString) ?? typeString),
+            1 => matchingRegisteredTypes[0],
+            _ => throw new McmaException($"The type name '{typeString}' is ambiguous between the following types:" + Environment.NewLine +
+                                         string.Join(Environment.NewLine, matchingRegisteredTypes.Select(t => t.AssemblyQualifiedName)))
+        };
     }
 }

@@ -4,7 +4,7 @@ public record AuthenticatorRegistration
 {
     public AuthenticatorRegistration(AuthenticatorKey key, IAuthenticator authenticator)
     {
-        Key = key;
+        Key = key ?? throw new ArgumentNullException(nameof(key));
         Authenticator = authenticator ?? throw new ArgumentNullException(nameof(authenticator));
     }
     

@@ -15,9 +15,9 @@ public class AuthenticatorKey
 
     public string AuthType { get; }
 
-    public string ServiceName { get; }
+    public string ServiceName { get; private set; }
 
-    public string ResourceType { get; }
+    public string ResourceType { get; private set; }
 
     public string Key { get; }
 
@@ -40,4 +40,7 @@ public class AuthenticatorKey
     public override bool Equals(object obj) => (obj is AuthenticatorKey key && key == this) || (obj is string keyString && keyString == this);
 
     public override int GetHashCode() => Key.GetHashCode();
+
+    public static TKey Create<TKey>(string serviceName = null, string resourceType = null) where TKey : AuthenticatorKey, new()
+        => new() { ServiceName = serviceName ?? Wildcard, ResourceType = resourceType ?? Wildcard };
 }

@@ -1,3 +1,6 @@
+#if NET48_OR_GREATER
+using System.Net.Http;
+#endif
 using Mcma.Client.Auth;
 using Mcma.Client.Http;
 using Mcma.Model;

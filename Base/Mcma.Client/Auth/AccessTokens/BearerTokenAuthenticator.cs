@@ -1,3 +1,6 @@
+#if NET48_OR_GREATER
+using System.Net.Http;
+#endif
 using System.Net.Http.Headers;
 
 namespace Mcma.Client.Auth.AccessTokens;

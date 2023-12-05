@@ -1,4 +1,8 @@
-﻿namespace Mcma.Client.Auth.ApiKey;
+﻿#if NET48_OR_GREATER
+using System.Net.Http;
+
+#endif
+namespace Mcma.Client.Auth.ApiKey;
 
 public class McmaApiKeyAuthenticator : IAuthenticator
 {

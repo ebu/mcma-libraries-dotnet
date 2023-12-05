@@ -1,4 +1,7 @@
-﻿using Mcma.Client.Auth;
+﻿#if NET48_OR_GREATER
+using System.Net.Http;
+#endif
+using Mcma.Client.Auth;
 using Mcma.Client.Resources;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -7,16 +10,34 @@ namespace Mcma.Client;
 
 public class McmaClientBuilder
 {
-    internal McmaClientBuilder(IServiceCollection services)
+    internal McmaClientBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
     {
         Services = services ?? throw new ArgumentNullException(nameof(services));
-        Auth = new AuthenticatorRegistry(services);
+        Auth = new AuthenticatorRegistry(services, serviceLifetime);
 
         services.AddOptions()
-                .AddSingleton<IAuthProvider, AuthProvider>()
-                .AddSingleton(provider => provider.GetRequiredService<IResourceManagerProvider>().Get())
-                .AddSingleton<IResourceManagerProvider, ResourceManagerProvider>();
+                .AddMcmaAuthentication(serviceLifetime);
+
+        services.Add(
+            ServiceDescriptor.Describe(
+                typeof(IResourceManagerProvider),
+                serviceLifetime == ServiceLifetime.Singleton ? GetSingletonResourceManagerProvider : GetScopedOrTransientResourceManagerProvider,
+                serviceLifetime));
+
+        services.Add(ServiceDescriptor.Describe(typeof(IResourceManager), provider => provider.GetRequiredService<IResourceManagerProvider>().Get(), serviceLifetime));
     }
+
+    private static IResourceManagerProvider GetSingletonResourceManagerProvider(IServiceProvider serviceProvider)
+        => new ResourceManagerProvider(
+            serviceProvider.GetRequiredService<IHttpClientFactory>(),
+            serviceProvider.GetRequiredService<IAuthProvider>(),
+            serviceProvider.GetRequiredService<IOptionsMonitor<ResourceManagerOptions>>());
+
+    private static IResourceManagerProvider GetScopedOrTransientResourceManagerProvider(IServiceProvider serviceProvider)
+        => new ResourceManagerProvider(
+            serviceProvider.GetRequiredService<IHttpClientFactory>(),
+            serviceProvider.GetRequiredService<IAuthProvider>(),
+            serviceProvider.GetRequiredService<IOptionsSnapshot<ResourceManagerOptions>>());
 
     private IServiceCollection Services { get; }
 

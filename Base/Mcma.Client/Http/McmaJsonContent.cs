@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if NET48_OR_GREATER
+using System.Net.Http;
+#endif
 using System.Text;
 using Mcma.Serialization;
 
