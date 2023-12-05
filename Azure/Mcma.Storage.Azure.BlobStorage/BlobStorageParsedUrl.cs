@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Mcma.Storage.Azure.BlobStorage;
 
-internal class BlobStorageParsedUrl
+public class BlobStorageParsedUrl
 {
     public const string BlobStorageDomain = ".blob.core.windows.net";
 

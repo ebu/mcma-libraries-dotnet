@@ -5,7 +5,7 @@ using Amazon;
 
 namespace Mcma.Storage.Aws.S3;
 
-internal class S3ParsedUrl
+public class S3ParsedUrl
 {
     public const string AwsDomain = ".amazonaws.com";
 

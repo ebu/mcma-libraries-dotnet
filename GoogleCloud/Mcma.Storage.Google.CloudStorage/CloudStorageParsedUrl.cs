@@ -2,7 +2,7 @@
 
 namespace Mcma.Storage.Google.CloudStorage;
 
-internal class CloudStorageParsedUrl
+public class CloudStorageParsedUrl
 {
     public const string CloudStorageDomain = "storage.googleapis.com";
 
