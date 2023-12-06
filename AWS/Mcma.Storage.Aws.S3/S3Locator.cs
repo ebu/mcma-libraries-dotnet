@@ -51,7 +51,7 @@ public class S3Locator : Locator
     public static bool TryCreate(string url, out S3Locator locator)
     {
         var parsed = S3ParsedUrl.TryParse(url, out var parsedUrl);
-        locator = parsed ? new(parsedUrl) : default;
+        locator = parsed ? new(parsedUrl) { Url = url } : default;
         return parsed;
     }
 }

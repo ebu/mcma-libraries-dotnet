@@ -33,7 +33,7 @@ public class McmaObjectConverter : JsonConverter
         {
             var jObj = JObject.Load(reader);
 
-            serializedType = McmaJson.GetSerializedType(jObj, objectType);
+            serializedType = McmaJson.GetSerializedType(jObj, objectType, serializer is McmaJsonSerializer mcmaJsonSerializer ? mcmaJsonSerializer.RootType : null);
             var dynamicObj = (IDictionary<string, object?>)Activator.CreateInstance(serializedType);
                 
             if (dynamicObj is McmaObject mcmaObj && serializedType == typeof(McmaObject))

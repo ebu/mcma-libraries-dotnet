@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime;
 using Mcma.Model;
 using Mcma.Utility;
 using Newtonsoft.Json;
@@ -23,7 +24,7 @@ public static class McmaJson
     /// <returns></returns>
     public static JsonSerializerSettings DefaultSettings() => DefaultSettings(false);
 
-    private static JsonSerializerSettings DefaultSettings(bool preserveCasing)
+    internal static JsonSerializerSettings DefaultSettings(bool preserveCasing)
     {
         var settings = new JsonSerializerSettings
         {
@@ -44,14 +45,23 @@ public static class McmaJson
         return settings;
     }
 
+    internal static McmaJsonSerializer McmaSerializer { get; } = new McmaJsonSerializer();
+
     /// <summary>
     /// Gets a statically-available <see cref="JsonSerializer"/> configured with MCMA defaults
     /// </summary>
-    public static JsonSerializer Serializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(false));
+    public static JsonSerializer Serializer { get; } = McmaSerializer;
 
-    private static JsonSerializer PreserveCasingSerializer { get; } = JsonSerializer.CreateDefault(DefaultSettings(true));
+    private static JsonSerializer PreserveCasingSerializer { get; } = new McmaJsonSerializer(false);
 
-    public static JToken? Parse(string json) => JsonConvert.DeserializeObject<JToken>(json, DefaultSettings());
+    public static JToken? Parse(string json)
+    {
+        var jsonSerializer = new McmaJsonSerializer();
+
+        using var reader = new JsonTextReader(new StringReader(json));
+
+        return (JToken?)jsonSerializer.Deserialize(reader, typeof(JToken));
+    }
 
     /// <summary>
     /// Gets the type of serialized object from a <see cref="JObject"/> by looking for a "@type" property and resolving it
@@ -59,7 +69,7 @@ public static class McmaJson
     /// <param name="jObj">The json object to inspect</param>
     /// <param name="objectType">The expected object type to fall back to, if any</param>
     /// <returns>The type of the serialized object</returns>
-    public static Type GetSerializedType(JObject? jObj, Type? objectType = null)
+    public static Type GetSerializedType(JObject? jObj, Type? objectType = null, Type? rootObjectType = null)
     {
         var typeProperty = jObj?.Property(TypePropertyName);
             
@@ -68,11 +78,7 @@ public static class McmaJson
 
         var typeString = typeProperty.Value.Value<string>();
 
-        // if the provided type name matches the type from the json, just use that
-        if (objectType != null && string.Equals(typeString, objectType.Name, StringComparison.OrdinalIgnoreCase))
-            return objectType;
-
-        objectType = McmaTypes.FindType(typeString) ?? typeof(McmaObject);
+        objectType = McmaTypes.FindType(typeString, objectType, rootObjectType) ?? typeof(McmaObject);
             
         typeProperty.Remove();
 
@@ -85,7 +91,7 @@ public static class McmaJson
     /// <param name="json">The json to convert</param>
     /// <typeparam name="T">The type of object to convert to</typeparam>
     /// <returns>The resulting <see cref="T"/> object</returns>
-    public static T? ToMcmaObject<T>(this JToken json) => json.ToObject<T>(Serializer);
+    public static T? ToMcmaObject<T>(this JToken json) => json.ToObject<T>(McmaSerializer.For<T>());
 
     /// <summary>
     /// Converts json represented as a <see cref="JToken"/> into an object using MCMA deserialization
@@ -93,7 +99,7 @@ public static class McmaJson
     /// <param name="json">The json to convert</param>
     /// <param name="type">The type of object to convert to. If not provided, it will be derived used the "@type" property if available.</param>
     /// <returns>The resulting object</returns>
-    public static object? ToMcmaObject(this JToken json, Type type) => json.ToObject(type, Serializer);
+    public static object? ToMcmaObject(this JToken json, Type type) => json.ToObject(type, McmaSerializer.For(type));
 
     /// <summary>
     /// Converts an object to a <see cref="JToken"/> using MCMA serialization

@@ -53,7 +53,7 @@ public class BlobStorageLocator : Locator
     public static bool TryCreate(string url, out BlobStorageLocator locator)
     {
         var parsed = BlobStorageParsedUrl.TryParse(url, out var parsedUrl);
-        locator = parsed ? new(parsedUrl) : default;
+        locator = parsed ? new(parsedUrl) { Url = url } : default;
         return parsed;
     }
 }
