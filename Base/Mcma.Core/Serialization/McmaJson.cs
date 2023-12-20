@@ -17,19 +17,21 @@ public static class McmaJson
     /// </summary>
     public const string TypePropertyName = "@type";
 
-    private static List<JsonConverter> Converters { get; } =
+    private static readonly JsonConverter[] DefaultConverters =
     [
         new StringEnumConverter(),
         new McmaObjectConverter(),
         new McmaExpandoObjectConverter()
     ];
 
+    private static List<JsonConverter> AddedConverters { get; } = [];
+
     /// <summary>
     /// Adds a converter to be used in MCMA json serialization
     /// </summary>
     /// <param name="jsonConverter">The converter to add</param>
     public static void AddConverter(JsonConverter jsonConverter)
-        => Converters.Add(jsonConverter);
+        => AddedConverters.Add(jsonConverter);
 
     /// <summary>
     /// Adds a converter to be used in MCMA json serialization
@@ -51,7 +53,7 @@ public static class McmaJson
             NullValueHandling = NullValueHandling.Ignore,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             DateParseHandling = DateParseHandling.DateTimeOffset,
-            Converters = Converters.ToList()
+            Converters = AddedConverters.Concat(DefaultConverters).ToList()
         };
 
         if (!preserveCasing)
