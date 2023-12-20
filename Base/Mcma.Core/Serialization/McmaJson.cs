@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Runtime;
 using Mcma.Model;
 using Mcma.Utility;
 using Newtonsoft.Json;
@@ -17,7 +16,28 @@ public static class McmaJson
     /// The @type property used in all MCMA objects
     /// </summary>
     public const string TypePropertyName = "@type";
-        
+
+    private static List<JsonConverter> Converters { get; } =
+    [
+        new StringEnumConverter(),
+        new McmaObjectConverter(),
+        new McmaExpandoObjectConverter()
+    ];
+
+    /// <summary>
+    /// Adds a converter to be used in MCMA json serialization
+    /// </summary>
+    /// <param name="jsonConverter">The converter to add</param>
+    public static void AddConverter(JsonConverter jsonConverter)
+        => Converters.Add(jsonConverter);
+
+    /// <summary>
+    /// Adds a converter to be used in MCMA json serialization
+    /// </summary>
+    /// <typeparam name="T">The type of converter to add</typeparam>
+    public static void AddConverter<T>() where T : JsonConverter, new()
+        => AddConverter(new T());
+
     /// <summary>
     /// The default settings, exposed so they can be used with other libraries that also use JSON.NET
     /// </summary>
@@ -31,12 +51,7 @@ public static class McmaJson
             NullValueHandling = NullValueHandling.Ignore,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             DateParseHandling = DateParseHandling.DateTimeOffset,
-            Converters =
-            {
-                new StringEnumConverter(),
-                new McmaObjectConverter(),
-                new McmaExpandoObjectConverter()
-            }
+            Converters = Converters.ToList()
         };
 
         if (!preserveCasing)
