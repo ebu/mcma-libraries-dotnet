@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.18</PackageVersion>
+    <PackageVersion>0.14.19</PackageVersion>
     <Title>MCMA Data (.NET)</Title>
     <Description>Library containing interfaces for interacting with databases from MCMA services</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

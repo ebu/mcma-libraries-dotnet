@@ -189,7 +189,7 @@ public class ResourceManager : IResourceManager
         var resourceEndpoint = await GetResourceEndpointAsync(parentResourceId);
 
         return resourceEndpoint != null
-            ? await resourceEndpoint.GetChildrenAsync<T, TChild>(parentResourceId, pathToChildren, cancellationToken)
+            ? await resourceEndpoint.GetChildrenAsync<T, TChild>(pathToChildren, parentResourceId, cancellationToken)
             : await McmaHttpClient.GetAsync<TChild[]>(EndpointHelper.GetChildRoute<TChild>(parentResourceId, pathToChildren), true, cancellationToken);
     }
 
