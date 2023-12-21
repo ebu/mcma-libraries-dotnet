@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>latest</LangVersion>
-        <PackageVersion>0.14.17</PackageVersion>
+        <PackageVersion>0.14.18</PackageVersion>
         <Title>MCMA Storage (.NET)</Title>
         <Description>Library containing interfaces for interacting with storage from MCMA services</Description>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

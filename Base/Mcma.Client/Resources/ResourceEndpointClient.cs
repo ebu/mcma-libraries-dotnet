@@ -66,6 +66,9 @@ internal class ResourceEndpointClient : IResourceEndpointClient
         return HttpEndpoint?.TrimEnd('/') + "/" + url;
     }
 
+    private string GetFullChildUrl<TChild>(string url, string pathToChildren)
+        => EndpointHelper.GetChildRoute<TChild>(GetFullUrl(url), pathToChildren);
+
     public Task<QueryResults<T>> QueryAsync<T>(string url = null,
                                                params (string Key, string Value)[] queryParameters)
         where T : McmaObject
@@ -102,6 +105,11 @@ internal class ResourceEndpointClient : IResourceEndpointClient
 
     public Task<T> GetAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject
         => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.GetAsync<T>(GetFullUrl(url), true, cancellationToken));
+
+    public Task<TChild[]> GetChildrenAsync<T, TChild>(string pathToChildren = null, string url = null, CancellationToken cancellationToken = default)
+        where T : McmaObject
+        where TChild : McmaObject
+        => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.GetAsync<TChild[]>(GetFullChildUrl<TChild>(url, pathToChildren), false, cancellationToken));
 
     public Task PutAsync(object body, string url = null, CancellationToken cancellationToken = default)
         => ExecuteAsync(async mcmaHttpClient => await mcmaHttpClient.PutAsync(GetFullUrl(url), body, cancellationToken));

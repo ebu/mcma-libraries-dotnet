@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net48</TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <PackageVersion>0.14.17</PackageVersion>
+    <PackageVersion>0.14.18</PackageVersion>
     <Title>MCMA Core (.NET)</Title>
     <Description>Library containing type definitions and helper utilities for the MCMA framework</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Pluralize.NET" Version="1.0.2" />
   </ItemGroup>
 
 </Project>

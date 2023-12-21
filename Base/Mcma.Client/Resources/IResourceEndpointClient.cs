@@ -25,6 +25,10 @@ public interface IResourceEndpointClient
         
     Task<T> GetAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
 
+    Task<TChild[]> GetChildrenAsync<T, TChild>(string pathToChildren, string url = null, CancellationToken cancellationToken = default)
+        where T : McmaObject
+        where TChild : McmaObject;
+
     Task<T> PutAsync<T>(object body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
 
     Task PutAsync(object body, string url = null, CancellationToken cancellationToken = default);

@@ -1,9 +1,12 @@
+using Pluralize.NET;
 using System.Text;
 
 namespace Mcma.Utility;
 
 public static class StringExtensions
 {
+    private static readonly Pluralizer Pluralizer = new();
+
     /// <summary>
     /// Splits a string
     /// </summary>
@@ -376,5 +379,12 @@ public static class StringExtensions
         using var textReader = new StreamReader(stream);
         
         return await textReader.ReadToEndAsync();
+    }
+
+    public static string PluralizeKebabCase(this string kebabCase)
+    {
+        var parts = kebabCase.Split('-').ToArray();
+        parts[parts.Length - 1] = Pluralizer.Pluralize(parts[parts.Length - 1]);
+        return string.Join("-", parts);
     }
 }

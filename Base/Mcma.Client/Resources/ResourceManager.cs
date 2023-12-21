@@ -182,6 +182,17 @@ public class ResourceManager : IResourceManager
                    : await McmaHttpClient.GetAsync<T>(resourceId, true, cancellationToken);
     }
 
+    public async Task<TChild[]> GetChildrenAsync<T, TChild>(string parentResourceId, string pathToChildren = null, CancellationToken cancellationToken = default)
+        where T : McmaObject
+        where TChild : McmaObject
+    {
+        var resourceEndpoint = await GetResourceEndpointAsync(parentResourceId);
+
+        return resourceEndpoint != null
+            ? await resourceEndpoint.GetChildrenAsync<T, TChild>(parentResourceId, pathToChildren, cancellationToken)
+            : await McmaHttpClient.GetAsync<TChild[]>(EndpointHelper.GetChildRoute<TChild>(parentResourceId, pathToChildren), true, cancellationToken);
+    }
+
     public async Task SendNotificationAsync<T>(string resourceId, T resource, NotificationEndpoint notificationEndpoint, CancellationToken cancellationToken = default)
         where T : McmaObject
     {

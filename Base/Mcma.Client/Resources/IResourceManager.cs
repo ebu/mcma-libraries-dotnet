@@ -16,6 +16,10 @@ public interface IResourceManager
 
     Task<T> GetAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject;
 
+    Task<TChild[]> GetChildrenAsync<TParent, TChild>(string parentResourceId, string pathToChildren = null, CancellationToken cancellationToken = default)
+        where TParent : McmaObject
+        where TChild : McmaObject;
+
     Task<T> CreateAsync<T>(T resource, CancellationToken cancellationToken = default) where T : McmaObject;
 
     Task<T> UpdateAsync<T>(string resourceId, T resource, CancellationToken cancellationToken = default) where T : McmaObject;
