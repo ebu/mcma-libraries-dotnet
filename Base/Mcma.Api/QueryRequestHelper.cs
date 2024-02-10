@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Mcma.Data.DocumentDatabase.Queries;
 
 namespace Mcma.Api;

@@ -6,12 +6,12 @@ namespace Mcma.Client;
 
 public class ResourceManagerBuilder
 {
-    internal ResourceManagerBuilder(IServiceCollection services, string name = null)
+    internal ResourceManagerBuilder(IServiceCollection services, string? name = null)
     {
         Name = name ?? Microsoft.Extensions.Options.Options.DefaultName;
 
         Options = services.AddOptions<ResourceManagerOptions>(name);
-        HttpClient = services.AddHttpClient(name);
+        HttpClient = services.AddHttpClient(Name);
     }
 
     public string Name { get; }

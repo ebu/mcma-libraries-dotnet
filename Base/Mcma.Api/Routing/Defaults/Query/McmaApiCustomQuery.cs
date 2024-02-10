@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Mcma.Data.DocumentDatabase;
 using Mcma.Data.DocumentDatabase.Queries.Custom;
 using Mcma.Model;

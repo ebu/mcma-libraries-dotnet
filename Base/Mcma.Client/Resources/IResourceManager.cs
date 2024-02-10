@@ -8,17 +8,15 @@ public interface IResourceManager
         
     IServiceClient GetServiceClient(Service service);
 
-    Task<IResourceEndpointClient> GetResourceEndpointClientAsync(string url);
+    Task<IResourceEndpointClient?> GetResourceEndpointClientAsync(string url);
 
     Task<IEnumerable<T>> QueryAsync<T>(params (string, string)[] filter) where T : McmaObject;
 
     Task<IEnumerable<T>> QueryAsync<T>(CancellationToken cancellationToken, params (string, string)[] filter) where T : McmaObject;
 
-    Task<T> GetAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject;
+    Task<T?> GetAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject;
 
-    Task<TChild[]> GetChildrenAsync<TParent, TChild>(string parentResourceId, string pathToChildren = null, CancellationToken cancellationToken = default)
-        where TParent : McmaObject
-        where TChild : McmaObject;
+    Task<T[]> GetChildCollectionAsync<T>(string parentResourceId, string pathToChildren, CancellationToken cancellationToken = default) where T : McmaObject;
 
     Task<T> CreateAsync<T>(T resource, CancellationToken cancellationToken = default) where T : McmaObject;
 
@@ -26,5 +24,5 @@ public interface IResourceManager
 
     Task DeleteAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject;
 
-    Task SendNotificationAsync<T>(string resourceId, T resource, NotificationEndpoint notificationEndpoint, CancellationToken cancellationToken = default) where T : McmaObject;
+    Task SendNotificationAsync<T>(NotificationEndpoint notificationEndpoint, string? resourceId = null, T? resource = null, CancellationToken cancellationToken = default) where T : McmaObject;
 }

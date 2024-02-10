@@ -10,7 +10,7 @@ public class Notification : McmaResource
     /// <summary>
     /// Gets or sets the source from which the notification was sent
     /// </summary>
-    public string Source { get; set; } = string.Empty;
+    public string? Source { get; set; }
 
     /// <summary>
     /// Gets or sets the content of the notification. Typically this will be deserialized to an MCMA object.

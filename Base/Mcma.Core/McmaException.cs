@@ -1,4 +1,3 @@
-using System.Runtime.Serialization;
 using Mcma.Serialization;
 
 namespace Mcma;
@@ -20,10 +19,5 @@ public sealed class McmaException : Exception
     {
         if (context != null)
             Data.Add("Context", context.ToMcmaJson().ToString());
-    }
-        
-    private McmaException(SerializationInfo info, StreamingContext context)
-        : base(info, context)
-    {
     }
 }

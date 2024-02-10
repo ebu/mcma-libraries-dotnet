@@ -22,10 +22,6 @@ public class AzureADConfidentialClientBearerTokenProvider : IBearerTokenProvider
     {
         var authResult = await Client.AcquireTokenForClient(Scopes).ExecuteAsync(cancellationToken);
             
-        return new BearerToken
-        {
-            Token = authResult.AccessToken,
-            ExpiresOn = authResult.ExpiresOn
-        };
+        return new BearerToken(authResult.AccessToken, authResult.ExpiresOn);
     }
 }

@@ -24,7 +24,7 @@ public static class McmaTypes
 
     private static void AddTypesFromAssembly(Assembly assembly)
     {
-        if (assembly.FullName.StartsWith("System") || assembly.FullName.StartsWith("Microsoft") || assembly.IsDynamic)
+        if (assembly.FullName == null || assembly.FullName.StartsWith("System") || assembly.FullName.StartsWith("Microsoft") || assembly.IsDynamic)
             return;
 
         try
@@ -40,7 +40,7 @@ public static class McmaTypes
 
     private static Type? PickBestTypeBasedOnRoot(Type? rootObjectType, Type[] types)
     {
-        if (rootObjectType is null)
+        if (rootObjectType?.FullName is null)
             return null;
 
         var rootTypeNameParts = rootObjectType.FullName.Split('.');
@@ -50,6 +50,9 @@ public static class McmaTypes
 
         foreach (var type in types)
         {
+            if (type.FullName is null)
+                continue;
+
             var typeNameParts = type.FullName.Split('.');
 
             var score = 0;

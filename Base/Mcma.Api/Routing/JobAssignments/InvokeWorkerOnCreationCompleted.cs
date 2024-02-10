@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Mcma.Api.Routing.Defaults.Create;
 using Mcma.Model;
 using Mcma.WorkerInvoker;
@@ -26,7 +24,7 @@ public class InvokeWorkerOnCreationCompleted : IDefaultCreateRouteCompletedHandl
                 "ProcessJobAssignment",
                 new
                 {
-                    jobAssignmentDatabaseId = createdResource.Id.Replace(Options.PublicUrl ?? string.Empty, string.Empty)
+                    jobAssignmentDatabaseId = createdResource.Id?.Replace(Options.PublicUrl ?? string.Empty, string.Empty)
                 },
                 createdResource.Tracker
             );

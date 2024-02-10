@@ -8,9 +8,14 @@ namespace Mcma.Client.Resources;
 
 internal class ServiceClient : IServiceClient
 {
-    internal ServiceClient(IAuthProvider authProvider, HttpClient httpClient, Service service, McmaTracker tracker)
+    internal ServiceClient(IAuthProvider authProvider, HttpClient httpClient, Service service, McmaTracker? tracker)
     {
-        Service = service;
+        if (authProvider is null)
+            throw new ArgumentNullException(nameof(authProvider));
+        if (httpClient is null)
+            throw new ArgumentNullException(nameof(httpClient));
+
+        Service = service ?? throw new ArgumentNullException(nameof(service));
         Tracker = tracker;
 
         ResourcesByType =
@@ -27,25 +32,25 @@ internal class ServiceClient : IServiceClient
     
     private Service Service { get; }
 
-    private McmaTracker Tracker { get; }
+    private McmaTracker? Tracker { get; }
 
     private IDictionary<string, ResourceEndpointClient> ResourcesByType { get; }
 
     internal IEnumerable<ResourceEndpointClient> Resources => ResourcesByType.Values;
 
-    public string Name => Service?.Name;
+    public string Name => Service.Name;
 
     internal bool HasResourceEndpointClient(string resourceType)
         => ResourcesByType.ContainsKey(resourceType);
 
-    internal IResourceEndpointClient GetResourceEndpointClient(string resourceType) =>
+    internal IResourceEndpointClient? GetResourceEndpointClient(string resourceType) =>
         ResourcesByType.ContainsKey(resourceType) ? ResourcesByType[resourceType] : null;
 
     internal bool HasResourceEndpointClient(Type resourceType) => HasResourceEndpointClient(resourceType.Name);
             
-    internal IResourceEndpointClient GetResourceEndpointClient(Type resourceType) => GetResourceEndpointClient(resourceType.Name);
+    internal IResourceEndpointClient? GetResourceEndpointClient(Type resourceType) => GetResourceEndpointClient(resourceType.Name);
 
     public bool HasResourceEndpointClient<T>() => HasResourceEndpointClient(typeof(T));
             
-    public IResourceEndpointClient GetResourceEndpointClient<T>() => GetResourceEndpointClient(typeof(T));
+    public IResourceEndpointClient? GetResourceEndpointClient<T>() => GetResourceEndpointClient(typeof(T));
 }

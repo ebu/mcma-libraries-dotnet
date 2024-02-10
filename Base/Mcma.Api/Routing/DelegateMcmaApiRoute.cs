@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 
 namespace Mcma.Api.Routing;
 

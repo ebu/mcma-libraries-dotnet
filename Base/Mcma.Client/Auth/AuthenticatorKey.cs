@@ -5,7 +5,7 @@ public class AuthenticatorKey
 {
     public const string Wildcard = "*";
 
-    public AuthenticatorKey(string authType, string serviceName = null, string resourceType = null)
+    public AuthenticatorKey(string authType, string? serviceName = null, string? resourceType = null)
     {
         AuthType = authType ?? throw new ArgumentNullException(nameof(authType));
         ServiceName = !string.IsNullOrWhiteSpace(serviceName) ? serviceName : Wildcard;
@@ -15,9 +15,9 @@ public class AuthenticatorKey
 
     public string AuthType { get; }
 
-    public string ServiceName { get; private set; }
+    public string? ServiceName { get; private set; }
 
-    public string ResourceType { get; private set; }
+    public string? ResourceType { get; private set; }
 
     public string Key { get; }
 
@@ -41,6 +41,6 @@ public class AuthenticatorKey
 
     public override int GetHashCode() => Key.GetHashCode();
 
-    public static TKey Create<TKey>(string serviceName = null, string resourceType = null) where TKey : AuthenticatorKey, new()
+    public static TKey Create<TKey>(string? serviceName = null, string? resourceType = null) where TKey : AuthenticatorKey, new()
         => new() { ServiceName = serviceName ?? Wildcard, ResourceType = resourceType ?? Wildcard };
 }

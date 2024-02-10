@@ -45,17 +45,13 @@ public static class StringExtensions
     {
         var split = source.SplitOn(delimiter);
 
-        switch (split.Length)
+        return split.Length switch
         {
-            case 0:
-                return (string.Empty, string.Empty);
-            case 1:
-                return (split[0], string.Empty);
-            case 2:
-                return (split[0], split[1]);
-            default:
-                return (split[0], string.Join(delimiter, split.Skip(1)));
-        }
+            0 => (string.Empty, string.Empty),
+            1 => (split[0], string.Empty),
+            2 => (split[0], split[1]),
+            _ => (split[0], string.Join(delimiter, split.Skip(1))),
+        };
     }
     /// <summary>
     /// Converts a string to the base 64 representation of its UTF-8 bytes

@@ -1,0 +1,366 @@
+﻿#nullable enable
+abstract Mcma.Logging.Logger.WriteLogEvent(Mcma.Logging.LogEvent logEvent) -> void
+abstract Mcma.Logging.LoggerProvider<T>.Get(string source, string requestId, Mcma.Model.McmaTracker tracker) -> T!
+const Mcma.Logging.LogLevel.Debug = 500 -> int
+const Mcma.Logging.LogLevel.Error = 200 -> int
+const Mcma.Logging.LogLevel.Fatal = 100 -> int
+const Mcma.Logging.LogLevel.Info = 400 -> int
+const Mcma.Logging.LogLevel.Warn = 300 -> int
+const Mcma.Logging.LogType.Debug = "DEBUG" -> string!
+const Mcma.Logging.LogType.Error = "ERROR" -> string!
+const Mcma.Logging.LogType.Fatal = "FATAL" -> string!
+const Mcma.Logging.LogType.Info = "INFO" -> string!
+const Mcma.Logging.LogType.Warn = "WARN" -> string!
+const Mcma.Serialization.McmaJson.TypePropertyName = "@type" -> string!
+const Mcma.Utility.McmaEnvironmentVariables.Prefix = "MCMA_" -> string!
+Mcma.Logging.ConsoleLogger
+Mcma.Logging.ConsoleLogger.ConsoleLogger(string source, string? requestId = null, Mcma.Model.McmaTracker? tracker = null) -> void
+Mcma.Logging.ConsoleLoggerProvider
+Mcma.Logging.ConsoleLoggerProvider.ConsoleLoggerProvider(Microsoft.Extensions.Options.IOptions<Mcma.Logging.LoggerProviderOptions?>! options) -> void
+Mcma.Logging.ILogger
+Mcma.Logging.ILogger.Debug(params object[] args) -> void
+Mcma.Logging.ILogger.Debug(string message, params object[] args) -> void
+Mcma.Logging.ILogger.Error(params object[] args) -> void
+Mcma.Logging.ILogger.Error(string message, params object[] args) -> void
+Mcma.Logging.ILogger.Fatal(params object[] args) -> void
+Mcma.Logging.ILogger.Fatal(string message, params object[] args) -> void
+Mcma.Logging.ILogger.FunctionEnd(string message, params object[] args) -> void
+Mcma.Logging.ILogger.FunctionStart(string message, params object[] args) -> void
+Mcma.Logging.ILogger.Info(params object[] args) -> void
+Mcma.Logging.ILogger.Info(string message, params object[] args) -> void
+Mcma.Logging.ILogger.JobEnd(params object[] args) -> void
+Mcma.Logging.ILogger.JobEnd(string message, params object[] args) -> void
+Mcma.Logging.ILogger.JobStart(params object[] args) -> void
+Mcma.Logging.ILogger.JobStart(string message, params object[] args) -> void
+Mcma.Logging.ILogger.JobUpdate(params object[] args) -> void
+Mcma.Logging.ILogger.JobUpdate(string message, params object[] args) -> void
+Mcma.Logging.ILogger.Warn(params object[] args) -> void
+Mcma.Logging.ILogger.Warn(string message, params object[] args) -> void
+Mcma.Logging.ILoggerProvider
+Mcma.Logging.ILoggerProvider.FlushAsync() -> System.Threading.Tasks.Task!
+Mcma.Logging.ILoggerProvider.Get(string requestId = null, Mcma.Model.McmaTracker tracker = null) -> Mcma.Logging.ILogger!
+Mcma.Logging.LogEvent
+Mcma.Logging.LogEvent.Args.get -> object[]
+Mcma.Logging.LogEvent.Flatten() -> Newtonsoft.Json.Linq.JObject
+Mcma.Logging.LogEvent.Level.get -> int
+Mcma.Logging.LogEvent.LogEvent(string type, int level, string source, string requestId, System.DateTimeOffset timestamp, string message, object[] args, Mcma.Model.McmaTracker tracker = null) -> void
+Mcma.Logging.LogEvent.Message.get -> string
+Mcma.Logging.LogEvent.RequestId.get -> string
+Mcma.Logging.LogEvent.Source.get -> string
+Mcma.Logging.LogEvent.Timestamp.get -> System.DateTimeOffset
+Mcma.Logging.LogEvent.Tracker.get -> Mcma.Model.McmaTracker
+Mcma.Logging.LogEvent.Type.get -> string
+Mcma.Logging.Logger
+Mcma.Logging.Logger.BuildLogEvent(int level, string type, string message, object[] args) -> Mcma.Logging.LogEvent
+Mcma.Logging.Logger.Debug(params object[] args) -> void
+Mcma.Logging.Logger.Debug(string message, params object[] args) -> void
+Mcma.Logging.Logger.Error(params object[] args) -> void
+Mcma.Logging.Logger.Error(string message, params object[] args) -> void
+Mcma.Logging.Logger.Fatal(params object[] args) -> void
+Mcma.Logging.Logger.Fatal(string message, params object[] args) -> void
+Mcma.Logging.Logger.FunctionEnd(string message, params object[] args) -> void
+Mcma.Logging.Logger.FunctionStart(string message, params object[] args) -> void
+Mcma.Logging.Logger.Info(params object[] args) -> void
+Mcma.Logging.Logger.Info(string message, params object[] args) -> void
+Mcma.Logging.Logger.JobEnd(params object[] args) -> void
+Mcma.Logging.Logger.JobEnd(string message, params object[] args) -> void
+Mcma.Logging.Logger.JobStart(params object[] args) -> void
+Mcma.Logging.Logger.JobStart(string message, params object[] args) -> void
+Mcma.Logging.Logger.JobUpdate(params object[] args) -> void
+Mcma.Logging.Logger.JobUpdate(string message, params object[] args) -> void
+Mcma.Logging.Logger.Logger(string source, string requestId, Mcma.Model.McmaTracker tracker) -> void
+Mcma.Logging.Logger.RequestId.get -> string
+Mcma.Logging.Logger.Source.get -> string
+Mcma.Logging.Logger.Tracker.get -> Mcma.Model.McmaTracker
+Mcma.Logging.Logger.Warn(params object[] args) -> void
+Mcma.Logging.Logger.Warn(string message, params object[] args) -> void
+Mcma.Logging.LoggerEnvironmentVariables
+Mcma.Logging.LoggerProvider<T>
+Mcma.Logging.LoggerProvider<T>.Get(string requestId = null, Mcma.Model.McmaTracker tracker = null) -> Mcma.Logging.ILogger
+Mcma.Logging.LoggerProvider<T>.LoggerProvider(Microsoft.Extensions.Options.IOptions<Mcma.Logging.LoggerProviderOptions> options) -> void
+Mcma.Logging.LoggerProvider<T>.Source.get -> string
+Mcma.Logging.LoggerProviderOptions
+Mcma.Logging.LoggerProviderOptions.LoggerProviderOptions() -> void
+Mcma.Logging.LoggerProviderOptions.Source.get -> string
+Mcma.Logging.LoggerProviderOptions.Source.set -> void
+Mcma.Logging.LoggingServiceCollectionExtensions
+Mcma.Logging.LogLevel
+Mcma.Logging.LogType
+Mcma.McmaException
+Mcma.McmaException.McmaException(string message, System.Exception cause = null, object context = null) -> void
+Mcma.McmaException.McmaException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) -> void
+Mcma.McmaHttpException
+Mcma.McmaHttpException.Body.get -> string?
+Mcma.McmaHttpException.McmaHttpException(string method, string url, int statusCode, string reasonPhrase, string body = null) -> void
+Mcma.McmaHttpException.McmaHttpException(string method, System.Uri url, System.Net.HttpStatusCode statusCode, string reasonPhrase, string body = null) -> void
+Mcma.McmaHttpException.Method.get -> string?
+Mcma.McmaHttpException.ReasonPhrase.get -> string?
+Mcma.McmaHttpException.StatusCode.get -> int
+Mcma.McmaHttpException.Url.get -> string?
+Mcma.Model.INotifiable
+Mcma.Model.INotifiable.NotificationEndpoint.get -> Mcma.Model.NotificationEndpoint?
+Mcma.Model.JobAssignment
+Mcma.Model.JobAssignment.JobAssignment() -> void
+Mcma.Model.JobAssignment.JobId.get -> string
+Mcma.Model.JobAssignment.JobId.set -> void
+Mcma.Model.JobAssignment.NotificationEndpoint.get -> Mcma.Model.NotificationEndpoint?
+Mcma.Model.JobAssignment.NotificationEndpoint.set -> void
+Mcma.Model.JobAssignment.Tracker.get -> Mcma.Model.McmaTracker
+Mcma.Model.JobAssignment.Tracker.set -> void
+Mcma.Model.JobBase
+Mcma.Model.JobBase.Error.get -> Mcma.Model.ProblemDetail
+Mcma.Model.JobBase.Error.set -> void
+Mcma.Model.JobBase.JobBase() -> void
+Mcma.Model.JobBase.JobOutput.get -> Mcma.Model.JobParameterBag
+Mcma.Model.JobBase.JobOutput.set -> void
+Mcma.Model.JobBase.Progress.get -> double?
+Mcma.Model.JobBase.Progress.set -> void
+Mcma.Model.JobBase.Status.get -> Mcma.Model.JobStatus
+Mcma.Model.JobBase.Status.set -> void
+Mcma.Model.JobExecution
+Mcma.Model.JobExecution.ActualDuration.get -> long?
+Mcma.Model.JobExecution.ActualDuration.set -> void
+Mcma.Model.JobExecution.ActualEndDate.get -> System.DateTimeOffset?
+Mcma.Model.JobExecution.ActualEndDate.set -> void
+Mcma.Model.JobExecution.ActualStartDate.get -> System.DateTimeOffset?
+Mcma.Model.JobExecution.ActualStartDate.set -> void
+Mcma.Model.JobExecution.JobAssignmentId.get -> string
+Mcma.Model.JobExecution.JobAssignmentId.set -> void
+Mcma.Model.JobExecution.JobExecution() -> void
+Mcma.Model.JobParameter
+Mcma.Model.JobParameter.JobParameter() -> void
+Mcma.Model.JobParameter.ParameterName.get -> string
+Mcma.Model.JobParameter.ParameterName.set -> void
+Mcma.Model.JobParameter.ParameterType.get -> string
+Mcma.Model.JobParameter.ParameterType.set -> void
+Mcma.Model.JobParameterBag
+Mcma.Model.JobParameterBag.JobParameterBag() -> void
+Mcma.Model.JobProfile
+Mcma.Model.JobProfile.InputParameters.get -> System.Collections.Generic.ICollection<Mcma.Model.JobParameter>
+Mcma.Model.JobProfile.InputParameters.set -> void
+Mcma.Model.JobProfile.JobProfile() -> void
+Mcma.Model.JobProfile.Name.get -> string
+Mcma.Model.JobProfile.Name.set -> void
+Mcma.Model.JobProfile.OptionalInputParameters.get -> System.Collections.Generic.ICollection<Mcma.Model.JobParameter>
+Mcma.Model.JobProfile.OptionalInputParameters.set -> void
+Mcma.Model.JobProfile.OutputParameters.get -> System.Collections.Generic.ICollection<Mcma.Model.JobParameter>
+Mcma.Model.JobProfile.OutputParameters.set -> void
+Mcma.Model.Jobs.AIJob
+Mcma.Model.Jobs.AIJob.AIJob() -> void
+Mcma.Model.Jobs.AmeJob
+Mcma.Model.Jobs.AmeJob.AmeJob() -> void
+Mcma.Model.Jobs.CaptureJob
+Mcma.Model.Jobs.CaptureJob.CaptureJob() -> void
+Mcma.Model.Jobs.Job
+Mcma.Model.Jobs.Job.Deadline.get -> System.DateTimeOffset?
+Mcma.Model.Jobs.Job.Deadline.set -> void
+Mcma.Model.Jobs.Job.Job() -> void
+Mcma.Model.Jobs.Job.JobInput.get -> Mcma.Model.JobParameterBag
+Mcma.Model.Jobs.Job.JobInput.set -> void
+Mcma.Model.Jobs.Job.JobProfileId.get -> string
+Mcma.Model.Jobs.Job.JobProfileId.set -> void
+Mcma.Model.Jobs.Job.NotificationEndpoint.get -> Mcma.Model.NotificationEndpoint
+Mcma.Model.Jobs.Job.NotificationEndpoint.set -> void
+Mcma.Model.Jobs.Job.ParentId.get -> string
+Mcma.Model.Jobs.Job.ParentId.set -> void
+Mcma.Model.Jobs.Job.Timeout.get -> long?
+Mcma.Model.Jobs.Job.Timeout.set -> void
+Mcma.Model.Jobs.Job.Tracker.get -> Mcma.Model.McmaTracker
+Mcma.Model.Jobs.Job.Tracker.set -> void
+Mcma.Model.Jobs.QAJob
+Mcma.Model.Jobs.QAJob.QAJob() -> void
+Mcma.Model.Jobs.TransferJob
+Mcma.Model.Jobs.TransferJob.TransferJob() -> void
+Mcma.Model.Jobs.TransformJob
+Mcma.Model.Jobs.TransformJob.TransformJob() -> void
+Mcma.Model.Jobs.WorkflowJob
+Mcma.Model.Jobs.WorkflowJob.WorkflowJob() -> void
+Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Assigned = 2 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Canceled = 8 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Completed = 6 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Failed = 7 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.New = 0 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Pending = 1 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Queued = 3 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Running = 5 -> Mcma.Model.JobStatus
+Mcma.Model.JobStatus.Scheduled = 4 -> Mcma.Model.JobStatus
+Mcma.Model.Locator
+Mcma.Model.Locator.Locator() -> void
+Mcma.Model.Locator.Status.get -> Mcma.Model.LocatorStatus?
+Mcma.Model.Locator.Status.set -> void
+Mcma.Model.Locator.Url.get -> string
+Mcma.Model.Locator.Url.set -> void
+Mcma.Model.LocatorStatus
+Mcma.Model.LocatorStatus.Archived = 2 -> Mcma.Model.LocatorStatus
+Mcma.Model.LocatorStatus.Deleted = 3 -> Mcma.Model.LocatorStatus
+Mcma.Model.LocatorStatus.Processing = 0 -> Mcma.Model.LocatorStatus
+Mcma.Model.LocatorStatus.Ready = 1 -> Mcma.Model.LocatorStatus
+Mcma.Model.McmaExpandoObject
+Mcma.Model.McmaExpandoObject.Get<T>(string key, bool caseSensitive = true) -> T
+Mcma.Model.McmaExpandoObject.GetOrAdd<T>(string key, bool caseSensitive = true) -> T
+Mcma.Model.McmaExpandoObject.HasProperty(string key, bool caseSensitive = true) -> bool
+Mcma.Model.McmaExpandoObject.McmaExpandoObject() -> void
+Mcma.Model.McmaExpandoObject.Set<T>(string key, T value) -> T
+Mcma.Model.McmaExpandoObject.this[string key].get -> object
+Mcma.Model.McmaExpandoObject.this[string key].set -> void
+Mcma.Model.McmaExpandoObject.TryGet<T>(string key, bool caseSensitive, out T value) -> bool
+Mcma.Model.McmaExpandoObject.TryGet<T>(string key, out T value) -> bool
+Mcma.Model.McmaObject
+Mcma.Model.McmaObject.McmaObject() -> void
+Mcma.Model.McmaObject.Type.get -> string
+Mcma.Model.McmaObject.Type.set -> void
+Mcma.Model.McmaResource
+Mcma.Model.McmaResource.Custom.get -> Newtonsoft.Json.Linq.JObject
+Mcma.Model.McmaResource.Custom.set -> void
+Mcma.Model.McmaResource.DateCreated.get -> System.DateTimeOffset?
+Mcma.Model.McmaResource.DateCreated.set -> void
+Mcma.Model.McmaResource.DateModified.get -> System.DateTimeOffset?
+Mcma.Model.McmaResource.DateModified.set -> void
+Mcma.Model.McmaResource.Id.get -> string
+Mcma.Model.McmaResource.Id.set -> void
+Mcma.Model.McmaResource.McmaResource() -> void
+Mcma.Model.McmaResource.OnCreate(string id) -> void
+Mcma.Model.McmaResource.OnUpsert(string id) -> void
+Mcma.Model.McmaTracker
+Mcma.Model.McmaTracker.Custom.get -> Newtonsoft.Json.Linq.JObject
+Mcma.Model.McmaTracker.Custom.set -> void
+Mcma.Model.McmaTracker.Id.get -> string
+Mcma.Model.McmaTracker.Id.set -> void
+Mcma.Model.McmaTracker.Label.get -> string
+Mcma.Model.McmaTracker.Label.set -> void
+Mcma.Model.McmaTracker.McmaTracker() -> void
+Mcma.Model.Notification
+Mcma.Model.Notification.Content.get -> Newtonsoft.Json.Linq.JToken
+Mcma.Model.Notification.Content.set -> void
+Mcma.Model.Notification.Notification() -> void
+Mcma.Model.Notification.Source.get -> string
+Mcma.Model.Notification.Source.set -> void
+Mcma.Model.NotificationEndpoint
+Mcma.Model.NotificationEndpoint.HttpEndpoint.get -> string
+Mcma.Model.NotificationEndpoint.HttpEndpoint.set -> void
+Mcma.Model.NotificationEndpoint.NotificationEndpoint() -> void
+Mcma.Model.ProblemDetail
+Mcma.Model.ProblemDetail.Detail.get -> string
+Mcma.Model.ProblemDetail.Detail.set -> void
+Mcma.Model.ProblemDetail.Instance.get -> string
+Mcma.Model.ProblemDetail.Instance.set -> void
+Mcma.Model.ProblemDetail.ProblemDetail() -> void
+Mcma.Model.ProblemDetail.ProblemType.get -> string
+Mcma.Model.ProblemDetail.ProblemType.set -> void
+Mcma.Model.ProblemDetail.Title.get -> string
+Mcma.Model.ProblemDetail.Title.set -> void
+Mcma.Model.QueryResults<T>
+Mcma.Model.QueryResults<T>.NextPageStartToken.get -> string
+Mcma.Model.QueryResults<T>.NextPageStartToken.set -> void
+Mcma.Model.QueryResults<T>.QueryResults() -> void
+Mcma.Model.QueryResults<T>.Results.get -> System.Collections.Generic.IEnumerable<T>
+Mcma.Model.QueryResults<T>.Results.set -> void
+Mcma.Model.ResourceEndpoint
+Mcma.Model.ResourceEndpoint.AuthType.get -> string?
+Mcma.Model.ResourceEndpoint.AuthType.set -> void
+Mcma.Model.ResourceEndpoint.HttpEndpoint.get -> string
+Mcma.Model.ResourceEndpoint.HttpEndpoint.set -> void
+Mcma.Model.ResourceEndpoint.ResourceEndpoint() -> void
+Mcma.Model.ResourceEndpoint.ResourceType.get -> string!
+Mcma.Model.ResourceEndpoint.ResourceType.set -> void
+Mcma.Model.Service
+Mcma.Model.Service.AuthType.get -> string?
+Mcma.Model.Service.AuthType.set -> void
+Mcma.Model.Service.InputLocations.get -> System.Collections.Generic.ICollection<Mcma.Model.Locator>?
+Mcma.Model.Service.InputLocations.set -> void
+Mcma.Model.Service.JobProfileIds.get -> string[]!
+Mcma.Model.Service.JobProfileIds.set -> void
+Mcma.Model.Service.JobType.get -> string?
+Mcma.Model.Service.JobType.set -> void
+Mcma.Model.Service.Name.get -> string!
+Mcma.Model.Service.Name.set -> void
+Mcma.Model.Service.OutputLocations.get -> System.Collections.Generic.ICollection<Mcma.Model.Locator>?
+Mcma.Model.Service.OutputLocations.set -> void
+Mcma.Model.Service.Resources.get -> System.Collections.Generic.ICollection<Mcma.Model.ResourceEndpoint>?
+Mcma.Model.Service.Resources.set -> void
+Mcma.Model.Service.Service() -> void
+Mcma.Serialization.IMcmaTypeRegistrations
+Mcma.Serialization.IMcmaTypeRegistrations.Add(System.Type type) -> Mcma.Serialization.IMcmaTypeRegistrations!
+Mcma.Serialization.IMcmaTypeRegistrations.Add<T>() -> Mcma.Serialization.IMcmaTypeRegistrations!
+Mcma.Serialization.McmaCamelCasePropertyNamesContractResolver
+Mcma.Serialization.McmaCamelCasePropertyNamesContractResolver.McmaCamelCasePropertyNamesContractResolver() -> void
+Mcma.Serialization.McmaExpandoObjectConverter
+Mcma.Serialization.McmaExpandoObjectConverter.McmaExpandoObjectConverter() -> void
+Mcma.Serialization.McmaJson
+Mcma.Serialization.McmaObjectConverter
+Mcma.Serialization.McmaObjectConverter.McmaObjectConverter() -> void
+Mcma.Serialization.McmaTypes
+Mcma.Utility.EncryptionHelper
+Mcma.Utility.ExpressionExtensions
+Mcma.Utility.McmaEnvironmentVariables
+Mcma.Utility.ReflectionExtensions
+Mcma.Utility.ServiceCollectionExtensions
+Mcma.Utility.StreamExtensions
+Mcma.Utility.StringExtensions
+override Mcma.Logging.ConsoleLogger.WriteLogEvent(Mcma.Logging.LogEvent logEvent) -> void
+override Mcma.Logging.ConsoleLoggerProvider.Get(string source, string requestId, Mcma.Model.McmaTracker tracker) -> Mcma.Logging.ConsoleLogger!
+override Mcma.Logging.LogEvent.ToString() -> string
+override Mcma.Serialization.McmaCamelCasePropertyNamesContractResolver.CreateDictionaryContract(System.Type objectType) -> Newtonsoft.Json.Serialization.JsonDictionaryContract
+override Mcma.Serialization.McmaExpandoObjectConverter.CanConvert(System.Type objectType) -> bool
+override Mcma.Serialization.McmaExpandoObjectConverter.ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer) -> object
+override Mcma.Serialization.McmaExpandoObjectConverter.WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer) -> void
+override Mcma.Serialization.McmaObjectConverter.CanConvert(System.Type objectType) -> bool
+override Mcma.Serialization.McmaObjectConverter.ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer) -> object
+override Mcma.Serialization.McmaObjectConverter.WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer) -> void
+static Mcma.Logging.Logger.System.get -> Mcma.Logging.ILogger
+static Mcma.Logging.Logger.System.set -> void
+static Mcma.Logging.LoggingServiceCollectionExtensions.AddMcmaConsoleLogging(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Logging.LoggingServiceCollectionExtensions.AddMcmaLogging<T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Serialization.McmaJson.DefaultSettings() -> Newtonsoft.Json.JsonSerializerSettings
+static Mcma.Serialization.McmaJson.GetSerializedType(Newtonsoft.Json.Linq.JObject jObj, System.Type objectType = null, System.Type rootObjectType = null) -> System.Type
+static Mcma.Serialization.McmaJson.Parse(string json) -> Newtonsoft.Json.Linq.JToken
+static Mcma.Serialization.McmaJson.ReadJsonFromStreamAsync(this System.IO.Stream stream) -> System.Threading.Tasks.Task<Newtonsoft.Json.Linq.JToken>
+static Mcma.Serialization.McmaJson.Serializer.get -> Newtonsoft.Json.JsonSerializer
+static Mcma.Serialization.McmaJson.ToKeyValuePairs(this Newtonsoft.Json.Linq.JObject jObj) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>
+static Mcma.Serialization.McmaJson.ToMcmaJson(this object obj, bool preserveCasing = false) -> Newtonsoft.Json.Linq.JToken
+static Mcma.Serialization.McmaJson.ToMcmaJsonObject(this object obj, bool preserveCasing = false) -> Newtonsoft.Json.Linq.JObject
+static Mcma.Serialization.McmaJson.ToMcmaObject(this Newtonsoft.Json.Linq.JToken json, System.Type type) -> object
+static Mcma.Serialization.McmaJson.ToMcmaObject<T>(this Newtonsoft.Json.Linq.JToken json) -> T
+static Mcma.Serialization.McmaTypes.Add(System.Type type) -> Mcma.Serialization.IMcmaTypeRegistrations
+static Mcma.Serialization.McmaTypes.Add<T>() -> Mcma.Serialization.IMcmaTypeRegistrations
+static Mcma.Serialization.McmaTypes.FindType(string typeString, System.Type objectType = null, System.Type rootObjectType = null) -> System.Type
+static Mcma.Utility.EncryptionHelper.Decrypt(string toDecrypt, string privateKeyJson) -> string
+static Mcma.Utility.EncryptionHelper.Encrypt(string toEncrypt, string publicKeyJson) -> string
+static Mcma.Utility.EncryptionHelper.ExportJson(this System.Security.Cryptography.RSA rsa, bool includePrivate) -> string
+static Mcma.Utility.EncryptionHelper.GenerateNewKeys() -> (string, string)
+static Mcma.Utility.EncryptionHelper.ImportJson(this System.Security.Cryptography.RSA rsa, string json) -> void
+static Mcma.Utility.ExpressionExtensions.GetProperty<TObject, TProp>(this System.Linq.Expressions.Expression<System.Func<TObject, TProp>> expression) -> System.Reflection.PropertyInfo
+static Mcma.Utility.ExpressionExtensions.GetProperty<TObject>(this System.Linq.Expressions.Expression<System.Func<TObject, object>> expression) -> System.Reflection.PropertyInfo
+static Mcma.Utility.ExpressionExtensions.GetPropertyName<TObject>(this System.Linq.Expressions.Expression<System.Func<TObject, object>> expression) -> string
+static Mcma.Utility.McmaEnvironmentVariables.Get(string key, bool required = true) -> string
+static Mcma.Utility.McmaEnvironmentVariables.GetKey(string key) -> string
+static Mcma.Utility.ReflectionExtensions.HasImplicitConversionTo(this System.Type from, System.Type to) -> bool
+static Mcma.Utility.ReflectionExtensions.HasImplicitConversionTo<T>(this System.Type from) -> bool
+static Mcma.Utility.ServiceCollectionExtensions.HasService<T>(this Microsoft.Extensions.DependencyInjection.IServiceCollection services) -> bool
+static Mcma.Utility.StreamExtensions.ReadAllBytesAsync(this System.IO.Stream stream) -> System.Threading.Tasks.Task<byte[]>
+static Mcma.Utility.StringExtensions.CamelCaseToKebabCase(this string text) -> string
+static Mcma.Utility.StringExtensions.CamelCaseToPascalCase(this string text) -> string
+static Mcma.Utility.StringExtensions.FromBase64(this string text) -> string
+static Mcma.Utility.StringExtensions.HexDecode(this string hexString) -> byte[]
+static Mcma.Utility.StringExtensions.HexDecodeString(this string hexString) -> string
+static Mcma.Utility.StringExtensions.HexEncode(this byte[] key) -> string
+static Mcma.Utility.StringExtensions.Join(this System.Collections.Generic.IEnumerable<string> toJoin, string joinWith = null) -> string
+static Mcma.Utility.StringExtensions.KebabCaseToCamelCase(this string text) -> string
+static Mcma.Utility.StringExtensions.KebabCaseToPascalCase(this string text) -> string
+static Mcma.Utility.StringExtensions.Parse(this string textValue, System.Type type) -> object
+static Mcma.Utility.StringExtensions.Parse<T>(this string textValue) -> T
+static Mcma.Utility.StringExtensions.PascalCaseToCamelCase(this string text) -> string
+static Mcma.Utility.StringExtensions.PascalCaseToKebabCase(this string text) -> string
+static Mcma.Utility.StringExtensions.ReadStringFromStreamAsync(this System.IO.Stream stream) -> System.Threading.Tasks.Task<string>
+static Mcma.Utility.StringExtensions.Replace(this string source, string toReplace, string replaceWith, System.StringComparison stringComparison) -> string
+static Mcma.Utility.StringExtensions.SplitIntoChunks(this string source, int chunkSize) -> System.Collections.Generic.IEnumerable<string>
+static Mcma.Utility.StringExtensions.SplitOn(this string toSplit, string splitOn) -> string[]
+static Mcma.Utility.StringExtensions.ToBase64(this string text) -> string
+static Mcma.Utility.StringExtensions.ToDictionary(this string source, string pairDelimiter, string valueDelimiter = "=") -> System.Collections.Generic.IDictionary<string, string>
+static Mcma.Utility.StringExtensions.ToKeyValuePair(this string source, string delimiter = "=") -> (string, string)
+static Mcma.Utility.StringExtensions.TryParse(this string textValue, System.Type type, out object obj) -> bool
+static Mcma.Utility.StringExtensions.TryParse<T>(this string textValue, out T obj) -> bool
+static Mcma.Utility.StringExtensions.TryParse<T>(this string textValue, T defaultValue) -> T
+static readonly Mcma.Logging.LoggerEnvironmentVariables.Source -> string?
+virtual Mcma.Logging.LoggerProvider<T>.FlushAsync() -> System.Threading.Tasks.Task

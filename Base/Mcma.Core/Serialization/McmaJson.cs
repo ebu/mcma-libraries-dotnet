@@ -101,14 +101,15 @@ public static class McmaJson
 
         return objectType;
     }
-        
+
     /// <summary>
     /// Converts json represented as a <see cref="JToken"/> into an object of type <see cref="T"/> using MCMA deserialization
     /// </summary>
     /// <param name="json">The json to convert</param>
     /// <typeparam name="T">The type of object to convert to</typeparam>
     /// <returns>The resulting <see cref="T"/> object</returns>
-    public static T? ToMcmaObject<T>(this JToken json) => json.ToObject<T>(McmaSerializer.For<T>());
+    public static T ToMcmaObject<T>(this JToken json)
+        => json.ToObject<T>(McmaSerializer.For<T>()) ?? throw new McmaException($"Json deserialized to a null value: {json}");
 
     /// <summary>
     /// Converts json represented as a <see cref="JToken"/> into an object using MCMA deserialization
@@ -116,7 +117,8 @@ public static class McmaJson
     /// <param name="json">The json to convert</param>
     /// <param name="type">The type of object to convert to. If not provided, it will be derived used the "@type" property if available.</param>
     /// <returns>The resulting object</returns>
-    public static object? ToMcmaObject(this JToken json, Type type) => json.ToObject(type, McmaSerializer.For(type));
+    public static object ToMcmaObject(this JToken json, Type type)
+        => json.ToObject(type, McmaSerializer.For(type)) ?? throw new McmaException($"Json deserialized to a null value: {json}");
 
     /// <summary>
     /// Converts an object to a <see cref="JToken"/> using MCMA serialization

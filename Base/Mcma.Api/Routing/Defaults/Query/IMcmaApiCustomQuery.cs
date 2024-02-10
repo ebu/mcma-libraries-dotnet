@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Mcma.Data.DocumentDatabase;
 using Mcma.Model;
 

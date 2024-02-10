@@ -1,5 +1,4 @@
-﻿using System;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Mcma.Model;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,8 +7,8 @@ namespace Mcma.Api.Routing.Defaults;
 public static class DefaultRouteServiceCollectionExtensions
 {
     public static McmaApiBuilder AddDefaultRoutes<TResource>(this McmaApiBuilder apiBuilder,
-                                                             string root = null,
-                                                             Action<DefaultRouteCollectionBuilder<TResource>> configureRoutes = null)
+                                                             string? root = null,
+                                                             Action<DefaultRouteCollectionBuilder<TResource>>? configureRoutes = null)
         where TResource : McmaResource
     {
         if (root != null)

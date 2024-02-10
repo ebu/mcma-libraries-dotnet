@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using Mcma.Api.Routing;
 using Mcma.Logging;
 using Mcma.Serialization;
@@ -16,20 +11,14 @@ public class McmaApiController : IMcmaApiController
 {
     private const string JsonContentType = "application/json";
 
-    public McmaApiController(ILoggerProvider loggerProvider,
-                             IEnumerable<IMcmaApiRouteCollection> routeCollections,
-                             IEnumerable<IMcmaApiRoute> routes)
+    public McmaApiController(IEnumerable<IMcmaApiRouteCollection> routeCollections, IEnumerable<IMcmaApiRoute> routes)
     {
-        LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
-
         Routes =
             new McmaApiRouteCollection(
                 (routeCollections ?? Array.Empty<IMcmaApiRouteCollection>())
                 .SelectMany(rc => rc)
                 .Concat(routes ?? Array.Empty<IMcmaApiRoute>()));
     }
-
-    private ILoggerProvider LoggerProvider { get; }
 
     public McmaApiRouteCollection Routes { get; }
 
@@ -43,7 +32,7 @@ public class McmaApiController : IMcmaApiController
 
     public async Task HandleRequestAsync(McmaApiRequestContext requestContext)
     {
-        var logger = LoggerProvider?.Get(requestContext.RequestId, requestContext.GetTracker()) ?? Logger.System;
+        var logger = requestContext.Logger ?? Logger.System;
 
         var request = requestContext.Request;
         var response = requestContext.Response;
@@ -59,11 +48,14 @@ public class McmaApiController : IMcmaApiController
             if (requestContext.MethodSupportsRequestBody &&
                 contentType != null &&
                 contentType.StartsWith(JsonContentType, StringComparison.OrdinalIgnoreCase) &&
-                !requestContext.TryLoadRequestJsonBody(out var ex))
+                !requestContext.HasJsonRequestBody)
             {
                 requestContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 requestContext.Response.JsonBody =
-                    new McmaApiError(requestContext.Response.StatusCode, ex.ToString(), requestContext.Request.Path).ToMcmaJson();
+                    new McmaApiError(requestContext.Response.StatusCode,
+                                     requestContext.Request.JsonBodyException?.ToString() ?? "Expected json in request body",
+                                     requestContext.Request.Path)
+                        .ToMcmaJson();
                 return;
             }
 
@@ -111,8 +103,8 @@ public class McmaApiController : IMcmaApiController
                     response.StatusCode = (int)HttpStatusCode.OK;
                     response.Headers = GetDefaultResponseHeaders();
 
-                    string corsMethod = null;
-                    string corsHeaders = null;
+                    string? corsMethod = null;
+                    string? corsHeaders = null;
 
                     foreach (var prop in request.Headers.Keys)
                     {

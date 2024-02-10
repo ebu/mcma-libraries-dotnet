@@ -6,5 +6,5 @@ public interface IServiceClient
     
     bool HasResourceEndpointClient<T>();
 
-    IResourceEndpointClient GetResourceEndpointClient<T>();
+    IResourceEndpointClient? GetResourceEndpointClient<T>();
 }

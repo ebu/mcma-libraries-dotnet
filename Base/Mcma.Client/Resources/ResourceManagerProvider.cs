@@ -32,11 +32,13 @@ public class ResourceManagerProvider : IResourceManagerProvider
 
     private Func<string, ResourceManagerOptions> GetOptions { get; }
 
-    public IResourceManager Get(McmaTracker tracker = null)
+    public IResourceManager Get(McmaTracker? tracker = null)
         => Get(Options.DefaultName, tracker);
 
-    public IResourceManager Get(string name = null, McmaTracker tracker = null)
+    public IResourceManager Get(string? name = null, McmaTracker? tracker = null)
     {
+        name ??= Options.DefaultName;
+
         var options = GetOptions(name);
         if (options is null)
             throw new ArgumentNullException(nameof(options));

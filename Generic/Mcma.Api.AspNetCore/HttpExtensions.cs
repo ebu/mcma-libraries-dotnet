@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,16 +16,13 @@ public static class HttpExtensions
         => stringValuesCollection?.ToDictionary<KeyValuePair<string, StringValues>, string, string>(x => x.Key, x => x.Value);
 
     public static async Task<McmaApiRequest> GetMcmaApiRequestAsync(this HttpContext httpContext, string basePath)
-        => new()
-        {
-            Id = httpContext.TraceIdentifier,
-            Path = httpContext.Request.Path.ToString().Replace(basePath, string.Empty),
-            HttpMethod = new HttpMethod(httpContext.Request.Method),
-            Headers = httpContext.Request.Headers?.ToDictionary(),
-            PathVariables = new Dictionary<string, object>(),
-            QueryStringParameters = httpContext.Request.Query?.ToDictionary() ?? new Dictionary<string, string>(),
-            Body = await httpContext.Request.Body.ReadAllBytesAsync()
-        };
+        => new(
+            httpContext.TraceIdentifier,
+            httpContext.Request.Path.ToString().Replace(basePath, string.Empty),
+            new HttpMethod(httpContext.Request.Method),
+            httpContext.Request.Headers?.ToDictionary(),
+            httpContext.Request.Query?.ToDictionary() ?? new Dictionary<string, string>(),
+            await httpContext.Request.Body.ReadAllBytesAsync());
 
     public static async Task CopyToHttpResponseAsync(this McmaApiResponse mcmaResponse, HttpResponse httpResponse)
     {
@@ -37,7 +35,7 @@ public static class HttpExtensions
         if (mcmaResponse.Body != null)
         {
             httpResponse.ContentLength = mcmaResponse.Body.Length;
-            await httpResponse.Body.WriteAsync(mcmaResponse.Body, 0, mcmaResponse.Body.Length);
+            await httpResponse.Body.WriteAsync(mcmaResponse.Body.AsMemory(0, mcmaResponse.Body.Length));
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Template;
 
@@ -16,14 +12,14 @@ public abstract class McmaApiRoute : IMcmaApiRoute
             
         HttpMethod = httpMethod ?? throw new ArgumentNullException(nameof(httpMethod));
 
-        TemplateMatcher = new TemplateMatcher(TemplateParser.Parse(path), null);
+        TemplateMatcher = new TemplateMatcher(TemplateParser.Parse(path), []);
     }
 
     public HttpMethod HttpMethod { get; }
 
     private TemplateMatcher TemplateMatcher { get; }
 
-    public bool IsMatch(string path, out IDictionary<string, object> pathVariables)
+    public bool IsMatch(string path, out IDictionary<string, object?> pathVariables)
     {
         var routeValueDictionary = new RouteValueDictionary();
         var isMatch = TemplateMatcher.TryMatch(path, routeValueDictionary);

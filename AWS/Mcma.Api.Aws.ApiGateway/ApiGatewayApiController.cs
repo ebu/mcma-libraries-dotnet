@@ -26,16 +26,13 @@ public class ApiGatewayApiController : IApiGatewayApiController
     {
         var requestContext =
             new McmaApiRequestContext(LoggerProvider,
-                                      new McmaApiRequest
-                                      {
-                                          Id = context.AwsRequestId,
-                                          Path = request.RequestContext.Http.Path[(request.RequestContext.Stage.Length + 1)..],
-                                          HttpMethod = new HttpMethod(request.RequestContext.Http.Method),
-                                          Headers = request.Headers,
-                                          PathVariables = new Dictionary<string, object>(),
-                                          QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
-                                          Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
-                                      });
+                                      new McmaApiRequest(
+                                          context.AwsRequestId,
+                                          request.RequestContext.Http.Path[(request.RequestContext.Stage.Length + 1)..],
+                                          new HttpMethod(request.RequestContext.Http.Method),
+                                          request.Headers,
+                                          request.QueryStringParameters ?? new Dictionary<string, string>(),
+                                          !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null));
             
         await Controller.HandleRequestAsync(requestContext);
 
@@ -58,16 +55,13 @@ public class ApiGatewayApiController : IApiGatewayApiController
     {
         var requestContext =
             new McmaApiRequestContext(LoggerProvider,
-                                      new McmaApiRequest
-                                      {
-                                          Id = context.AwsRequestId,
-                                          Path = request.Path,
-                                          HttpMethod = new HttpMethod(request.HttpMethod),
-                                          Headers = request.Headers,
-                                          PathVariables = new Dictionary<string, object>(),
-                                          QueryStringParameters = request.QueryStringParameters ?? new Dictionary<string, string>(),
-                                          Body = !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null
-                                      });
+                                      new McmaApiRequest(
+                                          context.AwsRequestId,
+                                          request.Path,
+                                          new HttpMethod(request.HttpMethod),
+                                          request.Headers,
+                                          request.QueryStringParameters ?? new Dictionary<string, string>(),
+                                          !string.IsNullOrWhiteSpace(request.Body) ? Encoding.UTF8.GetBytes(request.Body) : null));
             
         await Controller.HandleRequestAsync(requestContext);
 

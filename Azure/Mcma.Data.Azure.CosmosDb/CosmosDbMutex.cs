@@ -31,14 +31,16 @@ public class CosmosDbMutex : DocumentDatabaseMutex
         {
             MutexHolder = MutexHolder,
             Timestamp = DateTimeOffset.UtcNow
-        }.ToMcmaJson();
+        };
+        
+        var itemJson = item.ToMcmaJson();
 
-        item["id"] = Uri.EscapeDataString($"Mutex-{MutexName}");
+        itemJson["id"] = Uri.EscapeDataString($"Mutex-{MutexName}");
 
         PartitionKey partitionKey;
         if (!string.IsNullOrWhiteSpace(PartitionKeyName))
         {
-            item[PartitionKeyName] = "Mutex";
+            itemJson[PartitionKeyName] = "Mutex";
             partitionKey = new PartitionKey("Mutex");
         }
         else
@@ -55,7 +57,8 @@ public class CosmosDbMutex : DocumentDatabaseMutex
         var partitionKey = !string.IsNullOrWhiteSpace(PartitionKeyName) ? new PartitionKey("Mutex") : PartitionKey.None;
 
         var resp =
-            await Container.ReadItemStreamAsync(id, partitionKey, new ItemRequestOptions {ConsistencyLevel = ConsistencyLevel.Strong});
+            await Container.ReadItemStreamAsync(id, partitionKey, new ItemRequestOptions { ConsistencyLevel = ConsistencyLevel.Strong });
+
         if (resp.StatusCode == HttpStatusCode.NotFound)
             return null;
 

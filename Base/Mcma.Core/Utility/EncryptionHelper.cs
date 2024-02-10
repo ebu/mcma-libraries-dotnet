@@ -50,7 +50,7 @@ public static class EncryptionHelper
             
         rsa.ImportJson(publicKeyJson);
 
-        var encryptedBytes = rsa.EncryptValue(Encoding.UTF8.GetBytes(toEncrypt));
+        var encryptedBytes = rsa.Encrypt(Encoding.UTF8.GetBytes(toEncrypt), RSAEncryptionPadding.OaepSHA256);
 
         return Convert.ToBase64String(encryptedBytes);
     }
@@ -67,7 +67,7 @@ public static class EncryptionHelper
             
         rsa.ImportJson(privateKeyJson);
 
-        var decryptedBytes = rsa.DecryptValue(Convert.FromBase64String(toDecrypt));
+        var decryptedBytes = rsa.Decrypt(Convert.FromBase64String(toDecrypt), RSAEncryptionPadding.OaepSHA256);
 
         return Encoding.UTF8.GetString(decryptedBytes);
     }

@@ -1,8 +1,8 @@
 namespace Mcma.Client.Auth.AccessTokens;
 
-public class BearerToken
+public readonly struct BearerToken(string token, DateTimeOffset? expiresOn)
 {
-    public string Token { get; set; }
+    public string Token { get; } = token;
 
-    public DateTimeOffset? ExpiresOn { get; set; }
+    public DateTimeOffset? ExpiresOn { get; } = expiresOn;
 }

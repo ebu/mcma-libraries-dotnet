@@ -41,7 +41,7 @@ public class AuthenticatorRegistry
             "If you wish to register a default in the case that no handler was previously registered, please use TryAdd.");
     }
 
-    public AuthenticatorRegistry Add<TKey, TAuthenticator>(string serviceName = null, string resourceType = null)
+    public AuthenticatorRegistry Add<TKey, TAuthenticator>(string? serviceName = null, string? resourceType = null)
         where TKey : AuthenticatorKey, new()
         where TAuthenticator : class, IAuthenticator
         => Add<TAuthenticator>(AuthenticatorKey.Create<TKey>(serviceName, resourceType));

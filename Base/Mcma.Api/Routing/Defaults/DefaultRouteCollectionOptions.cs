@@ -7,7 +7,7 @@ public class DefaultRouteCollectionOptions<TResource> where TResource : McmaReso
 {
     public DefaultRouteCollectionOptions()
     {
-        Root = typeof(TResource).Name.CamelCaseToKebabCase().PluralizeKebabCase();
+        _root = typeof(TResource).Name.CamelCaseToKebabCase().PluralizeKebabCase();
     }
         
     private string _root;

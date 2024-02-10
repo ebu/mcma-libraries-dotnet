@@ -10,7 +10,7 @@ namespace Mcma.Client.Http;
 
 public class McmaHttpClient
 {
-    public McmaHttpClient(HttpClient httpClient, IAuthenticator authenticator = null, McmaTracker tracker = null)
+    public McmaHttpClient(HttpClient httpClient, IAuthenticator? authenticator = null, McmaTracker? tracker = null)
     {
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         Authenticator = authenticator;
@@ -19,9 +19,9 @@ public class McmaHttpClient
 
     private HttpClient HttpClient { get; }
 
-    private IAuthenticator Authenticator { get; }
+    private IAuthenticator? Authenticator { get; }
 
-    private McmaTracker Tracker { get; }
+    private McmaTracker? Tracker { get; }
 
     public Task<HttpResponseMessage> GetAsync(string url, CancellationToken cancellationToken = default)
         => SendAsync(new HttpRequestMessage(HttpMethod.Get, url), cancellationToken);

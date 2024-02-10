@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Mcma.Api.Http;
+﻿using Mcma.Api.Http;
 using Mcma.Api.Routing.Defaults.Create;
 using Mcma.Api.Routing.Defaults.Delete;
 using Mcma.Api.Routing.Defaults.Get;

@@ -12,7 +12,7 @@ namespace Mcma.Client.Resources;
 
 public class ResourceManager : IResourceManager
 {
-    public ResourceManager(IAuthProvider authProvider, HttpClient httpClient, ResourceManagerOptions options, McmaTracker tracker = null)
+    public ResourceManager(IAuthProvider authProvider, HttpClient httpClient, ResourceManagerOptions options, McmaTracker? tracker = null)
     {
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
@@ -28,7 +28,7 @@ public class ResourceManager : IResourceManager
 
     private ResourceManagerOptions Options { get; }
 
-    private McmaTracker Tracker { get; }
+    private McmaTracker? Tracker { get; }
 
     private McmaHttpClient McmaHttpClient { get; }
 
@@ -44,8 +44,10 @@ public class ResourceManager : IResourceManager
 
             Services.Add(serviceRegistryClient);
 
-            var servicesEndpoint = serviceRegistryClient.GetResourceEndpointClient<Service>();
-                
+            var servicesEndpoint =
+                serviceRegistryClient.GetResourceEndpointClient<Service>()
+                ?? throw new McmaException($"No resource endpoint found for resource type {nameof(Service)}");
+
             var response = await servicesEndpoint.QueryAsync<Service>();
 
             foreach (var service in response.Results)
@@ -67,19 +69,41 @@ public class ResourceManager : IResourceManager
 
     IServiceClient IResourceManager.GetServiceClient(Service service) => GetServiceClient(service);
 
-    private async Task<ResourceEndpointClient> GetResourceEndpointAsync(string url)
+    private async Task<IResourceEndpointClient> GetResourceEndpointAsync<T>()
+    {
+        if (!Services.Any())
+            await InitAsync();
+
+        return
+            Services.Where(s => s.HasResourceEndpointClient<T>())
+                    .Select(s => s.GetResourceEndpointClient<T>()!)
+                    .FirstOrDefault();
+    }
+
+    private async Task<(IResourceEndpointClient? EndpointClient, string? RelativePath)> GetResourceEndpointAsync(string url)
     {
         if (!Services.Any())
             await InitAsync();
 
         if (string.IsNullOrWhiteSpace(url))
-            return null;
+            return (null, null);
 
-        return Services.SelectMany(s => s.Resources)
-                       .FirstOrDefault(re => url.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
+        var endpoint =
+            Services.SelectMany(s => s.Resources)
+                    .FirstOrDefault(re => url.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
+        if (endpoint == null)
+            return (null, null);
+
+        var resourceId = url.Substring(endpoint.HttpEndpoint.Length).TrimStart('/');
+
+        return (endpoint, resourceId);
     }
 
-    async Task<IResourceEndpointClient> IResourceManager.GetResourceEndpointClientAsync(string url) => await GetResourceEndpointAsync(url);
+    async Task<IResourceEndpointClient?> IResourceManager.GetResourceEndpointClientAsync(string url)
+    {
+        var (endpoint, _) = await GetResourceEndpointAsync(url);
+        return endpoint;
+    }
 
     public Task<IEnumerable<T>> QueryAsync<T>(params (string, string)[] filter) where T : McmaObject
         => QueryAsync<T>(CancellationToken.None, filter);
@@ -89,7 +113,7 @@ public class ResourceManager : IResourceManager
         if (!Services.Any())
             await InitAsync();
 
-        var resourceEndpointClients = Services.Where(s => s.HasResourceEndpointClient<T>()).Select(s => s.GetResourceEndpointClient<T>()).ToList();
+        var resourceEndpointClients = Services.Where(s => s.HasResourceEndpointClient<T>()).Select(s => s.GetResourceEndpointClient<T>()!).ToList();
         if (!resourceEndpointClients.Any())
             throw new McmaException($"There are no available resource endpoints for resource of type '{typeof(T)}'");
 
@@ -126,88 +150,77 @@ public class ResourceManager : IResourceManager
 
     public async Task<T> CreateAsync<T>(T resource, CancellationToken cancellationToken = default) where T : McmaObject
     {
-        if (!Services.Any())
-            await InitAsync();
-
-        var resourceEndpoint =
-            Services.Where(s => s.HasResourceEndpointClient<T>())
-                    .Select(s => s.GetResourceEndpointClient<T>())
-                    .FirstOrDefault();
+        var resourceEndpoint = await GetResourceEndpointAsync<T>();
         if (resourceEndpoint != null)
             return await resourceEndpoint.PostAsync<T>(resource, cancellationToken: cancellationToken);
 
         if (resource is not McmaResource mcmaResource || string.IsNullOrWhiteSpace(mcmaResource.Id))
             throw new McmaException($"There is no endpoint available for creating resources of type '{typeof(T).Name}', and the provided resource does not specify an endpoint in its 'id' property.");
 
-        return await McmaHttpClient.PostAsync<T>(mcmaResource.Id, mcmaResource, cancellationToken);
+        return await McmaHttpClient.PostAsync<T>(mcmaResource.Id!, mcmaResource, cancellationToken);
     }
 
     public async Task<T> UpdateAsync<T>(string resourceId, T resource, CancellationToken cancellationToken = default) where T : McmaObject
     {
-        if (!Services.Any())
-            await InitAsync();
+        var (resourceEndpoint, relativePath) = await GetResourceEndpointAsync(resourceId);
 
-        var resourceEndpoint =
-            Services.Where(s => s.HasResourceEndpointClient<T>())
-                    .Select(s => s.GetResourceEndpointClient<T>())
-                    .FirstOrDefault(re => resourceId.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
-        if (resourceEndpoint != null)
-            return await resourceEndpoint.PutAsync<T>(resource, resourceId, cancellationToken);
-
-        return await McmaHttpClient.PutAsync<T>(resourceId, resource, cancellationToken);
+        return resourceEndpoint != null
+            ? await resourceEndpoint.PutAsync<T>(relativePath!, resource, cancellationToken)
+            : await McmaHttpClient.PutAsync<T>(resourceId, resource, cancellationToken);
     }
 
     public async Task DeleteAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject
     {
-        if (!Services.Any())
-            await InitAsync();
-
-        var resourceEndpoint =
-            Services.Where(s => s.HasResourceEndpointClient<T>())
-                    .Select(s => s.GetResourceEndpointClient<T>())
-                    .FirstOrDefault(re => resourceId.StartsWith(re.HttpEndpoint, StringComparison.OrdinalIgnoreCase));
+        var (resourceEndpoint, relativePath) = await GetResourceEndpointAsync(resourceId);
 
         if (resourceEndpoint != null)
-            await resourceEndpoint.DeleteAsync(resourceId, cancellationToken);
+            await resourceEndpoint.DeleteAsync(relativePath!, cancellationToken);
         else
             await McmaHttpClient.DeleteAsync(resourceId, cancellationToken);
     }
 
-    public async Task<T> GetAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject
+    public async Task<T?> GetAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject
     {
-        var resourceEndpoint = await GetResourceEndpointAsync(resourceId);
+        if (string.IsNullOrWhiteSpace(resourceId))
+            throw new ArgumentException(nameof(resourceId), $"Argument {nameof(resourceId)} cannot be null or whitespace.");
+
+        var (resourceEndpoint, relativePath) = await GetResourceEndpointAsync(resourceId);
 
         return resourceEndpoint != null
-                   ? await resourceEndpoint.GetAsync<T>(resourceId, cancellationToken)
-                   : await McmaHttpClient.GetAsync<T>(resourceId, true, cancellationToken);
+            ? await resourceEndpoint.GetAsync<T>(relativePath!, cancellationToken)
+            : await McmaHttpClient.GetWithNullOn404Async<T>(resourceId, cancellationToken);
     }
 
-    public async Task<TChild[]> GetChildrenAsync<T, TChild>(string parentResourceId, string pathToChildren = null, CancellationToken cancellationToken = default)
+    public async Task<T[]> GetChildCollectionAsync<T>(string parentResourceId, string pathToChildren, CancellationToken cancellationToken = default)
         where T : McmaObject
-        where TChild : McmaObject
     {
-        var resourceEndpoint = await GetResourceEndpointAsync(parentResourceId);
+        if (string.IsNullOrWhiteSpace(parentResourceId))
+            throw new ArgumentException(nameof(parentResourceId), $"Argument {nameof(parentResourceId)} cannot be null or whitespace.");
+        if (string.IsNullOrWhiteSpace(pathToChildren))
+            throw new ArgumentException(nameof(pathToChildren), $"Argument {nameof(pathToChildren)} cannot be null or whitespace.");
+
+        var (resourceEndpoint, relativePath) = await GetResourceEndpointAsync(parentResourceId);
 
         return resourceEndpoint != null
-            ? await resourceEndpoint.GetChildrenAsync<T, TChild>(pathToChildren, parentResourceId, cancellationToken)
-            : await McmaHttpClient.GetAsync<TChild[]>(EndpointHelper.GetChildRoute<TChild>(parentResourceId, pathToChildren), true, cancellationToken);
+            ? await resourceEndpoint.GetCollectionAsync<T>($"{relativePath!.Trim('/')}/{pathToChildren.Trim('/')}", cancellationToken)
+            : await McmaHttpClient.GetAsync<T[]>($"{parentResourceId.TrimEnd('/')}/{pathToChildren.Trim('/')}", cancellationToken);
     }
 
-    public async Task SendNotificationAsync<T>(string resourceId, T resource, NotificationEndpoint notificationEndpoint, CancellationToken cancellationToken = default)
+    public async Task SendNotificationAsync<T>(NotificationEndpoint notificationEndpoint, string? resourceId = null, T? resource = null, CancellationToken cancellationToken = default)
         where T : McmaObject
     {
         if (string.IsNullOrWhiteSpace(notificationEndpoint?.HttpEndpoint))
             return;
 
         // create a notification from the provided resource
-        var notification = new Notification {Source = resourceId, Content = resource.ToMcmaJson()};
+        var notification = new Notification { Source = resourceId, Content = resource?.ToMcmaJson() };
 
         // get the resource endpoint for the notification url
-        var resourceEndpoint = await GetResourceEndpointAsync(notificationEndpoint.HttpEndpoint);
+        var (resourceEndpoint, relativePath) = await GetResourceEndpointAsync(notificationEndpoint!.HttpEndpoint!);
 
         // send the notification via the ResourceEndpointClient, if found, or just via regular http otherwise
         if (resourceEndpoint != null)
-            await resourceEndpoint.PostAsync(notification, notificationEndpoint.HttpEndpoint, cancellationToken);
+            await resourceEndpoint.PostAsync(notification, relativePath, cancellationToken);
         else
             await McmaHttpClient.PostAsync(notificationEndpoint.HttpEndpoint, notification, cancellationToken);
     }

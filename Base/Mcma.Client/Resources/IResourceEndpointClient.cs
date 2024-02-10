@@ -6,7 +6,7 @@ public interface IResourceEndpointClient
 {
     string HttpEndpoint { get; }
         
-    Task<QueryResults<T>> QueryAsync<T>(string url = null,
+    Task<QueryResults<T>> QueryAsync<T>(string? url = null,
                                         params (string Key, string Value)[] queryParameters)
         where T : McmaObject;
         
@@ -19,19 +19,17 @@ public interface IResourceEndpointClient
                                         params (string Key, string Value)[] queryParameters)
         where T : McmaObject;
 
-    Task<T> PostAsync<T>(object body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
+    Task<T> PostAsync<T>(object body, string? relativePath = null, CancellationToken cancellationToken = default) where T : McmaObject;
 
-    Task PostAsync(object body, string url = null, CancellationToken cancellationToken = default);
+    Task PostAsync(object body, string? relativePath = null, CancellationToken cancellationToken = default);
         
-    Task<T> GetAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
+    Task<T?> GetAsync<T>(string relativePath, CancellationToken cancellationToken = default) where T : McmaObject;
 
-    Task<TChild[]> GetChildrenAsync<T, TChild>(string pathToChildren, string url = null, CancellationToken cancellationToken = default)
-        where T : McmaObject
-        where TChild : McmaObject;
+    Task<T[]> GetCollectionAsync<T>(string relativePath, CancellationToken cancellationToken = default) where T : McmaObject;
 
-    Task<T> PutAsync<T>(object body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
+    Task<T> PutAsync<T>(string relativePath, object body, CancellationToken cancellationToken = default) where T : McmaObject;
 
-    Task PutAsync(object body, string url = null, CancellationToken cancellationToken = default);
+    Task PutAsync(string relativePath, object body, CancellationToken cancellationToken = default);
 
-    Task DeleteAsync(string url = null, CancellationToken cancellationToken = default);
+    Task DeleteAsync(string relativePath, CancellationToken cancellationToken = default);
 }

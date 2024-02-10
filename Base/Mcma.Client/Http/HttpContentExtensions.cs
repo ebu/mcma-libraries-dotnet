@@ -12,6 +12,8 @@ public static class HttpContentExtensions
     {
         var responseBody = await content.ReadAsStringAsync();
 
-        return !string.IsNullOrWhiteSpace(responseBody) ? McmaJson.Parse(responseBody) : JValue.CreateNull();
+        return !string.IsNullOrWhiteSpace(responseBody) && McmaJson.Parse(responseBody) is JToken jToken
+            ? jToken
+            : JValue.CreateNull();
     }
 }

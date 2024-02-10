@@ -1,0 +1,169 @@
+﻿#nullable enable
+const Mcma.Client.Auth.ApiKey.McmaApiKeyAuthenticator.Header = "x-mcma-api-key" -> string
+const Mcma.Client.Auth.AuthenticatorKey.Wildcard = "*" -> string
+const Mcma.Client.Http.McmaHttpHeaders.Prefix = "mcma-" -> string
+const Mcma.Client.Http.McmaHttpHeaders.Tracker = "mcma-tracker" -> string
+const Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthContextKey = "MCMA_SERVICE_REGISTRY_AUTH_CONTEXT" -> string
+const Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthTypeKey = "MCMA_SERVICE_REGISTRY_AUTH_TYPE" -> string
+const Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables.ServiceRegistryUrlKey = "MCMA_SERVICE_REGISTRY_URL" -> string
+Mcma.Client.Auth.AccessTokens.BearerToken
+Mcma.Client.Auth.AccessTokens.BearerToken.BearerToken() -> void
+Mcma.Client.Auth.AccessTokens.BearerToken.ExpiresOn.get -> System.DateTimeOffset?
+Mcma.Client.Auth.AccessTokens.BearerToken.ExpiresOn.set -> void
+Mcma.Client.Auth.AccessTokens.BearerToken.Token.get -> string
+Mcma.Client.Auth.AccessTokens.BearerToken.Token.set -> void
+Mcma.Client.Auth.AccessTokens.BearerTokenAuthenticatorRegistryExtensions
+Mcma.Client.Auth.AccessTokens.IBearerTokenProvider
+Mcma.Client.Auth.AccessTokens.IBearerTokenProvider.GetAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Mcma.Client.Auth.AccessTokens.BearerToken>
+Mcma.Client.Auth.ApiKey.McmaApiKeyAuthenticator
+Mcma.Client.Auth.ApiKey.McmaApiKeyAuthenticator.AuthenticateAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Auth.ApiKey.McmaApiKeyAuthenticator.McmaApiKeyAuthenticator(string apiKey) -> void
+Mcma.Client.Auth.ApiKey.McmaApiKeyAuthenticatorRegistryExtensions
+Mcma.Client.Auth.AuthenticationServiceCollectionExtensions
+Mcma.Client.Auth.AuthenticatorKey
+Mcma.Client.Auth.AuthenticatorKey.AuthenticatorKey(string authType, string serviceName = null, string resourceType = null) -> void
+Mcma.Client.Auth.AuthenticatorKey.AuthType.get -> string
+Mcma.Client.Auth.AuthenticatorKey.Key.get -> string
+Mcma.Client.Auth.AuthenticatorKey.ResourceType.get -> string
+Mcma.Client.Auth.AuthenticatorKey.ServiceName.get -> string
+Mcma.Client.Auth.AuthenticatorRegistration
+Mcma.Client.Auth.AuthenticatorRegistration.Authenticator.get -> Mcma.Client.Auth.IAuthenticator
+Mcma.Client.Auth.AuthenticatorRegistration.AuthenticatorRegistration(Mcma.Client.Auth.AuthenticatorKey key, Mcma.Client.Auth.IAuthenticator authenticator) -> void
+Mcma.Client.Auth.AuthenticatorRegistration.Key.get -> Mcma.Client.Auth.AuthenticatorKey
+Mcma.Client.Auth.AuthenticatorRegistry!
+Mcma.Client.Auth.AuthenticatorRegistry.Add<TAuthenticator>(Mcma.Client.Auth.AuthenticatorKey key) -> Mcma.Client.Auth.AuthenticatorRegistry!
+Mcma.Client.Auth.AuthenticatorRegistry.Add<TAuthenticator>(Mcma.Client.Auth.AuthenticatorKey key, System.Func<System.IServiceProvider, TAuthenticator> serviceFactory) -> Mcma.Client.Auth.AuthenticatorRegistry!
+Mcma.Client.Auth.AuthenticatorRegistry.Add<TKey, TAuthenticator>(string serviceName = null, string resourceType = null) -> Mcma.Client.Auth.AuthenticatorRegistry!
+Mcma.Client.Auth.AuthenticatorRegistry.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+Mcma.Client.Auth.AuthenticatorRegistry.TryAdd<TAuthenticator>(Mcma.Client.Auth.AuthenticatorKey key) -> bool
+Mcma.Client.Auth.AuthenticatorRegistry.TryAdd<TAuthenticator>(Mcma.Client.Auth.AuthenticatorKey key, System.Func<System.IServiceProvider, TAuthenticator> serviceFactory) -> bool
+Mcma.Client.Auth.AuthProvider!
+Mcma.Client.Auth.AuthProvider.Add(Mcma.Client.Auth.AuthenticatorKey key, Mcma.Client.Auth.IAuthenticator authenticator) -> Mcma.Client.Auth.AuthProvider!
+Mcma.Client.Auth.AuthProvider.Add<T>(Mcma.Client.Auth.IAuthenticator authenticator) -> Mcma.Client.Auth.AuthProvider!
+Mcma.Client.Auth.AuthProvider.AuthProvider(System.Collections.Generic.IEnumerable<Mcma.Client.Auth.AuthenticatorRegistration> authenticatorRegistrations) -> void
+Mcma.Client.Auth.AuthProvider.Get(string authType, string serviceName, string resourceType) -> Mcma.Client.Auth.IAuthenticator!
+Mcma.Client.Auth.IAuthenticator
+Mcma.Client.Auth.IAuthenticator.AuthenticateAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Mcma.Client.Auth.IAuthProvider
+Mcma.Client.Auth.IAuthProvider.Get(string authType, string serviceName, string resourceType) -> Mcma.Client.Auth.IAuthenticator!
+Mcma.Client.Http.HttpContentExtensions
+Mcma.Client.Http.HttpResponseExtensions
+Mcma.Client.Http.McmaHttpClient
+Mcma.Client.Http.McmaHttpClient.DeleteAsync(string url, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
+Mcma.Client.Http.McmaHttpClient.GetAsync(string url, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
+Mcma.Client.Http.McmaHttpClient.McmaHttpClient(System.Net.Http.HttpClient httpClient, Mcma.Client.Auth.IAuthenticator authenticator = null, Mcma.Model.McmaTracker tracker = null) -> void
+Mcma.Client.Http.McmaHttpClient.PostAsync(string url, System.Net.Http.HttpContent body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
+Mcma.Client.Http.McmaHttpClient.PutAsync(string url, System.Net.Http.HttpContent body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
+Mcma.Client.Http.McmaHttpClient.SendAsync(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
+Mcma.Client.Http.McmaHttpClientExtensions
+Mcma.Client.Http.McmaHttpHeaders
+Mcma.Client.Http.McmaJsonContent
+Mcma.Client.Http.McmaJsonContent.McmaJsonContent(object obj) -> void
+Mcma.Client.McmaClientBuilder
+Mcma.Client.McmaClientBuilder.AddAuth(System.Action<Mcma.Client.Auth.AuthenticatorRegistry> addAuth) -> Mcma.Client.McmaClientBuilder
+Mcma.Client.McmaClientBuilder.AddDefaultResourceManager(System.Action<Mcma.Client.ResourceManagerBuilder> configure) -> Mcma.Client.McmaClientBuilder
+Mcma.Client.McmaClientBuilder.AddDefaultResourceManagerFromEnvVars() -> Mcma.Client.McmaClientBuilder
+Mcma.Client.McmaClientBuilder.AddResourceManager(string name, System.Action<Mcma.Client.ResourceManagerBuilder> configure) -> Mcma.Client.McmaClientBuilder
+Mcma.Client.McmaClientServiceCollectionExtensions
+Mcma.Client.ResourceManagerBuilder
+Mcma.Client.ResourceManagerBuilder.HttpClient.get -> Microsoft.Extensions.DependencyInjection.IHttpClientBuilder
+Mcma.Client.ResourceManagerBuilder.Name.get -> string
+Mcma.Client.ResourceManagerBuilder.Options.get -> Microsoft.Extensions.Options.OptionsBuilder<Mcma.Client.Resources.ResourceManagerOptions>
+Mcma.Client.ResourceManagerServiceCollectionExtensions
+Mcma.Client.Resources.IResourceEndpointClient
+Mcma.Client.Resources.IResourceEndpointClient.DeleteAsync(string url = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.IResourceEndpointClient.GetAsync<T>(string url = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.IResourceEndpointClient.HttpEndpoint.get -> string
+Mcma.Client.Resources.IResourceEndpointClient.PostAsync(object body, string url = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.IResourceEndpointClient.PostAsync<T>(object body, string url = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.IResourceEndpointClient.PutAsync(object body, string url = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.IResourceEndpointClient.PutAsync<T>(object body, string url = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.IResourceEndpointClient.QueryAsync<T>(string url = null, params (string Key, string Value)[] queryParameters) -> System.Threading.Tasks.Task<Mcma.Model.QueryResults<T>>
+Mcma.Client.Resources.IResourceEndpointClient.QueryAsync<T>(string url, System.Threading.CancellationToken cancellationToken, params (string Key, string Value)[] queryParameters) -> System.Threading.Tasks.Task<Mcma.Model.QueryResults<T>>
+Mcma.Client.Resources.IResourceEndpointClient.QueryAsync<T>(System.Threading.CancellationToken cancellationToken, params (string Key, string Value)[] queryParameters) -> System.Threading.Tasks.Task<Mcma.Model.QueryResults<T>>
+Mcma.Client.Resources.IResourceManager
+Mcma.Client.Resources.IResourceManager.CreateAsync<T>(T resource, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.IResourceManager.DeleteAsync<T>(string resourceId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.IResourceManager.GetAsync<T>(string resourceId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.IResourceManager.GetResourceEndpointClientAsync(string url) -> System.Threading.Tasks.Task<Mcma.Client.Resources.IResourceEndpointClient>
+Mcma.Client.Resources.IResourceManager.GetServiceClient(Mcma.Model.Service service) -> Mcma.Client.Resources.IServiceClient
+Mcma.Client.Resources.IResourceManager.InitAsync() -> System.Threading.Tasks.Task
+Mcma.Client.Resources.IResourceManager.QueryAsync<T>(params (string, string)[] filter) -> System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<T>>
+Mcma.Client.Resources.IResourceManager.QueryAsync<T>(System.Threading.CancellationToken cancellationToken, params (string, string)[] filter) -> System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<T>>
+Mcma.Client.Resources.IResourceManager.SendNotificationAsync<T>(string resourceId, T resource, Mcma.Model.NotificationEndpoint notificationEndpoint, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.IResourceManager.UpdateAsync<T>(string resourceId, T resource, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.IResourceManagerProvider
+Mcma.Client.Resources.IResourceManagerProvider.Get(Mcma.Model.McmaTracker tracker = null) -> Mcma.Client.Resources.IResourceManager
+Mcma.Client.Resources.IResourceManagerProvider.Get(string name, Mcma.Model.McmaTracker tracker = null) -> Mcma.Client.Resources.IResourceManager
+Mcma.Client.Resources.IServiceClient
+Mcma.Client.Resources.IServiceClient.GetResourceEndpointClient<T>() -> Mcma.Client.Resources.IResourceEndpointClient
+Mcma.Client.Resources.IServiceClient.HasResourceEndpointClient<T>() -> bool
+Mcma.Client.Resources.IServiceClient.Name.get -> string
+Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables
+Mcma.Client.Resources.ResourceManager
+Mcma.Client.Resources.ResourceManager.CreateAsync<T>(T resource, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.ResourceManager.DeleteAsync<T>(string resourceId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.ResourceManager.GetAsync<T>(string resourceId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.ResourceManager.InitAsync() -> System.Threading.Tasks.Task
+Mcma.Client.Resources.ResourceManager.QueryAsync<T>(params (string, string)[] filter) -> System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<T>>
+Mcma.Client.Resources.ResourceManager.QueryAsync<T>(System.Threading.CancellationToken cancellationToken, params (string, string)[] filter) -> System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<T>>
+Mcma.Client.Resources.ResourceManager.ResourceManager(Mcma.Client.Auth.IAuthProvider authProvider, System.Net.Http.HttpClient httpClient, Mcma.Client.Resources.ResourceManagerOptions options, Mcma.Model.McmaTracker tracker = null) -> void
+Mcma.Client.Resources.ResourceManager.SendNotificationAsync<T>(string resourceId, T resource, Mcma.Model.NotificationEndpoint notificationEndpoint, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+Mcma.Client.Resources.ResourceManager.UpdateAsync<T>(string resourceId, T resource, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+Mcma.Client.Resources.ResourceManagerExtensions
+Mcma.Client.Resources.ResourceManagerOptions
+Mcma.Client.Resources.ResourceManagerOptions.ResourceManagerOptions() -> void
+Mcma.Client.Resources.ResourceManagerOptions.ResourceManagerOptions(string serviceRegistryUrl, string serviceRegistryAuthType = null, string serviceRegistryAuthContext = null) -> void
+Mcma.Client.Resources.ResourceManagerOptions.ServiceRegistryAuthContext.get -> string
+Mcma.Client.Resources.ResourceManagerOptions.ServiceRegistryAuthContext.set -> void
+Mcma.Client.Resources.ResourceManagerOptions.ServiceRegistryAuthType.get -> string
+Mcma.Client.Resources.ResourceManagerOptions.ServiceRegistryAuthType.set -> void
+Mcma.Client.Resources.ResourceManagerOptions.ServiceRegistryUrl.get -> string
+Mcma.Client.Resources.ResourceManagerOptions.ServiceRegistryUrl.set -> void
+Mcma.Client.Resources.ResourceManagerOptions.Validate() -> void
+Mcma.Client.Resources.ResourceManagerOptionsHelper
+Mcma.Client.Resources.ResourceManagerProvider
+Mcma.Client.Resources.ResourceManagerProvider.Get(Mcma.Model.McmaTracker tracker = null) -> Mcma.Client.Resources.IResourceManager
+Mcma.Client.Resources.ResourceManagerProvider.Get(string name = null, Mcma.Model.McmaTracker tracker = null) -> Mcma.Client.Resources.IResourceManager
+Mcma.Client.Resources.ResourceManagerProvider.ResourceManagerProvider(System.Net.Http.IHttpClientFactory httpClientFactory, Mcma.Client.Auth.IAuthProvider authProvider, Microsoft.Extensions.Options.IOptionsMonitor<Mcma.Client.Resources.ResourceManagerOptions> optionsMonitor) -> void
+Mcma.Client.Resources.ResourceManagerProvider.ResourceManagerProvider(System.Net.Http.IHttpClientFactory httpClientFactory, Mcma.Client.Auth.IAuthProvider authProvider, Microsoft.Extensions.Options.IOptionsSnapshot<Mcma.Client.Resources.ResourceManagerOptions> optionsSnapshot) -> void
+override Mcma.Client.Auth.AuthenticatorKey.Equals(object obj) -> bool
+override Mcma.Client.Auth.AuthenticatorKey.GetHashCode() -> int
+override Mcma.Client.Auth.AuthenticatorKey.ToString() -> string
+static Mcma.Client.Auth.AccessTokens.BearerTokenAuthenticatorRegistryExtensions.AddBearerTokens<TBearerTokenProvider>(this Mcma.Client.Auth.AuthenticatorRegistry authRegistry, Mcma.Client.Auth.AuthenticatorKey key, Microsoft.Extensions.DependencyInjection.ServiceLifetime lifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton) -> Mcma.Client.Auth.AuthenticatorRegistry
+static Mcma.Client.Auth.AccessTokens.BearerTokenAuthenticatorRegistryExtensions.AddBearerTokens<TBearerTokenProvider>(this Mcma.Client.Auth.AuthenticatorRegistry authRegistry, Mcma.Client.Auth.AuthenticatorKey key, System.Func<System.IServiceProvider, TBearerTokenProvider> factory, Microsoft.Extensions.DependencyInjection.ServiceLifetime lifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton) -> Mcma.Client.Auth.AuthenticatorRegistry
+static Mcma.Client.Auth.AccessTokens.BearerTokenAuthenticatorRegistryExtensions.TryAddBearerTokens<TBearerTokenProvider>(this Mcma.Client.Auth.AuthenticatorRegistry handlerRegistry, Mcma.Client.Auth.AuthenticatorKey key, Microsoft.Extensions.DependencyInjection.ServiceLifetime lifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton) -> bool
+static Mcma.Client.Auth.AccessTokens.BearerTokenAuthenticatorRegistryExtensions.TryAddBearerTokens<TBearerTokenProvider>(this Mcma.Client.Auth.AuthenticatorRegistry handlerRegistry, Mcma.Client.Auth.AuthenticatorKey key, System.Func<System.IServiceProvider, TBearerTokenProvider> factory, Microsoft.Extensions.DependencyInjection.ServiceLifetime lifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton) -> bool
+static Mcma.Client.Auth.ApiKey.McmaApiKeyAuthenticatorRegistryExtensions.AddMcmaApiKey(this Mcma.Client.Auth.AuthenticatorRegistry authRegistry, Mcma.Client.Auth.AuthenticatorKey key, string apiKey) -> Mcma.Client.Auth.AuthenticatorRegistry!
+static Mcma.Client.Auth.AuthenticationServiceCollectionExtensions.AddMcmaAuthentication(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime = Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton, System.Action<Mcma.Client.Auth.AuthenticatorRegistry> addAuthenticators = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Client.Auth.AuthenticatorKey.Create<TKey>(string serviceName = null, string resourceType = null) -> TKey!
+static Mcma.Client.Auth.AuthenticatorKey.implicit operator string(Mcma.Client.Auth.AuthenticatorKey key) -> string!
+static Mcma.Client.Auth.AuthenticatorKey.operator !=(Mcma.Client.Auth.AuthenticatorKey key1, Mcma.Client.Auth.AuthenticatorKey key2) -> bool
+static Mcma.Client.Auth.AuthenticatorKey.operator !=(Mcma.Client.Auth.AuthenticatorKey key1, string key2) -> bool
+static Mcma.Client.Auth.AuthenticatorKey.operator !=(string key1, Mcma.Client.Auth.AuthenticatorKey key2) -> bool
+static Mcma.Client.Auth.AuthenticatorKey.operator ==(Mcma.Client.Auth.AuthenticatorKey key1, Mcma.Client.Auth.AuthenticatorKey key2) -> bool
+static Mcma.Client.Auth.AuthenticatorKey.operator ==(Mcma.Client.Auth.AuthenticatorKey key1, string key2) -> bool
+static Mcma.Client.Auth.AuthenticatorKey.operator ==(string key1, Mcma.Client.Auth.AuthenticatorKey key2) -> bool
+static Mcma.Client.Http.HttpContentExtensions.ReadAsJsonAsync(this System.Net.Http.HttpContent content) -> System.Threading.Tasks.Task<Newtonsoft.Json.Linq.JToken>!
+static Mcma.Client.Http.HttpResponseExtensions.GetBodyAsTextAsync(this System.Net.Http.HttpResponseMessage response) -> System.Threading.Tasks.Task<string>!
+static Mcma.Client.Http.HttpResponseExtensions.ThrowIfFailedAsync(this System.Net.Http.HttpResponseMessage response) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>!
+static Mcma.Client.Http.McmaHttpClientExtensions.GetAsync<T>(this Mcma.Client.Http.McmaHttpClient mcmaHttpClient, string url, bool nullOn404 = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+static Mcma.Client.Http.McmaHttpClientExtensions.PostAsync(this Mcma.Client.Http.McmaHttpClient mcmaHttpClient, string url, object body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+static Mcma.Client.Http.McmaHttpClientExtensions.PostAsync<T>(this Mcma.Client.Http.McmaHttpClient mcmaHttpClient, string url, object body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+static Mcma.Client.Http.McmaHttpClientExtensions.PutAsync(this Mcma.Client.Http.McmaHttpClient mcmaHttpClient, string url, object body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+static Mcma.Client.Http.McmaHttpClientExtensions.PutAsync<T>(this Mcma.Client.Http.McmaHttpClient mcmaHttpClient, string url, object body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+static Mcma.Client.Http.McmaHttpClientExtensions.WithErrorHandling(this System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> responseTask) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
+static Mcma.Client.McmaClientServiceCollectionExtensions.AddMcmaClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, Microsoft.Extensions.DependencyInjection.ServiceLifetime serviceLifetime, System.Action<Mcma.Client.McmaClientBuilder> configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Client.McmaClientServiceCollectionExtensions.AddScopedMcmaClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, System.Action<Mcma.Client.McmaClientBuilder> configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Client.McmaClientServiceCollectionExtensions.AddSingletonMcmaClient(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, System.Action<Mcma.Client.McmaClientBuilder> configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Client.ResourceManagerServiceCollectionExtensions.AddResourceManager(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, string name, System.Action<Mcma.Client.ResourceManagerBuilder> configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Client.ResourceManagerServiceCollectionExtensions.AddResourceManager(this Microsoft.Extensions.DependencyInjection.IServiceCollection services, System.Action<Mcma.Client.ResourceManagerBuilder> configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+static Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthContext.get -> string
+static Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthType.get -> string
+static Mcma.Client.Resources.McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl.get -> string
+static Mcma.Client.Resources.ResourceManagerExtensions.ResolveResourceFromFullUrl<T>(this Mcma.Client.Resources.IResourceManager resourceManager, string url) -> System.Threading.Tasks.Task<T>
+static Mcma.Client.Resources.ResourceManagerExtensions.SendJobNotificationAsync<T>(this Mcma.Client.Resources.IResourceManager resourceManager, T resource, Mcma.Model.NotificationEndpoint notificationEndpoint = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+static Mcma.Client.Resources.ResourceManagerExtensions.SendNotificationAsync<T>(this Mcma.Client.Resources.IResourceManager resourceManager, T resource, Mcma.Model.NotificationEndpoint notificationEndpoint, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task
+static Mcma.Client.Resources.ResourceManagerExtensions.UpdateAsync<T>(this Mcma.Client.Resources.IResourceManager resourceManager, T resource, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<T>
+static Mcma.Client.Resources.ResourceManagerOptions.ConfigureFromEnvVars(Mcma.Client.Resources.ResourceManagerOptions options) -> void
+static Mcma.Client.Resources.ResourceManagerOptionsHelper.ToServiceRegistryServiceData(this Mcma.Client.Resources.ResourceManagerOptions options) -> Mcma.Model.Service

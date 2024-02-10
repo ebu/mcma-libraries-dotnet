@@ -1,11 +1,10 @@
-﻿using System;
-using Mcma.Model;
+﻿using Mcma.Model;
 
 namespace Mcma.Api.Http;
 
 public class McmaApiError : McmaObject
 {
-    public McmaApiError(int status = 0, string message = null, string path = null, DateTimeOffset? timestamp = null, string error = null)
+    public McmaApiError(int status = 0, string? message = null, string? path = null, DateTimeOffset? timestamp = null, string? error = null)
     {
         Status = status;
         Message = message;
@@ -19,9 +18,9 @@ public class McmaApiError : McmaObject
 
     public int Status { get; }
 
-    public string Error { get; }
+    public string? Error { get; }
 
-    public string Message { get; }
+    public string? Message { get; }
 
-    public string Path { get; }
+    public string? Path { get; }
 }

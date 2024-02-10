@@ -14,16 +14,16 @@ internal class BearerTokenAuthenticator : IAuthenticator
 
     private IBearerTokenProvider BearerTokenProvider { get; } 
 
-    private BearerToken BearerToken { get; set; }
+    private BearerToken? BearerToken { get; set; }
 
     public async Task AuthenticateAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
     {
-        if (BearerToken?.ExpiresOn != null && BearerToken.ExpiresOn >= DateTimeOffset.UtcNow)
+        if (BearerToken.HasValue && BearerToken.Value.ExpiresOn.HasValue && BearerToken.Value.ExpiresOn.Value >= DateTimeOffset.UtcNow)
             BearerToken = null;
 
         BearerToken ??= await BearerTokenProvider.GetAsync(request, cancellationToken);
 
-        if (BearerToken != null)
-            request.Headers.Authorization = AuthenticationHeaderValue.Parse($"Bearer {BearerToken.Token}");
+        if (BearerToken.HasValue)
+            request.Headers.Authorization = AuthenticationHeaderValue.Parse($"Bearer {BearerToken.Value.Token}");
     }
 }
