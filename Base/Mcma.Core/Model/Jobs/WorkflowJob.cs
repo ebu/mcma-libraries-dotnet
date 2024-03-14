@@ -1,6 +1,3 @@
 namespace Mcma.Model.Jobs;
 
-public class WorkflowJob : Job
-{
-
-}
+public class WorkflowJob : Job;

@@ -1,6 +1,3 @@
 namespace Mcma.Model.Jobs;
 
-public class TransferJob : Job
-{
-
-}
+public class TransferJob : Job;

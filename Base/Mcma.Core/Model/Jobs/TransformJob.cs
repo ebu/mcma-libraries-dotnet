@@ -1,6 +1,3 @@
 namespace Mcma.Model.Jobs;
 
-public class TransformJob : Job
-{
-
-}
+public class TransformJob : Job;

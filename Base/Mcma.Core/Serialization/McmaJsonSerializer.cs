@@ -17,8 +17,6 @@ internal class McmaJsonSerializer : JsonSerializer
         Settings = settings;
         RootType = rootType;
 
-        CheckAdditionalContent = true;
-
         ApplySettings();
     }
 
@@ -28,6 +26,8 @@ internal class McmaJsonSerializer : JsonSerializer
 
     private void ApplySettings()
     {
+        CheckAdditionalContent = true;
+        
         NullValueHandling = Settings.NullValueHandling;
         ReferenceLoopHandling = Settings.ReferenceLoopHandling;
         DateParseHandling = Settings.DateParseHandling;
@@ -43,5 +43,5 @@ internal class McmaJsonSerializer : JsonSerializer
         =>  For(typeof(T));
 
     public McmaJsonSerializer For(Type type)
-        => Typed.GetOrAdd(type, t => new(Settings, t));
+        => Typed.GetOrAdd(type, t => new McmaJsonSerializer(Settings, t));
 }

@@ -1,6 +1,3 @@
 namespace Mcma.Model.Jobs;
 
-public class QAJob : Job
-{
-
-}
+public class QAJob : Job;

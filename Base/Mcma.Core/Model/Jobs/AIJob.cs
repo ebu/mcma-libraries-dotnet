@@ -1,6 +1,3 @@
 namespace Mcma.Model.Jobs;
 
-public class AIJob : Job
-{
-
-}
+public class AIJob : Job;

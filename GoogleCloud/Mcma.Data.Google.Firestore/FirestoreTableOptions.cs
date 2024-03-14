@@ -2,6 +2,4 @@
 
 namespace Mcma.Data.Google.Firestore;
 
-public class FirestoreTableOptions : DocumentDatabaseTableOptions
-{
-}
+public class FirestoreTableOptions : DocumentDatabaseTableOptions;

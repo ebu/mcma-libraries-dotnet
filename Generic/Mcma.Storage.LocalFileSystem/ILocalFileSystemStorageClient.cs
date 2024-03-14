@@ -1,5 +1,3 @@
 ﻿namespace Mcma.Storage.LocalFileSystem;
 
-public interface ILocalFileSystemStorageClient : IStorageClient
-{    
-}
+public interface ILocalFileSystemStorageClient : IStorageClient;

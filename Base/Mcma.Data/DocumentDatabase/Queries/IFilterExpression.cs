@@ -1,5 +1,3 @@
 ﻿namespace Mcma.Data.DocumentDatabase.Queries;
  
-public interface IFilterExpression
-{
-}
+public interface IFilterExpression;

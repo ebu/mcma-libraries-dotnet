@@ -40,20 +40,17 @@ public static class McmaTypes
 
     private static Type? PickBestTypeBasedOnRoot(Type? rootObjectType, Type[] types)
     {
-        if (rootObjectType?.FullName is null)
+        if (string.IsNullOrWhiteSpace(rootObjectType?.FullName))
             return null;
 
-        var rootTypeNameParts = rootObjectType.FullName.Split('.');
+        var rootTypeNameParts = rootObjectType!.FullName!.Split('.');
 
         var highScore = 0;
         var highScoreTypes = new List<Type>();
 
-        foreach (var type in types)
+        foreach (var type in types.Where(t => !string.IsNullOrWhiteSpace(t?.FullName)))
         {
-            if (type.FullName is null)
-                continue;
-
-            var typeNameParts = type.FullName.Split('.');
+            var typeNameParts = type!.FullName!.Split('.');
 
             var score = 0;
             while (score < rootTypeNameParts.Length && score < typeNameParts.Length && typeNameParts[score] == rootTypeNameParts[score])
@@ -89,28 +86,30 @@ public static class McmaTypes
     /// Finds a registered type with the given name
     /// </summary>
     /// <param name="typeString">The name of the type to find. Must be an unqualified name (<see cref="Type.Name"/>), as would be found in the @type json property</param>
+    /// <param name="objectType">The type of object indicated by code (may be different than what's indicated in by the <see cref="typeString"/>)</param>
+    /// <param name="rootObjectType">The type of the root object indicated by code, if known</param>
     /// <returns>The type with the given name, if any</returns>
     public static Type? FindType(string? typeString, Type? objectType = null, Type? rootObjectType = null)
         => ResolvedTypes.GetOrAdd((typeString, objectType, rootObjectType), x =>
         {
-            var (typeString, objectType, rootObjectType) = x;
+            var (typeStringToAdd, objectTypeToAdd, rootObjectTypeToAdd) = x;
 
-            if (typeString == null)
+            if (typeStringToAdd == null)
                 return null;
 
             // if the provided type name matches the type from the json, just use that
-            if (objectType != null && string.Equals(typeString, objectType.Name, StringComparison.OrdinalIgnoreCase))
-                return objectType;
+            if (objectTypeToAdd != null && string.Equals(typeStringToAdd, objectTypeToAdd.Name, StringComparison.OrdinalIgnoreCase))
+                return objectTypeToAdd;
 
             // check for match in explicitly-provided type collection, then check for match in core types
-            var matchingRegisteredTypes = Types.Where(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var matchingRegisteredTypes = Types.Where(t => t.Name.Equals(typeStringToAdd, StringComparison.OrdinalIgnoreCase)).ToArray();
 
             return matchingRegisteredTypes.Length switch
             {
-                0 => Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeString) ?? typeString),
+                0 => Type.GetType(typeof(McmaObject).AssemblyQualifiedName?.Replace(nameof(McmaObject), typeStringToAdd) ?? typeStringToAdd),
                 1 => matchingRegisteredTypes[0],
-                _ => PickBestTypeBasedOnRoot(rootObjectType, matchingRegisteredTypes) ??
-                     throw new McmaException($"The type name '{typeString}' is ambiguous between the following types:" + Environment.NewLine +
+                _ => PickBestTypeBasedOnRoot(rootObjectTypeToAdd, matchingRegisteredTypes) ??
+                     throw new McmaException($"The type name '{typeStringToAdd}' is ambiguous between the following types:" + Environment.NewLine +
                                              string.Join(Environment.NewLine, matchingRegisteredTypes.Select(t => t.AssemblyQualifiedName)))
 
             };

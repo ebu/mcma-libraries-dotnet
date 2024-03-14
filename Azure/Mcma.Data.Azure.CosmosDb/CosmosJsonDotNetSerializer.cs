@@ -36,7 +36,9 @@ internal sealed class CosmosJsonDotNetSerializer : CosmosSerializer
         var streamPayload = new MemoryStream();
         
         using var streamWriter = new StreamWriter(streamPayload, encoding: DefaultEncoding, bufferSize: 1024, leaveOpen: true);
-        using JsonWriter writer = new JsonTextWriter(streamWriter) { Formatting = Formatting.None };
+        using var writer = new JsonTextWriter(streamWriter);
+
+        writer.Formatting = Formatting.None;
         
         GetSerializer().Serialize(writer, input);
         

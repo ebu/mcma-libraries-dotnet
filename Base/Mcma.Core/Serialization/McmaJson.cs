@@ -62,14 +62,14 @@ public static class McmaJson
         return settings;
     }
 
-    internal static McmaJsonSerializer McmaSerializer { get; } = new McmaJsonSerializer();
+    internal static McmaJsonSerializer McmaSerializer { get; } = new();
 
     /// <summary>
     /// Gets a statically-available <see cref="JsonSerializer"/> configured with MCMA defaults
     /// </summary>
     public static JsonSerializer Serializer { get; } = McmaSerializer;
 
-    private static JsonSerializer PreserveCasingSerializer { get; } = new McmaJsonSerializer(false);
+    private static JsonSerializer PreserveCasingSerializer { get; } = new McmaJsonSerializer();
 
     public static JToken? Parse(string json)
     {
@@ -85,6 +85,7 @@ public static class McmaJson
     /// </summary>
     /// <param name="jObj">The json object to inspect</param>
     /// <param name="objectType">The expected object type to fall back to, if any</param>
+    /// <param name="rootObjectType">The object type at the root of the object graph being serialized</param>
     /// <returns>The type of the serialized object</returns>
     public static Type GetSerializedType(JObject? jObj, Type? objectType = null, Type? rootObjectType = null)
     {
