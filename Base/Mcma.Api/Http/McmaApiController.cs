@@ -13,17 +13,13 @@ public class McmaApiController : IMcmaApiController
 
     public McmaApiController(IEnumerable<IMcmaApiRouteCollection> routeCollections, IEnumerable<IMcmaApiRoute> routes)
     {
-        Routes =
-            new McmaApiRouteCollection(
-                (routeCollections ?? Array.Empty<IMcmaApiRouteCollection>())
-                .SelectMany(rc => rc)
-                .Concat(routes ?? Array.Empty<IMcmaApiRoute>()));
+        Routes = new McmaApiRouteCollection((routeCollections ?? []).SelectMany(rc => rc).Concat(routes ?? []));
     }
 
     public McmaApiRouteCollection Routes { get; }
 
-    private static IDictionary<string, string> GetDefaultResponseHeaders()
-        => new Dictionary<string, string>
+    private static Dictionary<string, string> GetDefaultResponseHeaders()
+        => new()
         {
             ["Date"] = DateTimeOffset.UtcNow.ToString("R"),
             ["Content-Type"] = "application/json",
@@ -152,7 +148,7 @@ public class McmaApiController : IMcmaApiController
         }
         catch (Exception ex)
         {
-            logger.Error($"{request.HttpMethod} {request.Path} encountered an exception", ex.Message, ex.StackTrace);
+            logger.Error($"{request.HttpMethod} {request.Path} encountered an exception", ex.Message, ex.StackTrace ?? "");
                 
             response.StatusCode = (int)HttpStatusCode.InternalServerError;
             response.Headers = GetDefaultResponseHeaders();

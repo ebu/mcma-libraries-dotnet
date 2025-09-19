@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,16 +14,13 @@ public static class HttpAspNetExtensions
         => httpContext.Request.ToMcmaApiRequestAsync();
         
     public static async Task<McmaApiRequest> ToMcmaApiRequestAsync(this HttpRequest httpRequest)
-        => new()
-        {
-            Id = Guid.NewGuid().ToString(),
-            HttpMethod = new HttpMethod(httpRequest.Method),
-            Path = httpRequest.Path,
-            Headers = httpRequest.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()),
-            PathVariables = new Dictionary<string, object>(),
-            QueryStringParameters = httpRequest.Query.ToDictionary(x => x.Key, x => x.Value.ToString()),
-            Body = await httpRequest.Body.ReadAllBytesAsync()
-        };
+        => new(
+            Guid.NewGuid().ToString(),
+            httpRequest.Path,
+            new HttpMethod(httpRequest.Method),
+            httpRequest.Headers.ToDictionary(x => x.Key, x => x.Value.ToString()),
+            httpRequest.Query.ToDictionary(x => x.Key, x => x.Value.ToString()),
+            await httpRequest.Body.ReadAllBytesAsync());
 
     public static Task SetHttpResponseAsync(this HttpContext httpContext, McmaApiResponse mcmaApiResponse)
         => httpContext.Response.FromMcmaApiResponseAsync(mcmaApiResponse);
@@ -36,6 +32,6 @@ public static class HttpAspNetExtensions
         foreach (var header in mcmaApiResponse.Headers)
             httpResponse.Headers[header.Key] = header.Value;
 
-        await httpResponse.Body.WriteAsync(mcmaApiResponse.Body, 0, mcmaApiResponse.Body.Length);
+        await httpResponse.Body.WriteAsync(mcmaApiResponse.Body.AsMemory(0, mcmaApiResponse.Body.Length));
     }
 }

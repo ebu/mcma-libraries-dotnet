@@ -2,5 +2,5 @@
 
 public class McmaApiOptions
 {
-    public string PublicUrl { get; set; } = McmaApiEnvironmentVariables.PublicUrl;
+    public string PublicUrl { get; set; } = McmaApiEnvironmentVariables.PublicUrl ?? "";
 }

@@ -72,10 +72,6 @@ public class GoogleBearerTokenProvider : IBearerTokenProvider
             
         var accessToken = await oidcToken.GetAccessTokenAsync(cancellationToken);
 
-        return new BearerToken
-        {
-            Token = accessToken,
-            ExpiresOn = GetExpiresOn(oidcToken)
-        };
+        return new(accessToken, GetExpiresOn(oidcToken));
     }
 }

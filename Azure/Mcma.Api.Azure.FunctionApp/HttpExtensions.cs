@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,16 +20,13 @@ public static class HttpExtensions
         => new(loggerProvider, await request.ToMcmaApiRequestAsync(executionContext));
 
     public static async Task<McmaApiRequest> ToMcmaApiRequestAsync(this HttpRequest request, ExecutionContext executionContext)
-        => new()
-        {
-            Id = executionContext.InvocationId.ToString(),
-            Path = request.Path,
-            HttpMethod = new HttpMethod(request.Method),
-            Headers = request.Headers.Keys.ToDictionary(k => k, k => request.Headers[k].ToString()),
-            PathVariables = new Dictionary<string, object>(),
-            QueryStringParameters = request.Query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString()),
-            Body = await request.Body.ReadAllBytesAsync()
-        };
+        => new(
+            executionContext.InvocationId.ToString(),
+            request.Path,
+            new HttpMethod(request.Method),
+            request.Headers.Keys.ToDictionary(k => k, k => request.Headers[k].ToString()),
+            request.Query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString()),
+            await request.Body.ReadAllBytesAsync());
 
     public static IActionResult ToActionResult(this McmaApiRequestContext requestContext)
         => requestContext.Response.ToActionResult();
@@ -46,6 +43,6 @@ public static class HttpExtensions
                 httpResponse.Headers[header.Key] = header.Value;
 
         if (mcmaResponse.Body != null)
-            await httpResponse.Body.WriteAsync(mcmaResponse.Body, 0, mcmaResponse.Body.Length);
+            await httpResponse.Body.WriteAsync(mcmaResponse.Body.AsMemory(0, mcmaResponse.Body.Length));
     }
 }

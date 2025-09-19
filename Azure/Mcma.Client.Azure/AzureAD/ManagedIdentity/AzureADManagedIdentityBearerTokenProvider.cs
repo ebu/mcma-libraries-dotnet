@@ -24,10 +24,6 @@ public class AzureADManagedIdentityBearerTokenProvider : IBearerTokenProvider
         
         var authResult = await AzureServiceTokenProvider.GetAuthenticationResultAsync(resource, cancellationToken: cancellationToken);
         
-        return new BearerToken
-        {
-            Token = authResult.AccessToken,
-            ExpiresOn = authResult.ExpiresOn
-        };
+        return new(authResult.AccessToken, authResult.ExpiresOn);
     }
 }

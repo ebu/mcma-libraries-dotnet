@@ -58,4 +58,6 @@ public class McmaApiRequestContext
     public void SetResponseBody(object body) => Response.JsonBody = body?.ToMcmaJson();
 
     public void SetResponseHeader(string header, string value) => Response.Headers[header] = value;
+
+    public McmaTracker? GetTracker() => Request.GetTracker();
 }
