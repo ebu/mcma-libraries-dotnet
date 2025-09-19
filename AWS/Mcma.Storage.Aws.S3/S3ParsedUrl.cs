@@ -16,13 +16,13 @@ internal class S3ParsedUrl
         Key = key ?? throw new ArgumentNullException(nameof(key));
         Region = region;
     }
-        
+
     public string Url { get; }
-            
+
     public string Bucket { get; }
-        
+
     public string Key { get; }
-        
+
     public string Region { get; }
 
     public static bool TryParse(string url, out S3ParsedUrl parsedUrl)
@@ -31,7 +31,7 @@ internal class S3ParsedUrl
 
         if (string.IsNullOrWhiteSpace(url))
             return false;
-            
+
         var uri = new Uri(url, UriKind.Absolute);
         var bucket = default(string);
         var region = default(string);
@@ -48,12 +48,21 @@ internal class S3ParsedUrl
         {
             if (uri.Segments.Length < 2)
                 return false;
-                
+
             bucket = uri.Segments[1].TrimEnd('/');
             keySegmentOffset++;
         }
-            
-        var key = string.Join("", uri.Segments.Skip(keySegmentOffset));
+
+        var key =
+            string.Join("/",
+                uri.Segments
+                   .Skip(keySegmentOffset)
+                   .Select(
+                        x =>
+                        Uri.UnescapeDataString(x.Trim('/')
+                                                .Replace("%3A", ":")
+                                                .Replace("%2F", "/")
+                                                .Replace("+", "%20"))));
 
         parsedUrl = new S3ParsedUrl(url, bucket, key, region);
 
@@ -64,5 +73,5 @@ internal class S3ParsedUrl
         =>
         TryParse(url, out S3ParsedUrl parsedUrl)
             ? parsedUrl
-            : throw new McmaException($"'{url}' is not valid AWS S3 url. The url must be an absolute url in the format 'https://{{bucket.?}}{{region}}{AwsDomain}/{{bucket/?}}{{key?}}'.");
+            : throw new McmaException($"'{url}' is not a valid AWS S3 url. The url must be an absolute url in the format 'https://{{bucket.?}}{{region}}{AwsDomain}/{{bucket/?}}{{key?}}'.");
 }

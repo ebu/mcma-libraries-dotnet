@@ -104,6 +104,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EAD8CF8C-839E-4097-AEF1-1C0F398D489C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		tasks.bat = tasks.bat
+		tasks.csx = tasks.csx
+		version = version
 	EndProjectSection
 EndProject
 Global
@@ -693,5 +696,8 @@ Global
 		{6A2F2F2B-A0DF-49B3-B341-811206D28174} = {C2EF2C3A-976E-4C15-8EDF-11667E28879B}
 		{0671AE0F-575A-4976-B17C-24A7D84B0323} = {C2EF2C3A-976E-4C15-8EDF-11667E28879B}
 		{483A69D1-BB4D-41F7-9A30-BA3DB9EDB29B} = {C2EF2C3A-976E-4C15-8EDF-11667E28879B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B98DED5-D786-4CDC-B6B3-2CB5EA9E8A06}
 	EndGlobalSection
 EndGlobal
