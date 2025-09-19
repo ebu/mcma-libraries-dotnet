@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿#if NET48_OR_GREATER
+using System.Net.Http;
+#endif
 using System.Text;
 using Mcma.Serialization;
 
@@ -9,5 +11,6 @@ public class McmaJsonContent : StringContent
     public McmaJsonContent(object obj)
         : base(obj.ToMcmaJson().ToString(), Encoding.UTF8, "application/json")
     {
+
     }
 }

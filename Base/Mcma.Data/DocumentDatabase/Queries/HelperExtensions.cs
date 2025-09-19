@@ -16,22 +16,22 @@ public static class CustomQueryServiceCollectionExtensions
     
 public static class HelperExtensions
 {
-    public static IFilterExpression<T> ToFilterExpression<T>(this IEnumerable<KeyValuePair<string, object>> keyValuePairs)
+    public static IFilterExpression ToFilterExpression<T>(this IEnumerable<KeyValuePair<string, object>> keyValuePairs)
     {
-        return new FilterCriteriaGroup<T>
+        return new FilterCriteriaGroup
         {
             Children = keyValuePairs.Select(kvp => new FilterCriteria<T>(kvp.Key, BinaryOperator.EqualTo, kvp.Value))
-                                    .ToArray<IFilterExpression<T>>(),
+                                    .ToArray<IFilterExpression>(),
             LogicalOperator = LogicalOperator.And
         };
     }
         
-    public static IFilterExpression<T> ToFilterExpression<T>(this IEnumerable<KeyValuePair<string, string>> keyValuePairs)
+    public static IFilterExpression ToFilterExpression<T>(this IEnumerable<KeyValuePair<string, string>> keyValuePairs)
     {
-        return new FilterCriteriaGroup<T>
+        return new FilterCriteriaGroup
         {
             Children = keyValuePairs.Select(kvp => new FilterCriteria<T>(kvp.Key, BinaryOperator.EqualTo, kvp.Value))
-                                    .ToArray<IFilterExpression<T>>(),
+                                    .ToArray<IFilterExpression>(),
             LogicalOperator = LogicalOperator.And
         };
     }
@@ -42,32 +42,32 @@ public static class HelperExtensions
 
         var pathProperty = typeof(Query<T>).GetProperty(nameof(Query<T>.Path));
             
-        var pathPropertyExpr = Expression.Property(parameter, pathProperty);
+        var pathPropertyExpr = Expression.Property(parameter, pathProperty!);
         var pathValueExpr = Expression.Constant(query.Path);
         var pathEqualsExpr = Expression.Equal(pathPropertyExpr, pathValueExpr);
 
         var lambdaBody =
             query.FilterExpression != null
-                ? Expression.And(pathEqualsExpr, query.FilterExpression.ToExpression())
+                ? Expression.And(pathEqualsExpr, query.FilterExpression.ToExpression<T>(parameter))
                 : pathEqualsExpr;
 
         return Expression.Lambda<Func<T, bool>>(lambdaBody, parameter);
     }
 
-    private static Expression ToExpression<T>(this IFilterExpression<T> filterExpression)
+    private static Expression ToExpression<T>(this IFilterExpression filterExpression, Expression parameter)
         =>
             filterExpression switch
             {
-                FilterCriteriaGroup<T> criteriaGroup => criteriaGroup.ToExpression(),
-                FilterCriteria<T> criteria => criteria.ToExpression(),
+                FilterCriteriaGroup criteriaGroup => criteriaGroup.ToExpression<T>(parameter),
+                FilterCriteria<T> criteria => criteria.ToExpression(parameter),
                 _ => throw new ArgumentException($"Unsupported filter expression type {filterExpression?.GetType()}")
             };
 
-    private static Expression ToExpression<T>(this FilterCriteriaGroup<T> filterCriteriaGroup)
+    private static Expression ToExpression<T>(this FilterCriteriaGroup filterCriteriaGroup, Expression parameter)
     {
         Expression groupExpr = null;
             
-        foreach (var childExpression in filterCriteriaGroup.Children.Select(c => c.ToExpression()))
+        foreach (var childExpression in filterCriteriaGroup.Children.Select(c => c.ToExpression<T>(parameter)))
         {
             if (groupExpr == null)
                 groupExpr = childExpression;
@@ -97,7 +97,7 @@ public static class HelperExtensions
             var op when op == BinaryOperator.GreaterThanOrEqualTo => Expression.GreaterThanOrEqual(propertyExpr, valueExpr),
             var op when op == BinaryOperator.LessThan => Expression.LessThan(propertyExpr, valueExpr),
             var op when op == BinaryOperator.LessThanOrEqualTo => Expression.LessThanOrEqual(propertyExpr, valueExpr),
-            _ => throw new ArgumentOutOfRangeException(nameof(filterCriteria), $"Invalid binary operator '{filterCriteria.Operator}'")
+            _   => throw new ArgumentOutOfRangeException(nameof(filterCriteria), $"Invalid binary operator '{filterCriteria.Operator}'")
         };
     }
 }

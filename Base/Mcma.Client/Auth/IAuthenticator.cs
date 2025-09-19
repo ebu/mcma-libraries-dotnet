@@ -1,6 +1,6 @@
-﻿using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿#if NET48_OR_GREATER
+using System.Net.Http;
+#endif
 
 namespace Mcma.Client.Auth;
 

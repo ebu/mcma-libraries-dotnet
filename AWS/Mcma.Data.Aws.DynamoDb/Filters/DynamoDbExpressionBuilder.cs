@@ -10,29 +10,29 @@ namespace Mcma.Data.Aws.DynamoDb.Filters;
 
 public class DynamoDbExpressionBuilder : IDynamoDbExpressionBuilder
 {
-    public Expression Build<T>(IFilterExpression<T> filterExpression)
+    public Expression Build<T>(IFilterExpression filterExpression)
     {
         if (filterExpression == null)
             return null;
 
         var expression = new Expression {ExpressionAttributeNames = {["#r"] = "resource"}};
-        expression.ExpressionStatement = AddFilterExpression(expression, filterExpression);
+        expression.ExpressionStatement = AddFilterExpression<T>(expression, filterExpression);
         return expression;
     }
 
-    private static string AddFilterExpression<T>(Expression expression, IFilterExpression<T> filterExpression)
+    private static string AddFilterExpression<T>(Expression expression, IFilterExpression filterExpression)
         => filterExpression switch
         {
-            FilterCriteriaGroup<T> filterCriteriaGroup => AddFilterCriteriaGroup(expression, filterCriteriaGroup),
+            FilterCriteriaGroup filterCriteriaGroup => AddFilterCriteriaGroup<T>(expression, filterCriteriaGroup),
             FilterCriteria<T> filterCriteria => AddFilterCriteria(expression, filterCriteria),
             _ => throw new McmaException($"Filter expression with type '{filterExpression.GetType().Name} is not supported.")
         };
 
-    private static string AddFilterCriteriaGroup<T>(Expression expression, FilterCriteriaGroup<T> filterCriteriaGroup)
+    private static string AddFilterCriteriaGroup<T>(Expression expression, FilterCriteriaGroup filterCriteriaGroup)
         =>
             "(" +
             string.Join($" {(filterCriteriaGroup.LogicalOperator == LogicalOperator.Or ? "or" : "and")} ",
-                        filterCriteriaGroup.Children.Select(x => AddFilterExpression(expression, x))) +
+                        filterCriteriaGroup.Children.Select(x => AddFilterExpression<T>(expression, x))) +
             ")";
 
     private static string AddFilterCriteria<T>(Expression expression, FilterCriteria<T> filterCriteria)

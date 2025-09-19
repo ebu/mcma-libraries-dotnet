@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Mcma.Model;
+﻿using Mcma.Model;
 
 namespace Mcma.Client.Resources;
 
@@ -18,6 +15,10 @@ public interface IResourceManager
     Task<IEnumerable<T>> QueryAsync<T>(CancellationToken cancellationToken, params (string, string)[] filter) where T : McmaObject;
 
     Task<T> GetAsync<T>(string resourceId, CancellationToken cancellationToken = default) where T : McmaObject;
+
+    Task<TChild[]> GetChildrenAsync<TParent, TChild>(string parentResourceId, string pathToChildren = null, CancellationToken cancellationToken = default)
+        where TParent : McmaObject
+        where TChild : McmaObject;
 
     Task<T> CreateAsync<T>(T resource, CancellationToken cancellationToken = default) where T : McmaObject;
 

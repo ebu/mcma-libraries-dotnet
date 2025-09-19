@@ -9,8 +9,8 @@ public readonly struct LocalSecondaryIndexDescription
         Name = name ?? throw new ArgumentNullException(nameof(name));
         SortKeyName = sortKeyName ?? throw new ArgumentNullException(nameof(sortKeyName));
     }
-        
+
     public string Name { get; }
-        
+
     public string SortKeyName { get; }
 }

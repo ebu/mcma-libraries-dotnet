@@ -7,6 +7,8 @@ namespace Mcma.Storage.Aws.S3;
 
 internal class S3ParsedUrl
 {
+    public const string AwsDomain = ".amazonaws.com";
+
     private S3ParsedUrl(string url, string bucket, string key, string region)
     {
         Url = url ?? throw new ArgumentNullException(nameof(url));
@@ -23,10 +25,12 @@ internal class S3ParsedUrl
         
     public string Region { get; }
 
-    public static S3ParsedUrl Parse(string url)
+    public static bool TryParse(string url, out S3ParsedUrl parsedUrl)
     {
-        if (url == null)
-            return null;
+        parsedUrl = null;
+
+        if (string.IsNullOrWhiteSpace(url))
+            return false;
             
         var uri = new Uri(url, UriKind.Absolute);
         var bucket = default(string);
@@ -43,7 +47,7 @@ internal class S3ParsedUrl
         if (bucket == null)
         {
             if (uri.Segments.Length < 2)
-                throw new Exception($"Invalid S3 url '{url}'. Bucket not found in domain name or path.");
+                return false;
                 
             bucket = uri.Segments[1].TrimEnd('/');
             keySegmentOffset++;
@@ -51,6 +55,14 @@ internal class S3ParsedUrl
             
         var key = string.Join("", uri.Segments.Skip(keySegmentOffset));
 
-        return new S3ParsedUrl(url, bucket, key, region);
+        parsedUrl = new S3ParsedUrl(url, bucket, key, region);
+
+        return true;
     }
+
+    public static S3ParsedUrl Parse(string url)
+        =>
+        TryParse(url, out S3ParsedUrl parsedUrl)
+            ? parsedUrl
+            : throw new McmaException($"'{url}' is not valid AWS S3 url. The url must be an absolute url in the format 'https://{{bucket.?}}{{region}}{AwsDomain}/{{bucket/?}}{{key?}}'.");
 }

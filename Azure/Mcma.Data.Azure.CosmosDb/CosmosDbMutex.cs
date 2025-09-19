@@ -16,7 +16,7 @@ public class CosmosDbMutex : DocumentDatabaseMutex
         Container = container;
         PartitionKeyName = partitionKeyName;
     }
-        
+
     private Container Container { get; }
 
     private string PartitionKeyName { get; }

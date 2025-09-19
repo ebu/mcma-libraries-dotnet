@@ -7,9 +7,9 @@ public readonly struct StreamProgress
         Current = current;
         Total = total > 0 ? total : long.MaxValue;
     }
-        
+
     public long Current { get; }
-        
+
     public long Total { get; }
 
     public bool IsIndeterminate => Total == long.MaxValue;

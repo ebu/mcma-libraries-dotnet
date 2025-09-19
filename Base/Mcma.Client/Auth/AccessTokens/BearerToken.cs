@@ -1,5 +1,3 @@
-using System;
-
 namespace Mcma.Client.Auth.AccessTokens;
 
 public class BearerToken

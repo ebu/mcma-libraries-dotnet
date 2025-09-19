@@ -12,7 +12,8 @@ public readonly struct GlobalSecondaryIndexDescription
                 partitionKeyName ?? throw new ArgumentNullException(nameof(partitionKeyName)),
                 sortKeyName);
     }
+
     public string Name { get; }
-        
+
     public KeyNames KeyNames { get; }
 }

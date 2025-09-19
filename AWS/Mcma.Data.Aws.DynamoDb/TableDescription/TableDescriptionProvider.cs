@@ -19,8 +19,8 @@ public class TableDescriptionProvider : ITableDescriptionProvider
 
         try
         {
-            if (TableDescriptions.ContainsKey(tableName))
-                return TableDescriptions[tableName];
+            if (TableDescriptions.TryGetValue(tableName, out var tableDescription))
+                return tableDescription;
                 
             var data = await dynamoDb.DescribeTableAsync(tableName);
 

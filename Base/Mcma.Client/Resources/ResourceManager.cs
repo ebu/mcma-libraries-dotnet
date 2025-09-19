@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+#if NET48_OR_GREATER
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+#endif
 using Mcma.Client.Auth;
 using Mcma.Client.Http;
 using Mcma.Logging;
@@ -13,9 +10,9 @@ using Mcma.Serialization;
 
 namespace Mcma.Client.Resources;
 
-internal class ResourceManager : IResourceManager
+public class ResourceManager : IResourceManager
 {
-    internal ResourceManager(IAuthProvider authProvider, HttpClient httpClient, ResourceManagerOptions options, McmaTracker tracker)
+    public ResourceManager(IAuthProvider authProvider, HttpClient httpClient, ResourceManagerOptions options, McmaTracker tracker = null)
     {
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
         HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
@@ -23,7 +20,6 @@ internal class ResourceManager : IResourceManager
         Tracker = tracker;
 
         McmaHttpClient = new McmaHttpClient(HttpClient);
-        ServiceRegistryClient = new ServiceClient(AuthProvider, HttpClient, Options.ToServiceRegistryServiceData(), Tracker);
     }
 
     private IAuthProvider AuthProvider { get; }
@@ -36,23 +32,29 @@ internal class ResourceManager : IResourceManager
 
     private McmaHttpClient McmaHttpClient { get; }
 
-    private ServiceClient ServiceRegistryClient { get; }
-
-    private List<ServiceClient> Services { get; } = new();
+    private List<ServiceClient> Services { get; } = [];
 
     public async Task InitAsync()
     {
         try
-        {
+        {   
             Services.Clear();
+            
+            var serviceRegistryClient = new ServiceClient(AuthProvider, HttpClient, Options.ToServiceRegistryServiceData(), Tracker);
 
-            Services.Add(ServiceRegistryClient);
+            Services.Add(serviceRegistryClient);
 
-            var servicesEndpoint = ServiceRegistryClient.GetResourceEndpointClient<Service>();
+            var servicesEndpoint = serviceRegistryClient.GetResourceEndpointClient<Service>();
                 
             var response = await servicesEndpoint.QueryAsync<Service>();
 
-            Services.AddRange(response.Results.Select(GetServiceClient));
+            foreach (var service in response.Results)
+            {
+                if (Services.Contains(serviceRegistryClient))
+                    Services.Remove(serviceRegistryClient);
+                
+                Services.Add(GetServiceClient(service));
+            }
         }
         catch (Exception error)
         {
@@ -178,6 +180,17 @@ internal class ResourceManager : IResourceManager
         return resourceEndpoint != null
                    ? await resourceEndpoint.GetAsync<T>(resourceId, cancellationToken)
                    : await McmaHttpClient.GetAsync<T>(resourceId, true, cancellationToken);
+    }
+
+    public async Task<TChild[]> GetChildrenAsync<T, TChild>(string parentResourceId, string pathToChildren = null, CancellationToken cancellationToken = default)
+        where T : McmaObject
+        where TChild : McmaObject
+    {
+        var resourceEndpoint = await GetResourceEndpointAsync(parentResourceId);
+
+        return resourceEndpoint != null
+            ? await resourceEndpoint.GetChildrenAsync<T, TChild>(pathToChildren, parentResourceId, cancellationToken)
+            : await McmaHttpClient.GetAsync<TChild[]>(EndpointHelper.GetChildRoute<TChild>(parentResourceId, pathToChildren), true, cancellationToken);
     }
 
     public async Task SendNotificationAsync<T>(string resourceId, T resource, NotificationEndpoint notificationEndpoint, CancellationToken cancellationToken = default)

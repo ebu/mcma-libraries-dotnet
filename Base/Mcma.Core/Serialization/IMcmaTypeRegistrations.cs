@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Mcma.Serialization;
+﻿namespace Mcma.Serialization;
 
 /// <summary>
 /// 

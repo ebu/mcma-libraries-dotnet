@@ -24,7 +24,7 @@ public class DefaultCreateRoute<TResource> : McmaApiRoute, IDefaultCreateRoute<T
         Root = (options.Value ?? new DefaultRouteCollectionOptions<TResource>()).Root;
         ApiOptions = apiOptions.Value ?? new McmaApiOptions();
     }
-        
+
     private IDocumentDatabaseTable DbTable { get; }
 
     public IDefaultCreateRouteStartedHandler<TResource> StartedHandler { get; }

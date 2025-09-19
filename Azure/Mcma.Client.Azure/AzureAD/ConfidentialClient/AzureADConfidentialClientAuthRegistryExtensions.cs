@@ -1,28 +1,97 @@
 ﻿using System;
 using Mcma.Client.Auth;
 using Mcma.Client.Auth.AccessTokens;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Client;
+using Microsoft.Extensions.Options;
 
 namespace Mcma.Client.Azure.AzureAD.ConfidentialClient;
 
 public static class AzureADConfidentialClientAuthRegistryExtensions
 {
+    private static AzureADConfidentialClientBearerTokenProvider GetTokenProvider(this IServiceProvider serviceProvider, AuthenticatorKey key)
+        => new(serviceProvider.GetRequiredService<IOptionsSnapshot<AzureADConfidentialClientApplicationOptions>>().Get(key));
+
+    private static AuthenticatorRegistry AddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                                         Action<IServiceCollection, AuthenticatorKey> configure,
+                                                                         string serviceName,
+                                                                         string resourceType)
+    {
+        var key = new AzureADAuthenticatorKey(serviceName, resourceType);
+
+        configure(authenticatorRegistry.Services, key);
+
+        return authenticatorRegistry.AddBearerTokens(key, x => x.GetTokenProvider(key));
+    }
+
     public static AuthenticatorRegistry AddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                         Action<ConfidentialClientApplicationOptions> configureOptions = null)
+                                                                         string[] scopes,
+                                                                         string serviceName = "",
+                                                                         string resourceType = "")
+        => authenticatorRegistry.AddAzureADConfidentialClientAuth(
+            (services, key) => services.Configure<AzureADConfidentialClientApplicationOptions>(key.ToString(), x => x.Scopes = scopes),
+            serviceName,
+            resourceType);
+
+    public static AuthenticatorRegistry AddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                                         Action<AzureADConfidentialClientApplicationOptions> configureOptions,
+                                                                         string serviceName = "",
+                                                                         string resourceType = "")
+        => authenticatorRegistry.AddAzureADConfidentialClientAuth(
+            (services, key) => services.Configure(key.ToString(), configureOptions ?? (_ => { })),
+            serviceName,
+            resourceType);
+
+    public static AuthenticatorRegistry AddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                                         IConfigurationSection configSection,
+                                                                         string serviceName = "",
+                                                                         string resourceType = "")
+        => authenticatorRegistry.AddAzureADConfidentialClientAuth(
+            (services, key) => services.Configure<AzureADConfidentialClientApplicationOptions>(key.ToString(), configSection),
+            serviceName,
+            resourceType);
+
+    public static bool TryAddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                           Action<IServiceCollection, AuthenticatorKey> configure,
+                                                           string serviceName,
+                                                           string resourceType)
     {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
-            
-        return authenticatorRegistry.AddBearerTokens<AzureADAuthContext, AzureADConfidentialClientBearerTokenProvider>(AzureConstants.AzureAdAuthType);
+        var key = new AzureADAuthenticatorKey(serviceName, resourceType);
+
+        var added = authenticatorRegistry.TryAddBearerTokens(key, x => x.GetTokenProvider(key));
+
+        if (!added)
+            return false;
+
+        configure(authenticatorRegistry.Services, key);
+
+        return true;
     }
 
-    public static AuthenticatorRegistry TryAddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                            Action<ConfidentialClientApplicationOptions> configureOptions = null)
-    {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
+    public static bool TryAddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                           string[] scopes,
+                                                           string serviceName = "",
+                                                           string resourceType = "")
+        => authenticatorRegistry.TryAddAzureADConfidentialClientAuth(
+            (services, key) => services.Configure<AzureADConfidentialClientApplicationOptions>(key.ToString(), x => x.Scopes = scopes),
+            serviceName,
+            resourceType);
 
-        return authenticatorRegistry.TryAddBearerTokens<AzureADAuthContext, AzureADConfidentialClientBearerTokenProvider>(AzureConstants.AzureAdAuthType);
-    }
+    public static bool TryAddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                           Action<AzureADConfidentialClientApplicationOptions> configureOptions,
+                                                           string serviceName = "",
+                                                           string resourceType = "")
+        => authenticatorRegistry.TryAddAzureADConfidentialClientAuth(
+            (services, key) => services.Configure(key.ToString(), configureOptions ?? (_ => { })),
+            serviceName,
+            resourceType);
+
+    public static bool TryAddAzureADConfidentialClientAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                           IConfigurationSection configSection,
+                                                           string serviceName = "",
+                                                           string resourceType = "")
+        => authenticatorRegistry.TryAddAzureADConfidentialClientAuth(
+            (services, key) => services.Configure<AzureADConfidentialClientApplicationOptions>(key.ToString(), configSection),
+            serviceName,
+            resourceType);
 }

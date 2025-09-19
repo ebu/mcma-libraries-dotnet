@@ -7,14 +7,14 @@ using Newtonsoft.Json.Linq;
 
 namespace Mcma.Logging.Azure.ApplicationInsights;
 
-public class AppInsightsLogger : Logging.Logger
+public class AppInsightsLogger : Logger
 {
     public AppInsightsLogger(TelemetryClient telemetryClient, string source, string requestId = null, McmaTracker tracker = null)
-        : base (source, requestId, tracker)
+        : base(source, requestId, tracker)
     {
         TelemetryClient = telemetryClient;
     }
-        
+
     private TelemetryClient TelemetryClient { get; }
 
     protected override void WriteLogEvent(LogEvent logEvent)

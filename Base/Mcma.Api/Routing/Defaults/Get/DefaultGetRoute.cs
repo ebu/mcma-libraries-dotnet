@@ -20,7 +20,7 @@ public class DefaultGetRoute<TResource> : McmaApiRoute, IDefaultGetRoute<TResour
         StartedHandler = startedHandler;
         CompletedHandler = completedHandler;
     }
-        
+
     private IDocumentDatabaseTable DbTable { get; }
 
     private IDefaultGetRouteStartedHandler<TResource> StartedHandler { get; }

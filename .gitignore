@@ -1,6 +1,7 @@
 .idea
 .gradle
 .vscode
+.vs
 bin
 obj
 

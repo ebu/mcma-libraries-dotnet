@@ -1,8 +1,6 @@
-using System;
-using System.Linq;
+#if NET48_OR_GREATER
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+#endif
 using Mcma.Client.Auth;
 using Mcma.Model;
 using Mcma.Serialization;

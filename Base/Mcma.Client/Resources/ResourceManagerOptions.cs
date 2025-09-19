@@ -1,5 +1,3 @@
-using System;
-
 namespace Mcma.Client.Resources;
 
 public class ResourceManagerOptions
@@ -8,16 +6,29 @@ public class ResourceManagerOptions
     {
     }
         
-    public ResourceManagerOptions(string servicesUrl, string servicesAuthType = null, string servicesAuthContext = null)
+    public ResourceManagerOptions(string serviceRegistryUrl, string serviceRegistryAuthType = null, string serviceRegistryAuthContext = null)
     {
-        ServicesUrl = servicesUrl ?? throw new ArgumentNullException(nameof(servicesUrl));
-        ServicesAuthType = servicesAuthType;
-        ServicesAuthContext = servicesAuthContext;
+        ServiceRegistryUrl = serviceRegistryUrl ?? throw new ArgumentNullException(nameof(serviceRegistryUrl));
+        ServiceRegistryAuthType = serviceRegistryAuthType;
+        ServiceRegistryAuthContext = serviceRegistryAuthContext;
     }
-        
-    public string ServicesUrl { get; set;  }
 
-    public string ServicesAuthType { get; set; }
+    public string ServiceRegistryUrl { get; set;  }
 
-    public string ServicesAuthContext { get; set; }
+    public string ServiceRegistryAuthType { get; set; }
+
+    public string ServiceRegistryAuthContext { get; set; }
+
+    public void Validate()
+    {
+        if (!Uri.IsWellFormedUriString(ServiceRegistryUrl, UriKind.Absolute))
+            throw new McmaException($"Invalid services url: {ServiceRegistryUrl}");
+    }
+
+    public static void ConfigureFromEnvVars(ResourceManagerOptions options)
+    {
+        options.ServiceRegistryUrl = McmaResourceManagerEnvironmentVariables.ServiceRegistryUrl ?? "";
+        options.ServiceRegistryAuthType = McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthType;
+        options.ServiceRegistryAuthContext = McmaResourceManagerEnvironmentVariables.ServiceRegistryAuthContext;
+    }
 }

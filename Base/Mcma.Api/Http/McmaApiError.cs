@@ -12,7 +12,7 @@ public class McmaApiError : McmaObject
         Path = path;
 
         Timestamp = timestamp ?? DateTimeOffset.UtcNow;
-        Error = error ??  HttpStatusCodeMessage.From(status);
+        Error = error ?? HttpStatusCodeMessage.From(status);
     }
 
     public DateTimeOffset Timestamp { get; }

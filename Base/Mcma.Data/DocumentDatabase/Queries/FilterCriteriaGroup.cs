@@ -1,7 +1,7 @@
 ﻿namespace Mcma.Data.DocumentDatabase.Queries;
 
-public class FilterCriteriaGroup<TDoc> : IFilterExpression<TDoc>
+public class FilterCriteriaGroup : IFilterExpression
 {   
-    public IFilterExpression<TDoc>[] Children { get; set; }
+    public IFilterExpression[] Children { get; set; }
     public LogicalOperator LogicalOperator { get; set; }
 }

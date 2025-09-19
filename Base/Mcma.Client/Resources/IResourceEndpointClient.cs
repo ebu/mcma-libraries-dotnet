@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Mcma.Model;
+﻿using Mcma.Model;
 
 namespace Mcma.Client.Resources;
 
@@ -26,6 +24,10 @@ public interface IResourceEndpointClient
     Task PostAsync(object body, string url = null, CancellationToken cancellationToken = default);
         
     Task<T> GetAsync<T>(string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
+
+    Task<TChild[]> GetChildrenAsync<T, TChild>(string pathToChildren, string url = null, CancellationToken cancellationToken = default)
+        where T : McmaObject
+        where TChild : McmaObject;
 
     Task<T> PutAsync<T>(object body, string url = null, CancellationToken cancellationToken = default) where T : McmaObject;
 

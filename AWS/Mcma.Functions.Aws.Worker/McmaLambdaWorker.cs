@@ -13,7 +13,7 @@ public class McmaLambdaWorker : IMcmaLambdaFunctionHandler<McmaWorkerRequest>
         LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
         McmaWorker = mcmaWorker ?? throw new ArgumentNullException(nameof(mcmaWorker));
     }
-     
+
     private ILoggerProvider LoggerProvider { get; }
 
     private IMcmaWorker McmaWorker { get; }

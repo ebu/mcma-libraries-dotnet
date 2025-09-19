@@ -1,7 +1,7 @@
 ﻿using System.Net;
+#if NET48_OR_GREATER
 using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+#endif
 using Mcma.Serialization;
 
 namespace Mcma.Client.Http;

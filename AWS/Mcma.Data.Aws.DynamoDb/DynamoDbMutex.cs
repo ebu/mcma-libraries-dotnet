@@ -13,12 +13,12 @@ public class DynamoDbMutex : DocumentDatabaseMutex
     public DynamoDbMutex(Table table, DynamoDbTableDescription tableDescription, string mutexName, string mutexHolder, TimeSpan? lockTimeout = null, ILogger logger = null)
         : base(mutexName, mutexHolder, lockTimeout, logger)
     {
-        Table = table;
-        TableDescription = tableDescription;
+        Table = table ?? throw new ArgumentNullException(nameof(table));
+        TableDescription = tableDescription ?? throw new ArgumentNullException();
     }
-        
+
     private Table Table { get; }
-        
+
     private DynamoDbTableDescription TableDescription { get; }
 
     protected override string VersionId { get; } = Guid.NewGuid().ToString();
@@ -26,6 +26,7 @@ public class DynamoDbMutex : DocumentDatabaseMutex
     private Document GenerateTableKey()
     {
         var key = new Document();
+
         if (TableDescription.KeyNames.Sort != null)
         {
             key[TableDescription.KeyNames.Partition] = "Mutex";
@@ -33,6 +34,7 @@ public class DynamoDbMutex : DocumentDatabaseMutex
         }
         else
             key[TableDescription.KeyNames.Partition] = $"Mutex-{MutexName}";
+
         return key;
     }
 
@@ -48,8 +50,8 @@ public class DynamoDbMutex : DocumentDatabaseMutex
     protected override async Task<LockData> GetLockDataAsync()
     {
         var key = GenerateTableKey();
- 
-        var record = await Table.GetItemAsync(key, new GetItemOperationConfig {ConsistentRead = true});
+
+        var record = await Table.GetItemAsync(key, new GetItemOperationConfig { ConsistentRead = true });
         if (record == null)
             return null;
 
@@ -98,8 +100,8 @@ public class DynamoDbMutex : DocumentDatabaseMutex
                                             {
                                                 ExpressionStatement = "#v_id = :v_id",
                                                 ExpressionAttributeNames =
-                                                    new Dictionary<string, string> {["#v_id"] = nameof(LockData.VersionId)},
-                                                ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":v_id"] = VersionId}
+                                                    new Dictionary<string, string> { ["#v_id"] = nameof(LockData.VersionId) },
+                                                ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> { [":v_id"] = VersionId }
                                             }
                                     });
     }

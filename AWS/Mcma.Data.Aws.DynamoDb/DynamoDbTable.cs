@@ -97,7 +97,7 @@ public class DynamoDbTable : IDocumentDatabaseTable
                 ExpressionAttributeValues = new Dictionary<string, DynamoDBEntry> {[":partitionKey"] = query.Path}
             };
 
-        var filterExpression = query.FilterExpression != null ? ExpressionBuilder.Build(query.FilterExpression) : null;
+        var filterExpression = query.FilterExpression != null ? ExpressionBuilder.Build<T>(query.FilterExpression) : null;
 
         var indexName = default(string);
         if (query.SortBy != null)

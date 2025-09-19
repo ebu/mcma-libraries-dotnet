@@ -1,5 +1,6 @@
-using System;
+#if NET48_OR_GREATER
 using System.Net.Http;
+#endif
 using Mcma.Client.Auth;
 using Mcma.Model;
 using Microsoft.Extensions.Options;
@@ -8,29 +9,40 @@ namespace Mcma.Client.Resources;
 
 public class ResourceManagerProvider : IResourceManagerProvider
 {
-    public ResourceManagerProvider(HttpClient httpClient, IAuthProvider authProvider, IOptions<ResourceManagerProviderOptions> options)
+    private ResourceManagerProvider(IHttpClientFactory httpClientFactory, IAuthProvider authProvider, Func<string, ResourceManagerOptions> getOptions)
     {
-        HttpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+        HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
         AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
-
-        if (options.Value?.DefaultOptions != null &&
-            (string.IsNullOrWhiteSpace(options.Value.DefaultOptions.ServicesUrl) ||
-             !Uri.IsWellFormedUriString(options.Value.DefaultOptions.ServicesUrl, UriKind.RelativeOrAbsolute)))
-            throw new McmaException($"Invalid services url in default resource manager options: {options.Value.DefaultOptions.ServicesUrl}");
-
-        DefaultOptions = options.Value?.DefaultOptions;
+        GetOptions = getOptions ?? throw new ArgumentNullException(nameof(getOptions));
     }
 
-    private HttpClient HttpClient { get; }
+    public ResourceManagerProvider(IHttpClientFactory httpClientFactory, IAuthProvider authProvider, IOptionsMonitor<ResourceManagerOptions> optionsMonitor)
+        : this(httpClientFactory, authProvider, optionsMonitor.Get)
+    {
+    }
+
+    public ResourceManagerProvider(IHttpClientFactory httpClientFactory, IAuthProvider authProvider, IOptionsSnapshot<ResourceManagerOptions> optionsSnapshot)
+        : this(httpClientFactory, authProvider, optionsSnapshot.Get)
+    {
+    }
+
+    private IHttpClientFactory HttpClientFactory { get; }
 
     private IAuthProvider AuthProvider { get; }
 
-    private ResourceManagerOptions DefaultOptions { get; }
+    private Func<string, ResourceManagerOptions> GetOptions { get; }
 
-    public IResourceManager Get(McmaTracker tracker = null, ResourceManagerOptions options = null)
-        => new ResourceManager(AuthProvider,
-                               HttpClient,
-                               (options ?? DefaultOptions) ??
-                               throw new McmaException("Config for resource manager not provided, and there is no default config available"),
-                               tracker);
+    public IResourceManager Get(McmaTracker tracker = null)
+        => Get(Options.DefaultName, tracker);
+
+    public IResourceManager Get(string name = null, McmaTracker tracker = null)
+    {
+        var options = GetOptions(name);
+        if (options is null)
+            throw new ArgumentNullException(nameof(options));
+
+        options.Validate();
+
+        return new ResourceManager(AuthProvider, HttpClientFactory.CreateClient(name), options, tracker);
+    }
 }

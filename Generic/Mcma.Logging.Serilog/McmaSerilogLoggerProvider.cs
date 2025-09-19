@@ -10,7 +10,7 @@ public class McmaSerilogLoggerProvider : LoggerProvider<McmaSerilogLogger>
     {
         Logger = logger ?? global::Serilog.Log.Logger;
     }
-        
+
     private global::Serilog.ILogger Logger { get; }
 
     protected override McmaSerilogLogger Get(string source, string requestId, McmaTracker tracker) => new(Logger, source, requestId, tracker);

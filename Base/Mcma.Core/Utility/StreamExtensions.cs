@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace Mcma.Utility;
+﻿namespace Mcma.Utility;
 
 /// <summary>
 /// Utility extensions for reading streams

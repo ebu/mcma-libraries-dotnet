@@ -1,44 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-
 namespace Mcma.Client.Auth;
 
-internal class AuthProvider : IAuthProvider
+public class AuthProvider : IAuthProvider
 {
-    public AuthProvider(IEnumerable<IAuthenticatorFactory> handlerFactories,
-                        IEnumerable<IAuthenticatorFactoryRegistration> handlerFactoryRegistrations)
+    public AuthProvider(IEnumerable<AuthenticatorRegistration> authenticatorRegistrations)
     {
-        AuthFactories = handlerFactories?.ToArray() ?? new IAuthenticatorFactory[0];
-        AuthFactoryRegistrations = handlerFactoryRegistrations?.ToArray() ?? new IAuthenticatorFactoryRegistration[0];
+        AuthenticatorRegistrations = authenticatorRegistrations?.ToList() ?? [];
     }
 
-    private IAuthenticatorFactory[] AuthFactories { get; }
+    private List<AuthenticatorRegistration> AuthenticatorRegistrations { get; }
 
-    private IAuthenticatorFactoryRegistration[] AuthFactoryRegistrations { get; }
+    public AuthProvider Add<T>(IAuthenticator authenticator) where T : AuthenticatorKey, new()
+        => Add(new T(), authenticator);
 
-    private Dictionary<(string, string), IAuthenticator> Cache { get; } = new();
-
-    public async Task<IAuthenticator> GetAsync(string authType, object authContext)
+    public AuthProvider Add(AuthenticatorKey key, IAuthenticator authenticator)
     {
-        var registration = AuthFactoryRegistrations.FirstOrDefault(x => x.AuthType.Equals(authType,StringComparison.OrdinalIgnoreCase));
-        if (registration == null)
-            throw new McmaException($"No authenticators registered for auth type '{authType}'");
-            
-        var cacheKey = (authType, authContext as string ?? JToken.FromObject(authContext ?? "").ToString());
-            
-        if (Cache.ContainsKey(cacheKey))
-            return Cache[cacheKey];
+        AuthenticatorRegistrations.Add(new(key, authenticator));
+        return this;
+    }
 
-        var factory = AuthFactories.FirstOrDefault(x => x.GetType() == registration.FactoryType);
-        if (factory == null)
-            throw new McmaException(
-                $"Auth type '{authType}' is registered to use authenticator factory of type {registration.FactoryType}, but no authenticator factory of this type was registered.");
-            
-        Cache[cacheKey] = await factory.GetAsync(authContext);
+    public IAuthenticator Get(string authType, string serviceName, string resourceType)
+    {
+        var exactMatchKey = new AuthenticatorKey(authType, serviceName, resourceType);
+        var authTypeAndResourceTypeKey = new AuthenticatorKey(authType, "", resourceType);
+        var authTypeAndServiceKey = new AuthenticatorKey(authType, serviceName);
+        var authTypeOnlyKey = new AuthenticatorKey(authType);
+        
+        var registration =
+            AuthenticatorRegistrations.FirstOrDefault(x => x.Key == exactMatchKey)
+            ?? AuthenticatorRegistrations.FirstOrDefault(x => x.Key == authTypeAndResourceTypeKey)
+            ?? AuthenticatorRegistrations.FirstOrDefault(x => x.Key == authTypeAndServiceKey)
+            ?? AuthenticatorRegistrations.FirstOrDefault(x => x.Key == authTypeOnlyKey);
 
-        return Cache[cacheKey];
+        return registration?.Authenticator ?? throw new McmaException($"No authenticators registered for auth type '{authType}'");
     }
 }

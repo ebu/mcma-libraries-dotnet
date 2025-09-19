@@ -15,9 +15,19 @@ public class PubSubMcmaWorkerInvoker : McmaWorkerInvoker
         PublisherClientTask =
             new Lazy<Task<PublisherClient>>(
                 () =>
-                    PublisherClient.CreateAsync(TopicName.Parse(options.Value.WorkerTopicName),
-                                                options.Value.PublisherClientCreationSettings,
-                                                options.Value.PublisherClientSettings));
+                {
+                    if (string.IsNullOrWhiteSpace(options?.Value?.WorkerTopicName))
+                        throw new McmaException("WorkerTopicName is not set");
+                        
+                    var publisherClientBuilder = new PublisherClientBuilder
+                    {
+                        TopicName = TopicName.Parse(options.Value.WorkerTopicName)
+                    };
+                    
+                    options.Value.ConfigurePublisherClient?.Invoke(publisherClientBuilder);
+
+                    return publisherClientBuilder.BuildAsync();
+                });
     }
 
     private Lazy<Task<PublisherClient>> PublisherClientTask { get; }

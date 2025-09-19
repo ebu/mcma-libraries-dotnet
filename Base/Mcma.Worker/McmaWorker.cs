@@ -14,7 +14,7 @@ public class McmaWorker : IMcmaWorker
         LoggerProvider = loggerProvider ?? throw new ArgumentNullException(nameof(loggerProvider));
         Operations = operations?.ToArray() ?? throw new McmaException("No operations registered for worker.");
     }
-        
+
     private ILoggerProvider LoggerProvider { get; }
 
     private IMcmaWorkerOperation[] Operations { get; }
@@ -27,10 +27,7 @@ public class McmaWorker : IMcmaWorker
         var requestContext = new McmaWorkerRequestContext(request, requestId);
         requestContext.SetLogger(LoggerProvider);
             
-        var operation = Operations.FirstOrDefault(op => op.Accepts(requestContext));
-        if (operation == null)
-            throw new McmaException($"No handler found for '{requestContext.OperationName}' that can handle this request.");
-
+        var operation = Operations.FirstOrDefault(op => op.Accepts(requestContext)) ?? throw new McmaException($"No handler found for '{requestContext.OperationName}' that can handle this request.");
         requestContext.Logger.Debug("Handling worker operation '" + requestContext.OperationName + "' with handler of type '" + operation.GetType().Name + "'");
             
         try

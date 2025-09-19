@@ -22,13 +22,13 @@ public class DefaultUpdateRoute<TResource> : McmaApiRoute, IDefaultUpdateRoute<T
         CompletedHandler = completedHandler ?? throw new ArgumentNullException(nameof(completedHandler));
         ApiOptions = apiOptions.Value ?? new McmaApiOptions();
     }
-        
+
     private IDocumentDatabaseTable DbTable { get; }
 
     private IDefaultUpdateRouteStartedHandler<TResource> StartedHandler { get; }
 
     private IDefaultUpdateRouteCompletedHandler<TResource> CompletedHandler { get; }
-        
+
     private McmaApiOptions ApiOptions { get; }
 
     public override async Task HandleAsync(McmaApiRequestContext requestContext)

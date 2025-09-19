@@ -15,7 +15,7 @@ public class MongoDbMutex : DocumentDatabaseMutex
     {
         Collection = collection ?? throw new ArgumentNullException(nameof(collection));
     }
-        
+
     private IMongoCollection<BsonDocument> Collection { get; }
 
     protected override string VersionId { get; } = Guid.NewGuid().ToString();

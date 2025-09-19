@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Mcma.Utility;
@@ -21,9 +20,9 @@ public static class ExpressionExtensions
                        ? unary.Operand
                        : throw new McmaException($"Unexpected unary expression in {expression}");
 
-        if (!(body is MemberExpression member))
+        if (body is not MemberExpression member)
             throw new McmaException($"Expression {expression} does not refer to a property on type {typeof(TObject)}");
-        if (!(member.Member is PropertyInfo property))
+        if (member.Member is not PropertyInfo property)
             throw new McmaException($"Expression {expression} does not refer to a property on type {typeof(TObject)}");
 
         return property;
@@ -45,9 +44,9 @@ public static class ExpressionExtensions
                        ? unary.Operand
                        : throw new McmaException($"Unexpected unary expression in {expression}");
 
-        if (!(body is MemberExpression member))
+        if (body is not MemberExpression member)
             throw new McmaException($"Expression {expression} does not refer to a property on type {typeof(TObject)}");
-        if (!(member.Member is PropertyInfo property))
+        if (member.Member is not PropertyInfo property)
             throw new McmaException($"Expression {expression} does not refer to a property on type {typeof(TObject)}");
 
         return property;

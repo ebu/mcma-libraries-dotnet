@@ -1,26 +1,39 @@
-﻿using System;
-using Mcma.Client.Auth;
+﻿using Mcma.Client.Auth;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using System;
 
 namespace Mcma.Client.Azure.FunctionKeys;
 
 public static class AzureFunctionKeyAuthRegistryExtensions
 {
-    public static AuthenticatorRegistry AddAzureFunctionKeyAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                Action<AzureFunctionKeyAuthenticatorOptions> configureOptions = null)
-    {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
+    private static AzureFunctionKeyAuthenticator GetAuthenticator(this IServiceProvider serviceProvider, AzureFunctionKeyAuthenticatorKey key)
+        => new(serviceProvider.GetRequiredService<IOptionsSnapshot<AzureFunctionKeyOptions>>().Get(key));
 
-        return authenticatorRegistry.Add<AzureFunctionKeyAuthContext, AzureFunctionKeyAuthenticatorFactory>(AzureConstants.FunctionKeyAuthType);
+    public static AuthenticatorRegistry AddAzureFunctionKeyAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                                string functionKey,
+                                                                string serviceName = "",
+                                                                string resourceType = "")
+    {
+        var key = new AzureFunctionKeyAuthenticatorKey(serviceName, resourceType);
+        
+        authenticatorRegistry.Services.Configure<AzureFunctionKeyOptions>(key.ToString(), o => o.FunctionKey = functionKey);
+
+        return authenticatorRegistry.Add(key, x => x.GetAuthenticator(key));
     }
         
-    public static AuthenticatorRegistry TryAddAzureFunctionKeyAuth(this AuthenticatorRegistry authenticatorRegistry,
-                                                                   Action<AzureFunctionKeyAuthenticatorOptions> configureOptions = null)
+    public static bool TryAddAzureFunctionKeyAuth(this AuthenticatorRegistry authenticatorRegistry,
+                                                  string functionKey,
+                                                  string serviceName = "",
+                                                  string resourceType = "")
     {
-        if (configureOptions != null)
-            authenticatorRegistry.Services.Configure(configureOptions);
+        var key = new AzureFunctionKeyAuthenticatorKey(serviceName, resourceType);
 
-        return authenticatorRegistry.Add<AzureFunctionKeyAuthContext, AzureFunctionKeyAuthenticatorFactory>(AzureConstants.FunctionKeyAuthType);
+        if (!authenticatorRegistry.TryAdd(key, x => x.GetAuthenticator(key)))
+            return false;
+        
+        authenticatorRegistry.Services.Configure<AzureFunctionKeyOptions>(key.ToString(), o => o.FunctionKey = functionKey);
+
+        return true;
     }
 }

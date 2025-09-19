@@ -1,4 +1,4 @@
-using System;
+using Newtonsoft.Json.Linq;
 
 namespace Mcma.Model;
 
@@ -10,7 +10,7 @@ public abstract class McmaResource : McmaObject
     /// <summary>
     /// Gets or sets the ID of the resource
     /// </summary>
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     /// <summary>
     /// Gets or set the date and time at which the resource was created
@@ -21,6 +21,11 @@ public abstract class McmaResource : McmaObject
     /// Gets or set the date and time at which the resource was last modified
     /// </summary>
     public DateTimeOffset? DateModified { get; set; }
+    
+    /// <summary>
+    /// Gets or sets an <see cref="JObject"/> containing custom properties for the resource
+    /// </summary>
+    public JObject? Custom { get; set; }
 
     /// <summary>
     /// Sets the ID and created/modified dates of the resource when it is first created

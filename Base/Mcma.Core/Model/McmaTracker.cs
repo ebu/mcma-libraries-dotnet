@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Mcma.Model;
 
@@ -11,15 +11,15 @@ public class McmaTracker : McmaObject
     /// <summary>
     /// Gets or sets the tracker's ID
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets a human-readable label for the tracker
     /// </summary>
-    public string Label { get; set; }
+    public string Label { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets any custom properties that might also be useful for tracking purposes
     /// </summary>
-    public IDictionary<string, string> Custom { get; set; }
+    public JObject? Custom { get; set; }
 }

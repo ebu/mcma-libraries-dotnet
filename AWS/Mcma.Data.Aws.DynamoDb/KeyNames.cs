@@ -9,8 +9,8 @@ public readonly struct KeyNames
         Partition = partition ?? throw new ArgumentNullException(nameof(partition));
         Sort = sort;
     }
-        
+
     public string Partition { get; }
-        
+
     public string Sort { get; }
 }

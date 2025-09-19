@@ -5,5 +5,5 @@ namespace Mcma.Data.Aws.DynamoDb.Filters;
 
 public interface IDynamoDbExpressionBuilder
 {
-    Expression Build<T>(IFilterExpression<T> filterExpression);
+    Expression Build<T>(IFilterExpression filterExpression);
 }

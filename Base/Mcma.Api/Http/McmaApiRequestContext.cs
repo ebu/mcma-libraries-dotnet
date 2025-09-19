@@ -14,7 +14,7 @@ namespace Mcma.Api.Http;
 
 public class McmaApiRequestContext
 {
-    private static readonly HttpMethod[] MethodsSupportingRequestBody = {HttpMethod.Post, HttpMethod.Put, new("PATCH")};
+    private static readonly HttpMethod[] MethodsSupportingRequestBody = [HttpMethod.Post, HttpMethod.Put, HttpMethod.Patch];
 
     public McmaApiRequestContext(ILoggerProvider loggerProvider, McmaApiRequest request)
     {
@@ -99,7 +99,7 @@ public class McmaApiRequestContext
         try
         {
             // if we didn't find it in the header or query string, try the body
-            if (!TryLoadRequestJsonBody(out _) || !(Request.JsonBody is JObject jsonBody))
+            if (!TryLoadRequestJsonBody(out _) || Request.JsonBody is not JObject jsonBody)
                 return null;
 
             var trackerProp =

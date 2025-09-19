@@ -60,9 +60,9 @@ public class MongoDbTable : IDocumentDatabaseTable
     {
         var filters = new List<FilterDefinition<McmaResourceDocument>> {Builders<McmaResourceDocument>.Filter.Eq(x => x.Path, query.Path)};
         if (query.FilterExpression != null)
-            filters.Add(FilterDefinitionBuilder.Build(query.FilterExpression));
+            filters.Add(FilterDefinitionBuilder.Build<T>(query.FilterExpression));
             
-        var filterDefinition = Builders<McmaResourceDocument>.Filter.And(filters.ToArray());
+        var filterDefinition = Builders<McmaResourceDocument>.Filter.And([.. filters]);
                 
         var find = Collection.Find(filterDefinition);
 

@@ -11,9 +11,9 @@ public class DynamoDbTableBuilder
 {
     public DynamoDbTableBuilder(IServiceCollection services)
     {
-        Services = services;
+        Services = services ?? throw new ArgumentNullException(nameof(services));
     }
-        
+
     private IServiceCollection Services { get; }
 
     public DynamoDbTableBuilder AddCustomQueryBuilder<TParameters, TCustomQueryBuilder>()

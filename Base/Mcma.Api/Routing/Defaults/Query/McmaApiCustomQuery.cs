@@ -15,7 +15,7 @@ public class McmaApiCustomQuery<TResource, TParameters> : IMcmaApiCustomQuery<TR
         IsMatch = isMatch ?? throw new ArgumentNullException(nameof(isMatch));
         CreateQuery = createQuery ?? throw new ArgumentNullException(nameof(createQuery));
     }
-        
+
     private Func<McmaApiRequestContext, bool> IsMatch { get; }
 
     private Func<McmaApiRequestContext, CustomQuery<TParameters>> CreateQuery { get; }
