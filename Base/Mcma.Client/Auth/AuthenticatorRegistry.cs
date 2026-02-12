@@ -20,11 +20,14 @@ public class AuthenticatorRegistry
         where TAuthenticator : class, IAuthenticator
     {
         addAuthenticatorService(Services);
+
         Services.Add(
             ServiceDescriptor.Describe(typeof(AuthenticatorRegistration),
-                                       svcProvider => new AuthenticatorRegistration(key, svcProvider.GetRequiredService<TAuthenticator>()),
+                                       svcProvider => new AuthenticatorRegistration(key, svcProvider.GetRequiredKeyedService<TAuthenticator>(key.Key)),
                                        ServiceLifetime));
+
         RegisteredKeys.Add(key);
+
         return this;
     }
 
@@ -50,14 +53,14 @@ public class AuthenticatorRegistry
         where TAuthenticator : class, IAuthenticator
         =>
             RegisteredKeys.All(k => k != key)
-                ? InternalAdd<TAuthenticator>(key, services => services.Add(ServiceDescriptor.Describe(typeof(TAuthenticator), typeof(TAuthenticator), ServiceLifetime)))
+                ? InternalAdd<TAuthenticator>(key, services => services.Add(new(typeof(TAuthenticator), key.Key, typeof(TAuthenticator), ServiceLifetime)))
                : throw GetAlreadyRegisteredException(key);
 
     public AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
         where TAuthenticator : class, IAuthenticator
         =>
             RegisteredKeys.All(k => k != key)
-               ? InternalAdd<TAuthenticator>(key, services => services.Add(ServiceDescriptor.Describe(typeof(TAuthenticator), serviceFactory, ServiceLifetime)))
+               ? InternalAdd<TAuthenticator>(key, services => services.Add(new(typeof(TAuthenticator), key.Key, (svcProvider, _) => serviceFactory(svcProvider), ServiceLifetime)))
                : throw GetAlreadyRegisteredException(key);
 
     public bool TryAdd<TAuthenticator>(AuthenticatorKey key)
