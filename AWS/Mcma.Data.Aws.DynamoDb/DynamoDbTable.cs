@@ -34,7 +34,7 @@ public class DynamoDbTable : IDocumentDatabaseTable
         Options = providerOptions?.Value ?? new DynamoDbTableOptions();
             
         DynamoDb = new AmazonDynamoDBClient(Options.Credentials, Options.Config);
-        Table = Table.LoadTable(DynamoDb, Options.TableName);
+        Table = new TableBuilder(DynamoDb, Options.TableName).Build();
     }
         
     private ICustomQueryBuilderRegistry<QueryOperationConfig> CustomQueryBuilderRegistry { get; }
