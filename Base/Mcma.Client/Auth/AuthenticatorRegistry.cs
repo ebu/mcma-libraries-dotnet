@@ -10,11 +10,7 @@ public class AuthenticatorRegistry
         ServiceLifetime = serviceLifetime;
         Name = name;
 
-        Services.Add(
-            new(typeof(IAuthProvider),
-                Name,
-                (x, _) => new AuthProvider(x.GetRequiredKeyedService<IEnumerable<AuthenticatorRegistration>>(Name), Name),
-                serviceLifetime));
+        Services.Add(new(typeof(IAuthProvider), x => new AuthProvider(x.GetRequiredKeyedService<IEnumerable<AuthenticatorRegistration>>(Name), Name), serviceLifetime));
     }
 
     public IServiceCollection Services { get; }
