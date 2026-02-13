@@ -26,7 +26,7 @@ public static class McmaGoogleCloudFunctionWorkerCollectionExtensions
         => services.AddMcmaCloudLogging(applicationName)
                    .AddMcmaFirestore(configureFirestoreOptions, buildFirestore)
                    .AddMcmaCloudStorageClient(configureClientStorageOptions, buildClientStorage)
-                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddAuth(x => x.TryAddGoogleAuth()))
+                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddDefaultResourceManager(x => x.Auth.TryAddGoogleAuth()))
                    .AddMcmaCloudStorageClient()
                    .AddMcmaWorker(buildWorker);
 
@@ -42,7 +42,7 @@ public static class McmaGoogleCloudFunctionWorkerCollectionExtensions
         => services.AddMcmaCloudLogging(applicationName)
                    .AddMcmaFirestore(configureFirestoreOptions, buildFirestore)
                    .AddMcmaCloudStorageClient(configureClientStorageOptions, buildClientStorage)
-                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddAuth(x => x.TryAddGoogleAuth()))
+                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddDefaultResourceManager(x => x.Auth.TryAddGoogleAuth()))
                    .AddMcmaCloudStorageClient()
                    .AddMcmaWorker(workerBuilder =>
                    {

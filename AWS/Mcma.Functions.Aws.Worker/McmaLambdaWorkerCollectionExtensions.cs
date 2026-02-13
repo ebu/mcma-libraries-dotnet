@@ -24,7 +24,7 @@ public static class McmaLambdaWorkerCollectionExtensions
         => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
                    .AddMcmaDynamoDb(configureDynamoDb)
                    .AddMcmaS3StorageClient(configureS3Client)
-                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddAuth(x => x.TryAddAws4AuthFromEnvVars()))
+                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddDefaultResourceManagerFromEnvVars(x => x.Auth.TryAddAws4AuthFromEnvVars()))
                    .AddMcmaWorker(buildWorker);
 
     public static IServiceCollection AddMcmaAwsLambdaJobAssignmentWorker<TJob>(this IServiceCollection services,
@@ -38,7 +38,7 @@ public static class McmaLambdaWorkerCollectionExtensions
         => services.AddMcmaCloudWatchLogging(applicationName, logGroupName)
                    .AddMcmaDynamoDb(configureDynamoDb)
                    .AddMcmaS3StorageClient(configureS3Client)
-                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddAuth(x => x.TryAddAws4AuthFromEnvVars()))
+                   .AddSingletonMcmaClient(clientBuilder => clientBuilder.AddDefaultResourceManagerFromEnvVars(x => x.Auth.TryAddAws4AuthFromEnvVars()))
                    .AddMcmaWorker(workerBuilder =>
                    {
                        workerBuilder.AddProcessJobAssignmentOperation(addProfiles);

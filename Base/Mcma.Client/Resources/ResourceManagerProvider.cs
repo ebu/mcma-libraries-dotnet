@@ -9,40 +9,32 @@ namespace Mcma.Client.Resources;
 
 public class ResourceManagerProvider : IResourceManagerProvider
 {
-    private ResourceManagerProvider(IHttpClientFactory httpClientFactory, IAuthProvider authProvider, Func<string, ResourceManagerOptions> getOptions)
+    public ResourceManagerProvider(IHttpClientFactory httpClientFactory, IEnumerable<IAuthProvider> authProviders, IOptionsMonitor<ResourceManagerOptions> optionsMonitor)
     {
         HttpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        AuthProvider = authProvider ?? throw new ArgumentNullException(nameof(authProvider));
-        GetOptions = getOptions ?? throw new ArgumentNullException(nameof(getOptions));
-    }
-
-    public ResourceManagerProvider(IHttpClientFactory httpClientFactory, IAuthProvider authProvider, IOptionsMonitor<ResourceManagerOptions> optionsMonitor)
-        : this(httpClientFactory, authProvider, optionsMonitor.Get)
-    {
-    }
-
-    public ResourceManagerProvider(IHttpClientFactory httpClientFactory, IAuthProvider authProvider, IOptionsSnapshot<ResourceManagerOptions> optionsSnapshot)
-        : this(httpClientFactory, authProvider, optionsSnapshot.Get)
-    {
+        AuthProviders = authProviders?.ToArray() ?? throw new ArgumentNullException(nameof(authProviders));
+        OptionsMonitor = optionsMonitor ?? throw new ArgumentNullException(nameof(optionsMonitor));
     }
 
     private IHttpClientFactory HttpClientFactory { get; }
 
-    private IAuthProvider AuthProvider { get; }
+    private IAuthProvider[] AuthProviders { get; }
 
-    private Func<string, ResourceManagerOptions> GetOptions { get; }
+    private IOptionsMonitor<ResourceManagerOptions> OptionsMonitor { get; }
 
     public IResourceManager Get(McmaTracker tracker = null)
         => Get(Options.DefaultName, tracker);
 
     public IResourceManager Get(string name = null, McmaTracker tracker = null)
     {
-        var options = GetOptions(name);
+        var options = OptionsMonitor.Get(name);
         if (options is null)
             throw new ArgumentNullException(nameof(options));
 
         options.Validate();
 
-        return new ResourceManager(AuthProvider, HttpClientFactory.CreateClient(name), options, tracker);
+        var authProvider = AuthProviders.FirstOrDefault(x => string.Equals(x.Name ?? Options.DefaultName, name)) ?? new AuthProvider([]);
+
+        return new ResourceManager(authProvider, HttpClientFactory.CreateClient(name), options, tracker);
     }
 }

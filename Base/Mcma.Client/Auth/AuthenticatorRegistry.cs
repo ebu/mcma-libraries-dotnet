@@ -4,31 +4,54 @@ namespace Mcma.Client.Auth;
 
 public class AuthenticatorRegistry
 {
-    internal AuthenticatorRegistry(IServiceCollection services, ServiceLifetime serviceLifetime)
+    internal AuthenticatorRegistry(IServiceCollection services, ServiceLifetime serviceLifetime, string name)
     {
         Services = services;
         ServiceLifetime = serviceLifetime;
+        Name = name;
+
+        Services.Add(
+            new(typeof(IAuthProvider),
+                Name,
+                (x, _) => new AuthProvider(x.GetRequiredKeyedService<IEnumerable<AuthenticatorRegistration>>(Name), Name),
+                serviceLifetime));
     }
 
     public IServiceCollection Services { get; }
     
     private ServiceLifetime ServiceLifetime { get; }
+
+    private string Name { get; }
     
     private List<AuthenticatorKey> RegisteredKeys { get; } = [];
 
-    private AuthenticatorRegistry InternalAdd<TAuthenticator>(AuthenticatorKey key, Action<IServiceCollection> addAuthenticatorService)
+    private ServiceDescriptor GetServiceDescriptorForType<TAuthenticator>(string serviceKey)
+        where TAuthenticator : class, IAuthenticator
+        => new(typeof(TAuthenticator), serviceKey, typeof(TAuthenticator), ServiceLifetime);
+
+    private Func<string, ServiceDescriptor> GetServiceDescriptorFactory<TAuthenticator>(Func<IServiceProvider, TAuthenticator> authenticatorFactory)
+        where TAuthenticator : class, IAuthenticator
+        => serviceKey => new(typeof(TAuthenticator), serviceKey, (svcProvider, _) => authenticatorFactory(svcProvider), ServiceLifetime);
+
+    private bool TryAdd<TAuthenticator>(AuthenticatorKey key, Func<string, ServiceDescriptor> createServiceDescriptor)
         where TAuthenticator : class, IAuthenticator
     {
-        addAuthenticatorService(Services);
+        if (RegisteredKeys.Any(k => k == key))
+            return false;
+
+        var serviceKey = $"{Name}/{key.Key}";
+
+        Services.Add(createServiceDescriptor(serviceKey));
 
         Services.Add(
-            ServiceDescriptor.Describe(typeof(AuthenticatorRegistration),
-                                       svcProvider => new AuthenticatorRegistration(key, svcProvider.GetRequiredKeyedService<TAuthenticator>(key.Key)),
-                                       ServiceLifetime));
+            new(typeof(AuthenticatorRegistration),
+                Name,
+                (svcProvider, _) => new AuthenticatorRegistration(key, svcProvider.GetRequiredKeyedService<TAuthenticator>(serviceKey)),
+                ServiceLifetime));
 
         RegisteredKeys.Add(key);
 
-        return this;
+        return true;
     }
 
     private static McmaException GetAlreadyRegisteredException(AuthenticatorKey key)
@@ -44,40 +67,42 @@ public class AuthenticatorRegistry
             "If you wish to register a default in the case that no handler was previously registered, please use TryAdd.");
     }
 
-    public AuthenticatorRegistry Add<TKey, TAuthenticator>(string serviceName = null, string resourceType = null)
-        where TKey : AuthenticatorKey, new()
+    private AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key, Func<string, ServiceDescriptor> createServiceDescriptor)
         where TAuthenticator : class, IAuthenticator
-        => Add<TAuthenticator>(AuthenticatorKey.Create<TKey>(serviceName, resourceType));
+    {
+        if (!TryAdd<TAuthenticator>(key, createServiceDescriptor))
+            throw GetAlreadyRegisteredException(key);
+
+        return this;
+    }
+
+    public bool TryAdd<TAuthenticator>(AuthenticatorKey key)
+        where TAuthenticator : class, IAuthenticator
+        => TryAdd<TAuthenticator>(key, GetServiceDescriptorForType<TAuthenticator>);
+
+    public bool TryAdd<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
+        where TAuthenticator : class, IAuthenticator
+        => TryAdd<TAuthenticator>(key, GetServiceDescriptorFactory(serviceFactory));
 
     public AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key)
         where TAuthenticator : class, IAuthenticator
         =>
-            RegisteredKeys.All(k => k != key)
-                ? InternalAdd<TAuthenticator>(key, services => services.Add(new(typeof(TAuthenticator), key.Key, typeof(TAuthenticator), ServiceLifetime)))
-               : throw GetAlreadyRegisteredException(key);
+        Add<TAuthenticator>(key, GetServiceDescriptorForType<TAuthenticator>);
 
     public AuthenticatorRegistry Add<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
         where TAuthenticator : class, IAuthenticator
         =>
-            RegisteredKeys.All(k => k != key)
-               ? InternalAdd<TAuthenticator>(key, services => services.Add(new(typeof(TAuthenticator), key.Key, (svcProvider, _) => serviceFactory(svcProvider), ServiceLifetime)))
-               : throw GetAlreadyRegisteredException(key);
+        Add<TAuthenticator>(key, GetServiceDescriptorFactory(serviceFactory));
 
-    public bool TryAdd<TAuthenticator>(AuthenticatorKey key)
+    public AuthenticatorRegistry Add<TKey, TAuthenticator>(string serviceName = null, string resourceType = null)
+        where TKey : AuthenticatorKey, new()
         where TAuthenticator : class, IAuthenticator
-    {
-        var exists = RegisteredKeys.Any(k => k == key);
-        if (!exists)
-            Add<TAuthenticator>(key);
-        return !exists;
-    }
+        =>
+        Add<TAuthenticator>(AuthenticatorKey.Create<TKey>(serviceName, resourceType));
 
-    public bool TryAdd<TAuthenticator>(AuthenticatorKey key, Func<IServiceProvider, TAuthenticator> serviceFactory)
+    public AuthenticatorRegistry Add<TKey, TAuthenticator>(Func<IServiceProvider, TAuthenticator> serviceFactory, string serviceName = null, string resourceType = null)
+        where TKey : AuthenticatorKey, new()
         where TAuthenticator : class, IAuthenticator
-    {
-        var exists = RegisteredKeys.Any(k => k == key);
-        if (!exists)
-            Add(key, serviceFactory);
-        return !exists;
-    }
+        =>
+        Add(AuthenticatorKey.Create<TKey>(serviceName, resourceType), serviceFactory);
 }

@@ -1,13 +1,20 @@
+using Microsoft.Extensions.Options;
+
 namespace Mcma.Client.Auth;
 
 public class AuthProvider : IAuthProvider
 {
-    public AuthProvider(IEnumerable<AuthenticatorRegistration> authenticatorRegistrations)
+    public static readonly AuthProvider Empty = new([]);
+
+    public AuthProvider(IEnumerable<AuthenticatorRegistration> authenticatorRegistrations, string name = null)
     {
         AuthenticatorRegistrations = authenticatorRegistrations?.ToList() ?? [];
+        Name = name ?? Options.DefaultName;
     }
 
     private List<AuthenticatorRegistration> AuthenticatorRegistrations { get; }
+
+    public string Name { get; }
 
     public AuthProvider Add<T>(IAuthenticator authenticator) where T : AuthenticatorKey, new()
         => Add(new T(), authenticator);

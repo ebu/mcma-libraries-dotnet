@@ -13,62 +13,43 @@ public class McmaClientBuilder
     internal McmaClientBuilder(IServiceCollection services, ServiceLifetime serviceLifetime)
     {
         Services = services ?? throw new ArgumentNullException(nameof(services));
-        Auth = new AuthenticatorRegistry(services, serviceLifetime);
+        ServiceLifetime = serviceLifetime;
 
-        services.AddOptions()
-                .AddMcmaAuthentication(serviceLifetime);
+        services.AddOptions();
 
-        services.Add(
-            ServiceDescriptor.Describe(
-                typeof(IResourceManagerProvider),
-                serviceLifetime == ServiceLifetime.Singleton ? GetSingletonResourceManagerProvider : GetScopedOrTransientResourceManagerProvider,
-                serviceLifetime));
-
+        services.Add(ServiceDescriptor.Describe(typeof(IResourceManagerProvider), typeof(ResourceManagerProvider), serviceLifetime));
         services.Add(ServiceDescriptor.Describe(typeof(IResourceManager), provider => provider.GetRequiredService<IResourceManagerProvider>().Get(), serviceLifetime));
     }
 
-    private static IResourceManagerProvider GetSingletonResourceManagerProvider(IServiceProvider serviceProvider)
-        => new ResourceManagerProvider(
-            serviceProvider.GetRequiredService<IHttpClientFactory>(),
-            serviceProvider.GetRequiredService<IAuthProvider>(),
-            serviceProvider.GetRequiredService<IOptionsMonitor<ResourceManagerOptions>>());
-
-    private static IResourceManagerProvider GetScopedOrTransientResourceManagerProvider(IServiceProvider serviceProvider)
-        => new ResourceManagerProvider(
-            serviceProvider.GetRequiredService<IHttpClientFactory>(),
-            serviceProvider.GetRequiredService<IAuthProvider>(),
-            serviceProvider.GetRequiredService<IOptionsSnapshot<ResourceManagerOptions>>());
-
     private IServiceCollection Services { get; }
-
-    private AuthenticatorRegistry Auth { get; }
-
+    
+    private ServiceLifetime ServiceLifetime { get; }
+    
     internal bool IsDefaultResourceManagerConfigured { get; private set; }
 
-    public McmaClientBuilder AddAuth(Action<AuthenticatorRegistry> addAuth)
-    {
-        if (addAuth is null)
-            throw new ArgumentNullException(nameof(addAuth));
-
-        addAuth(Auth);
-        return this;
-    }
+    private Action<ResourceManagerBuilder> GetDefaultFromEnvVarsConfigurator(Action<ResourceManagerBuilder> configure)
+        => x =>
+        {
+            x.Options.Configure(ResourceManagerOptions.ConfigureFromEnvVars);
+            configure?.Invoke(x);
+        };
 
     public McmaClientBuilder AddResourceManager(string name, Action<ResourceManagerBuilder> configure)
     {
         if (configure is null)
             throw new ArgumentNullException(nameof(configure));
 
-        configure(new ResourceManagerBuilder(Services, name));
+        if (name == Options.DefaultName)
+            IsDefaultResourceManagerConfigured = true;
+
+        configure(new ResourceManagerBuilder(Services, ServiceLifetime, name));
+
         return this;
     }
 
     public McmaClientBuilder AddDefaultResourceManager(Action<ResourceManagerBuilder> configure)
-    {
-        IsDefaultResourceManagerConfigured = true;
-        return AddResourceManager(Options.DefaultName, configure);
-    }
+        => AddResourceManager(Options.DefaultName, configure);
 
-    public McmaClientBuilder AddDefaultResourceManagerFromEnvVars()
-        => AddDefaultResourceManager(x => x.Options.Configure(ResourceManagerOptions.ConfigureFromEnvVars));
+    public McmaClientBuilder AddDefaultResourceManagerFromEnvVars(Action<ResourceManagerBuilder> configure = null)
+        => AddResourceManager(Options.DefaultName, GetDefaultFromEnvVarsConfigurator(configure));
 }
