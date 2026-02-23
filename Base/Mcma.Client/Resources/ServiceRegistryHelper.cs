@@ -21,7 +21,7 @@ public static class ServiceRegistryHelper
                 new()
                 {
                     ResourceType = nameof(JobProfile),
-                    HttpEndpoint = options.ServiceRegistryUrl?.TrimEnd('/') + "/job-profile" 
+                    HttpEndpoint = options.ServiceRegistryUrl?.TrimEnd('/') + "/job-profiles" 
                 }
             ]
         };
