@@ -40,7 +40,7 @@ public class ResourceManager : IResourceManager
         {   
             Services.Clear();
             
-            var serviceRegistryClient = new ServiceClient(AuthProvider, HttpClient, Options.ToServiceRegistryServiceData(), Tracker);
+            var serviceRegistryClient = new ServiceClient(AuthProvider, HttpClient, ServiceRegistryHelper.GetServiceData(Options), Tracker);
 
             Services.Add(serviceRegistryClient);
 
@@ -50,9 +50,9 @@ public class ResourceManager : IResourceManager
 
             foreach (var service in response.Results)
             {
-                if (Services.Contains(serviceRegistryClient))
-                    Services.Remove(serviceRegistryClient);
-                
+                if (string.Equals(service.Name, ServiceRegistryHelper.ServiceName, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
                 Services.Add(GetServiceClient(service));
             }
         }

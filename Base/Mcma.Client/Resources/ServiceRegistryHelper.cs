@@ -2,15 +2,17 @@
 
 namespace Mcma.Client.Resources;
 
-public static class ResourceManagerOptionsHelper
+public static class ServiceRegistryHelper
 {
-    public static Service ToServiceRegistryServiceData(this ResourceManagerOptions options)
+    public const string ServiceName = "Service Registry";
+
+    public static Service GetServiceData(ResourceManagerOptions options)
         => new()
         {
-            Name = "Service Registry",
+            Name = ServiceName,
             AuthType = options.ServiceRegistryAuthType,
-            Resources = new List<ResourceEndpoint>
-            {
+            Resources =
+            [
                 new()
                 {
                     ResourceType = nameof(Service),
@@ -21,6 +23,6 @@ public static class ResourceManagerOptionsHelper
                     ResourceType = nameof(JobProfile),
                     HttpEndpoint = options.ServiceRegistryUrl?.TrimEnd('/') + "/job-profile" 
                 }
-            }
+            ]
         };
 }
