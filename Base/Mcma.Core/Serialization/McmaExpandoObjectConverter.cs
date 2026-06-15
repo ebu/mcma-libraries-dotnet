@@ -7,8 +7,30 @@ namespace Mcma.Serialization;
 /// <summary>
 /// Represents a custom MCMA converter for <see cref="McmaExpandoObject"/>s
 /// </summary>
-public class McmaExpandoObjectConverter : JsonConverter
+public class McmaExpandoObjectConverter : JsonConverter, IMcmaRootTypeAwareConverter
 {
+    private McmaExpandoObjectConverter(Type rootType)
+    {
+        RootType = rootType;
+    }
+
+    /// <summary>
+    /// Instantiates an <see cref="McmaExpandoObjectConverter"/> 
+    /// </summary>
+    public McmaExpandoObjectConverter()
+    {
+    }
+
+    private Type? RootType { get; }
+
+    /// <summary>
+    /// Creates a copy of 
+    /// </summary>
+    /// <param name="rootType"></param>
+    /// <returns></returns>
+    public JsonConverter ForRootType(Type rootType)
+        => new McmaExpandoObjectConverter(rootType);
+
     /// <summary>
     /// Checks that the type is <see cref="McmaExpandoObject"/>
     /// </summary>
@@ -31,7 +53,7 @@ public class McmaExpandoObjectConverter : JsonConverter
         IDictionary<string, object?> expando = new McmaExpandoObject();
 
         foreach (var jsonProp in jObj.Properties())
-            expando[jsonProp.Name] = McmaJson.ConvertJsonToClr(jsonProp.Value, serializer);
+            expando[jsonProp.Name] = McmaJson.ConvertJsonToClr(jsonProp.Value, RootType, serializer);
 
         return expando;
     }

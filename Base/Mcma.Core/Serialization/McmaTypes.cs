@@ -100,7 +100,9 @@ public static class McmaTypes
                 return objectType;
 
             // check for match in explicitly-provided type collection, then check for match in core types
-            var matchingRegisteredTypes = Types.Where(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase)).ToArray();
+            var matchingRegisteredTypes =
+                Types.Where(t => t.Name.Equals(typeString, StringComparison.OrdinalIgnoreCase) && (objectType is null || objectType.IsAssignableFrom(t)))
+                     .ToArray();
 
             return matchingRegisteredTypes.Length switch
             {

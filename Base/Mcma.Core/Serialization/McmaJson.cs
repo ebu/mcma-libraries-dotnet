@@ -53,7 +53,7 @@ public static class McmaJson
             NullValueHandling = NullValueHandling.Ignore,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             DateParseHandling = DateParseHandling.DateTimeOffset,
-            Converters = AddedConverters.Concat(DefaultConverters).ToList()
+            Converters = [.. AddedConverters, .. DefaultConverters]
         };
 
         if (!preserveCasing)
@@ -159,10 +159,10 @@ public static class McmaJson
     internal static bool IsMcmaObject(JObject jObj)
         => jObj.Properties().Any(p => p.Name.Equals(TypePropertyName, StringComparison.OrdinalIgnoreCase));
 
-    internal static object? CreateMcmaObject(JObject jObj, JsonSerializer serializer)
-        => jObj.ToObject(GetSerializedType(jObj), serializer);
+    internal static object? CreateMcmaObject(JObject jObj, Type? rootType, JsonSerializer serializer)
+        => jObj.ToObject(GetSerializedType(jObj, null, rootType), serializer);
 
-    internal static object? ConvertJsonToClr(JToken token, JsonSerializer serializer)
+    internal static object? ConvertJsonToClr(JToken token, Type? rootType, JsonSerializer serializer)
     {
         switch (token.Type)
         {
@@ -187,10 +187,10 @@ public static class McmaJson
             case JTokenType.Undefined:
                 return null;
             case JTokenType.Array:
-                return token.Select(x => ConvertJsonToClr(x, serializer)).ToArray();
+                return token.Select(x => ConvertJsonToClr(x, rootType, serializer)).ToArray();
             case JTokenType.Object:
                 var jObj = (JObject)token;
-                return IsMcmaObject(jObj) ? CreateMcmaObject(jObj, serializer) : jObj.ToObject<McmaExpandoObject>(serializer);
+                return IsMcmaObject(jObj) ? CreateMcmaObject(jObj, rootType, serializer) : jObj.ToObject<McmaExpandoObject>(serializer);
             case JTokenType.None:
             case JTokenType.Constructor:
             case JTokenType.Property:

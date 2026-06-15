@@ -8,8 +8,30 @@ namespace Mcma.Serialization;
 /// <summary>
 /// Converts objects that inherit from <see cref="McmaObject"/> to and from json
 /// </summary>
-public class McmaObjectConverter : JsonConverter
+public class McmaObjectConverter : JsonConverter, IMcmaRootTypeAwareConverter
 {
+    private McmaObjectConverter(Type rootType)
+    {
+        RootType = rootType;
+    }
+
+    /// <summary>
+    /// Instantiates an <see cref="McmaObjectConverter"/> 
+    /// </summary>
+    public McmaObjectConverter()
+    {
+    }
+
+    private Type? RootType { get; }
+
+    /// <summary>
+    /// Creates a copy of 
+    /// </summary>
+    /// <param name="rootType"></param>
+    /// <returns></returns>
+    public JsonConverter ForRootType(Type rootType)
+        => new McmaObjectConverter(rootType);
+
     /// <summary>
     /// Checks that object inherits from <see cref="McmaObject"/>
     /// </summary>
@@ -33,7 +55,7 @@ public class McmaObjectConverter : JsonConverter
         {
             var jObj = JObject.Load(reader);
 
-            serializedType = McmaJson.GetSerializedType(jObj, objectType, serializer is McmaJsonSerializer mcmaJsonSerializer ? mcmaJsonSerializer.RootType : null);
+            serializedType = McmaJson.GetSerializedType(jObj, objectType, RootType);
             var dynamicObj = (IDictionary<string, object?>)Activator.CreateInstance(serializedType);
                 
             if (dynamicObj is McmaObject mcmaObj && serializedType == typeof(McmaObject))
@@ -41,7 +63,7 @@ public class McmaObjectConverter : JsonConverter
 
             foreach (var jsonProp in jObj.Properties().Where(p => !p.Name.Equals(McmaJson.TypePropertyName, StringComparison.OrdinalIgnoreCase)))
                 if (!TryReadClrProperty(serializedType, dynamicObj, serializer, jsonProp))
-                    dynamicObj[jsonProp.Name] = McmaJson.ConvertJsonToClr(jsonProp.Value, serializer);
+                    dynamicObj[jsonProp.Name] = McmaJson.ConvertJsonToClr(jsonProp.Value, RootType, serializer);
 
             return dynamicObj;
         }

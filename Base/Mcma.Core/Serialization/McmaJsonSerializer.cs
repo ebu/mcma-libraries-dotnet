@@ -5,8 +5,10 @@ namespace Mcma.Serialization;
 
 internal class McmaJsonSerializer : JsonSerializer
 {
-    private static readonly ConcurrentDictionary<Type, McmaJsonSerializer> Typed = new();
-
+    private readonly ConcurrentDictionary<Type, McmaJsonSerializer> _typed = [];
+    private readonly JsonSerializerSettings _settings;
+    private readonly Type? _rootType;
+    
     public McmaJsonSerializer(bool preserveCasing = false)
         : this(McmaJson.DefaultSettings(preserveCasing), null)
     {
@@ -14,34 +16,33 @@ internal class McmaJsonSerializer : JsonSerializer
 
     private McmaJsonSerializer(JsonSerializerSettings settings, Type? rootType)
     {
-        Settings = settings;
-        RootType = rootType;
+        _settings = settings;
+        _rootType = rootType;
 
         CheckAdditionalContent = true;
 
         ApplySettings();
     }
 
-    private JsonSerializerSettings Settings { get; }
-
-    internal Type? RootType { get; }
-
     private void ApplySettings()
     {
-        NullValueHandling = Settings.NullValueHandling;
-        ReferenceLoopHandling = Settings.ReferenceLoopHandling;
-        DateParseHandling = Settings.DateParseHandling;
+        NullValueHandling = _settings.NullValueHandling;
+        ReferenceLoopHandling = _settings.ReferenceLoopHandling;
+        DateParseHandling = _settings.DateParseHandling;
 
-        foreach (var converter in Settings.Converters)
-            Converters.Add(converter);
+        foreach (var converter in _settings.Converters)
+            Converters.Add(
+                _rootType is Type rootType && converter is IMcmaRootTypeAwareConverter rootTypeAware
+                    ? rootTypeAware.ForRootType(rootType)
+                    : converter);
 
-        if (Settings.ContractResolver != null)
-            ContractResolver = Settings.ContractResolver;
+        if (_settings.ContractResolver != null)
+            ContractResolver = _settings.ContractResolver;
     }
 
     public McmaJsonSerializer For<T>()
-        =>  For(typeof(T));
+        => For(typeof(T));
 
     public McmaJsonSerializer For(Type type)
-        => Typed.GetOrAdd(type, t => new(Settings, t));
+        => _typed.GetOrAdd(type, t => new(_settings, t));
 }
